@@ -8,10 +8,10 @@ export function PasswordForm(){
  const [state,action,pending]=useActionState(changeMyPassword,initial);
  return <form action={action} className="fieldset"><label>Nova senha (pelo menos 12 caracteres)<input type="password" name="password" minLength={12} autoComplete="new-password" required/></label><label>Confirme a senha<input type="password" name="confirmation" minLength={12} autoComplete="new-password" required/></label><button type="submit" disabled={pending} className="primary">{pending?'Alterando…':'Salvar nova senha'}</button>{state.message&&<div className={state.ok?'notice':'error'}>{state.message}</div>}{state.ok&&<a href="/painel" className="button lime">Acessar o portal</a>}</form>;
 }
-export function AccessCreate({ejs,enabled=true}:{ejs:Ej[];enabled?:boolean}){
+export function AccessCreate({ejs,enabled=true,defaultRole='counselor',defaultEjId=''}:{ejs:Ej[];enabled?:boolean;defaultRole?:Role;defaultEjId?:string}){
  const [state,action,pending]=useActionState(createPortalUser,initial);
- const [role,setRole]=useState<Role>('counselor');
- const [ejId,setEjId]=useState('');
+ const [role,setRole]=useState<Role>(defaultRole);
+ const [ejId,setEjId]=useState(defaultEjId);
  const [password,setPassword]=useState('123456');
  const ej=ejs.find(item=>item.id===ejId);
  const email=role==='prescon'?'prescon@nejlondrina.com'
