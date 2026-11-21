@@ -16,7 +16,7 @@ export default async function DelibDetail({params}:{params:Promise<{id:string}>}
   if(!row)notFound();
   const deliberation=row as Deliberation;
   const scenarios=scenariosOf(deliberation);
-  const {data:rawResponses,error}=await db.from(deliberation.is_demo?'demo_responses':'responses').select('*').eq('deliberation_id',id).order('updated_at',{ascending:false});
+  const {data:rawResponses,error}=await db.from(deliberation.is_demo?'demo_responses':'responses').select('*').eq('deliberation_id',id);
   if(error)throw Error(error.message);
   const responses=(rawResponses||[]) as ResponseRow[];
   const ejs=await getEjs();
