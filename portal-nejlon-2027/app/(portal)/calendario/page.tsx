@@ -7,11 +7,11 @@ import {CouncilCalendar, type CalendarEvent} from '@/components/council-calendar
 export default async function Calendar() {
   const viewer=await requireViewer();
   const db=await createClient();
-  const {data:events,error}=await db.from('events').select('id,title,description,kind,starts_at,visible_to_ej_direx').order('starts_at');
+  const {data:events,error}=await db.from('events').select('id,title,description,kind,starts_at,ends_at,visible_to_ej_direx').order('starts_at');
   if(error)throw Error(error.message);
   return <div className="stack">
     <div><div className="eyebrow">Governança • Rede</div><h1>Calendário institucional</h1>
-      <p className="muted">Navegue pelos meses, selecione um dia ou visualize todos os compromissos no formato agenda.</p>
+      <p className="muted">Navegue pelos meses, selecione um dia, veja a visibilidade dos eventos e adicione uma reunião ao Google Agenda.</p>
     </div>
     {canManageEvents(viewer.role)&&<details className="panel no-print">
       <summary>+ Cadastrar novo evento</summary>
