@@ -2,9 +2,10 @@ import {requireRole} from '@/lib/auth';
 import {createClient} from '@/lib/supabase/server';
 import {getEjs} from '@/lib/queries';
 import {AccessCreate,AccessEdit} from '@/components/access-form';
-import type {Profile} from '@/lib/constants';
+import type {Profile,Role} from '@/lib/constants';
+import Link from 'next/link';
 
-export default async function Access(){
+export default async function Access({searchParams}:{searchParams:Promise<{role?:string;ej?:string}>}){
  await requireRole(['prescon']);
  const db=await createClient();
  const [ejs,{data,error}]=await Promise.all([
@@ -14,6 +15,20 @@ export default async function Access(){
  if(error)throw Error(error.message);
  const profiles=(data||[]) as Profile[];
  const configured=!!process.env.SUPABASE_SERVICE_ROLE_KEY;
+ const params=await searchParams;
+ const defaultRole:Role=params?.role==='ej_direx'?'ej_direx'
+   :params?.role==='nucleus_direx'?'nucleus_direx'
+   :params?.role==='prescon'?'prescon':'counselor';
+ const defaultEjId=(defaultRole==='counselor'||defaultRole==='ej_direx')&&ejs.some(e=>e.id===params?.ej)
+   ?params.ej!:'';
+ const registered=new Set(profiles.map(p=>p.email.toLowerCase()));
+ const emailFor=(role:'ej_direx'|'counselor',slug:string)=>(role==='counselor'?'conselho':'direx')+slug+'@nejlondrina.com';
+ const registerLink=(role:'ej_direx'|'counselor'|'nucleus_direx',ejId?:string)=>
+   '/acessos?role='+role+(ejId?'&ej='+encodeURIComponent(ejId):'')+'#novo-acesso';
+ const plannedCount=2*ejs.length+1;
+ const alreadyPlanned=ejs.reduce((count,e)=>count+
+   Number(registered.has(emailFor('ej_direx',e.slug)))+
+   Number(registered.has(emailFor('counselor',e.slug))),Number(registered.has('direx@nejlondrina.com'));
  const countCouncil=profiles.filter(p=>p.role==='counselor').length;
  const countDirex=profiles.filter(p=>p.role==='ej_direx').length;
  const countNucleus=profiles.filter(p=>p.role==='nucleus_direx').length;
@@ -38,18 +53,69 @@ export default async function Access(){
     Em <strong>Supabase → Project Settings → API Keys</strong>, obtenha a chave <code>service_role</code>. Em <strong>Vercel → Project → Settings → Environment Variables</strong>, adicione-a com o nome indicado, apenas no servidor, e faça um novo deploy. Não coloque essa chave no GitHub nem em mensagens.
    </p>
   </div>}
-  <div className="panel">
+  <div className="panel" id="novo-acesso">
    <h2>Criar um novo acesso</h2>
    <p className="muted small">
     Selecione <strong>Conselho</strong> ou <strong>DIREX da EJ</strong>, escolha a empresa e clique em criar.
     O portal gera automaticamente e-mails como <code>conselhounect@nejlondrina.com</code> e <code>direxunect@nejlondrina.com</code>.
     Cada e-mail terá conta e permissões próprias no Supabase.
    </p>
-   <AccessCreate ejs={ejs} enabled={configured}/>
+   <AccessCreate key={defaultRole+'-'+defaultEjId} ejs={ejs} enabled={configured} defaultRole={defaultRole} defaultEjId={defaultEjId}/>
   </div>
   <div className="notice">
    <strong>Acesso de demonstração:</strong> a senha <code>123456</code> está preenchida inicialmente para as contas das EJs, conforme a configuração de testes. Você pode substituí-la antes de criar a conta. A senha compartilhada não deve ser usada para decisões ou informações institucionais reais.
   </div>
+
+  <section className="panel stack" aria-labelledby="catalogo-acessos">
+   <div className="toolbar" style={{marginTop:0}}>
+    <div>
+     <div className="eyebrow">Planejamento de contas • 29 EJs</div>
+     <h2 id="catalogo-acessos" style={{margin:'7px 0'}}>Relação dos {plannedCount} e-mails definidos</h2>
+     <p className="muted small" style={{margin:0}}>A lista é gerada a partir das EJs do Supabase. Cada e-mail representa uma conta diferente, com permissões próprias.</p>
+    </div>
+    <span className="badge">{alreadyPlanned} com perfil / {plannedCount} previstos</span>
+   </div>
+   <div className="table-wrap">
+    <table className="access-registry">
+     <thead><tr><th>Empresa júnior</th><th>DIREX da EJ</th><th>Conselho da EJ</th></tr></thead>
+     <tbody>
+      {ejs.map(e=>{
+       const direx=emailFor('ej_direx',e.slug);
+       const conselho=emailFor('counselor',e.slug);
+       const hasDirex=registered.has(direx);
+       const hasConselho=registered.has(conselho);
+       return <tr key={e.id}>
+        <td><strong>{e.name}</strong></td>
+        <td>
+         <div className="access-roster-cell"><code>{direx}</code>
+          <span className={'badge '+(hasDirex?'lime':'')}>{hasDirex?'Perfil cadastrado':'Pendente'}</span>
+          {!hasDirex&&<Link className="link small" href={registerLink('ej_direx',e.id)}>Preparar cadastro</Link>}
+         </div>
+        </td>
+        <td>
+         <div className="access-roster-cell"><code>{conselho}</code>
+          <span className={'badge '+(hasConselho?'lime':'')}>{hasConselho?'Perfil cadastrado':'Pendente'}</span>
+          {!hasConselho&&<Link className="link small" href={registerLink('counselor',e.id)}>Preparar cadastro</Link>}
+         </div>
+        </td>
+       </tr>;
+      })}
+      <tr>
+       <td><strong>DIREX do Núcleo NEJLON</strong></td>
+       <td colSpan={2}>
+        <div className="access-roster-cell"><code>direx@nejlondrina.com</code>
+         <span className={'badge '+(registered.has('direx@nejlondrina.com')?'lime':'')}>
+          {registered.has('direx@nejlondrina.com')?'Perfil cadastrado':'Pendente'}
+         </span>
+         {!registered.has('direx@nejlondrina.com')&&<Link href={registerLink('nucleus_direx')} className="link small">Preparar cadastro</Link>}
+        </div>
+       </td>
+      </tr>
+     </tbody>
+    </table>
+   </div>
+   <p className="muted small" style={{margin:0}}>Pendente significa que o perfil ainda não existe na lista de acessos do portal. O formulário acima só cria uma conta após a configuração administrativa do servidor.</p>
+  </section>
   <div className="panel stack">
    <div className="toolbar"><h2>Contas com perfil cadastrado ({profiles.length})</h2><span className="badge lime">{profiles.filter(p=>p.active).length} ativas</span></div>
    {profiles.map(p=><AccessEdit key={p.id} user={p} ejs={ejs}/>)}
