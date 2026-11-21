@@ -7,7 +7,7 @@ import {CouncilCalendar, type CalendarEvent} from '@/components/council-calendar
 export default async function Calendar() {
   const viewer=await requireViewer();
   const db=await createClient();
-  const {data:events,error}=await db.from('events').select('id,title,description,kind,starts_at').order('starts_at');
+  const {data:events,error}=await db.from('events').select('id,title,description,kind,starts_at,visible_to_ej_direx').order('starts_at');
   if(error)throw Error(error.message);
   return <div className="stack">
     <div><div className="eyebrow">Governança • Rede</div><h1>Calendário institucional</h1>
@@ -22,9 +22,11 @@ export default async function Calendar() {
         </div>
         <label>Data e horário<input type="datetime-local" name="starts_at" required/></label>
         <label>Descrição / informações adicionais<textarea name="description" placeholder="Link, pauta, local ou outras informações"/></label>
+        <label className="inline-check"><input type="checkbox" name="visible_to_ej_direx"/> Visível para DIREX de EJ?</label>
+        <p className="muted small">Desmarcado por padrão. A PRESCON, a DIREX do Núcleo e os conselheiros continuam com acesso ao calendário.</p>
         <button type="submit" className="primary">Adicionar à agenda</button>
       </form>
     </details>}
-    <CouncilCalendar events={(events||[]) as CalendarEvent[]}/>
+    <CouncilCalendar events={(events||[]) as CalendarEvent[]} canEditVisibility={canManageEvents(viewer.role)}/>
   </div>;
 }
