@@ -155,3 +155,21 @@ hr { border:none; border-top:1px solid var(--border); margin:22px 0; } details {
 .access-guide-account{font-size:.77rem;color:#ddedea;background:#203036;border-radius:6px;padding:6px 8px;overflow-wrap:anywhere;display:inline-block;max-width:100%}
 .access-guide-card ul{padding-left:18px;margin:12px 0 0;display:grid;gap:7px;font-size:.85rem;color:#c8d0d2}
 @media(max-width:760px){.access-guide-grid{grid-template-columns:1fr}.login-top{padding:18px 10px}.login-top .login-card{padding:22px}}
+
+
+/* Gestão de acessos: e-mail gerado pelo perfil selecionado */
+.access-email-preview {
+ display:grid;gap:6px;padding:14px;border:1px solid var(--border);
+ background:var(--surface2);border-radius:12px;overflow-wrap:anywhere;
+}
+.access-email-preview strong{font-size:1.05rem;letter-spacing:-.015em}
+
+
+/* Cadastro planejado e estados dos 59 acessos institucionais */
+.access-registry{min-width:780px;}
+.access-registry td{vertical-align:top;}
+.access-registry .access-roster-cell{display:grid;gap:9px;align-items:start;justify-items:start;}
+.access-roster-cell code{font-size:.78rem;overflow-wrap:anywhere;line-height:1.45;}
+.access-roster-cell .badge{font-size:.69rem}
+.access-roster-cell .link{font-size:.77rem;}
+#novo-acesso{scroll-margin-top:28px}
