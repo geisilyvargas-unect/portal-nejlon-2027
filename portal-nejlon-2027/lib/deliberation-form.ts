@@ -20,7 +20,7 @@ export function answersOf(response:ResponseRow|undefined,scenarios:DeliberationS
     const found=Array.isArray(response?.scenario_answers)
       ?response.scenario_answers.find(a=>a.scenario_key===s.key):undefined;
     if(found)return found;
-    const legacy=i===0&&response;
+    const legacy=i===0?response:undefined;
     return {scenario_key:s.key,position:legacy?.position||'favorable' as Position,
       justification:legacy?.justification||'',caveats:legacy?.caveats||'',suggestions:legacy?.suggestions||''};
   });
