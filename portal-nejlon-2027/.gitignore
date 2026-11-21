@@ -1,0 +1,11 @@
+node_modules/
+.next/
+out/
+*.log
+.env
+.env.*
+!.env.example
+acessos-iniciais.csv
+*.pem
+*.key
+.DS_Store
