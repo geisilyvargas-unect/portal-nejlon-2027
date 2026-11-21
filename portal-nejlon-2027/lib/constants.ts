@@ -25,6 +25,26 @@ export type Deliberation = {
   is_demo: boolean; report_notes: string | null; report_followup: string | null;
   created_at: string;
   scenarios?: DeliberationScenario[];
+  is_historical?: boolean;
+  historical_source_id?: string | null;
+  historical_data?: HistoricalData;
+  historical_report_text?: string | null;
+};
+export type HistoricalScenario = {
+  key: string; title: string; approval_percent: number; section_text: string;
+};
+export type HistoricalData = {
+  source_kind: 'consolidated_official_pdf';
+  source_filename: string;
+  report_author: string;
+  period_start: string;
+  period_end: string;
+  voters: number;
+  representation_percent: number;
+  scenario_results: HistoricalScenario[];
+  additional_metrics?: {label:string;percentage:number}[];
+  source_note?: string;
+  import_note?: string;
 };
 export type DeliberationScenario = { key: string; title: string; description?: string; material_url?: string };
 export type ScenarioAnswer = { scenario_key: string; position: Position; justification: string; caveats: string; suggestions: string };

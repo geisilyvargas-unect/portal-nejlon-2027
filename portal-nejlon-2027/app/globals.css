@@ -117,3 +117,17 @@ hr { border:none; border-top:1px solid var(--border); margin:22px 0; } details {
  .report-pie-core{background:#fff;border-color:#fff}.report-remark{border-color:#ddd}
  .report-document .no-print{display:none!important}
 }
+
+
+/* Acervo de deliberações históricas de 2026 */
+.history-report .history-notice {line-height:1.7;}
+.history-report .history-notice strong{display:block;margin-bottom:5px}
+.history-rate{display:grid;grid-template-columns:170px minmax(0,1fr);align-items:center;gap:22px;margin:20px 0}
+.history-percent{font-size:2.1rem;font-weight:800;line-height:1.2;letter-spacing:-.05em}
+.history-rate-track{height:16px;background:#30383c;border-radius:999px;overflow:hidden}
+.history-rate-track span{height:100%;display:block;border-radius:999px;background:linear-gradient(90deg,var(--petrol),var(--lime))}
+.history-text-detail{border:1px solid var(--border);border-radius:10px;padding:15px;margin-top:15px}
+.history-text-detail summary{font-weight:700;cursor:pointer}
+.history-report-text{margin-top:15px;padding:16px;border-radius:8px;background:#0f1316;white-space:pre-wrap;overflow-wrap:anywhere;font-size:.85rem;line-height:1.65}
+@media(max-width:600px){.history-rate{grid-template-columns:1fr;gap:12px}.history-report-text{padding:10px}}
+@media print{.history-report-text{display:block;color:#111;background:#fff}.history-text-detail{border:0}.history-rate-track{background:#ddd}.history-rate-track span{background:#005b66}.history-report .panel{break-inside:auto}}

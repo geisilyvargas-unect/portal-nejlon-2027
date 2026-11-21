@@ -8,6 +8,7 @@ import {POSITIONS,formatDate,type Deliberation,type Position,type ResponseRow,ty
 import {answersOf,scenariosOf} from '@/lib/deliberation-form';
 import {ReportActions} from '@/components/clipboard';
 import {saveReportNotes,saveResponseReview} from '@/app/actions';
+import {HistoricalReport} from '@/components/historical-deliberation';
 
 type Review={
   id:string;response_id:string;scenario_key:string;aspect:'rejection'|'suggestion'|'caveat';
@@ -57,6 +58,7 @@ export default async function ReportDetail({params}:{params:Promise<{id:string}>
   ]);
   if(!raw)notFound();
   const d=raw as Deliberation;
+  if(d.is_historical)return <HistoricalReport d={d}/>;
   const scenarios=scenariosOf(d);
   const reviewResult=responses.length?await db.from('response_reviews').select('*').in('response_id',responses.map(r=>r.id)): {data:[],error:null};
   if(reviewResult.error)throw Error(reviewResult.error.message);
