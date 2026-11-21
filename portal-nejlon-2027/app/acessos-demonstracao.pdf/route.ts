@@ -19,10 +19,10 @@ const ejs:[string,string][]=[
  */
 function pdf():Buffer{
   const commands:string[]=[];
-  const txt=(s:string,x:number,y:number,size=9,bold=false)=>{
+  const txt=(s:string,x:number,y:number,size=9,bold=false,white=false)=>{
     const t=s.normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^\x20-\x7E]/g,'')
       .replace(/\\/g,'\\\\').replace(/\(/g,'\\(').replace(/\)/g,'\\)');
-    commands.push('BT /'+(bold?'F2':'F1')+' '+size+' Tf '+x+' '+y+' Td ('+t+') Tj ET');
+    commands.push((white?'1 1 1':'0.08 0.12 0.17')+' rg BT /'+(bold?'F2':'F1')+' '+size+' Tf '+x+' '+y+' Td ('+t+') Tj ET');
   };
   const fill=(r:number,g:number,b:number,x:number,y:number,w:number,h:number)=>{
     commands.push(r+' '+g+' '+b+' rg '+x+' '+y+' '+w+' '+h+' re f');
@@ -30,18 +30,18 @@ function pdf():Buffer{
 
   fill(.98,.99,.99,0,0,842,595);
   fill(.02,.33,.38,0,565,842,30);
-  txt('NEJLON 2027 | ACESSOS DE DEMONSTRACAO',29,576,15,true);
+  txt('NEJLON 2027 | ACESSOS DE DEMONSTRACAO',29,576,15,true,true);
   txt('Lista de planejamento: os 58 acessos das EJs e a DIREX do Nucleo ainda NAO estao ativados.',29,543,10,true);
   txt('Senha PREVISTA para teste: 123456. Nao funciona ate as contas serem criadas no Supabase.',29,526,9,true);
   txt('Cada e-mail sera um usuario independente: Conselho vota; DIREX acompanha, sem votar.',29,511,8.5);
   txt('Nao usar em deliberacoes reais; a senha pessoal da PRESCON nao e divulgada.',29,496,8.5);
 
   fill(.02,.33,.38,23,469,796,27);
-  txt('EJ',32,478,9,true);
-  txt('DIREX DA EJ',126,478,9,true);
-  txt('CONSELHO DA EJ',352,478,9,true);
-  txt('SENHA PREVISTA',575,478,9,true);
-  txt('STATUS',713,478,9,true);
+  txt('EJ',32,478,9,true,true);
+  txt('DIREX DA EJ',126,478,9,true,true);
+  txt('CONSELHO DA EJ',352,478,9,true,true);
+  txt('SENHA PREVISTA',575,478,9,true,true);
+  txt('STATUS',713,478,9,true,true);
   for(let i=0;i<ejs.length;i++){
     const [ej,slug]=ejs[i];
     const y=456-i*12;
@@ -90,7 +90,7 @@ export async function GET(){
     headers:{
       'Content-Type':'application/pdf',
       'Content-Disposition':'inline; filename="acessos-demonstracao-nejlon-2027.pdf"',
-      'Cache-Control':'public, max-age=300'
+      'Cache-Control':'no-store, max-age=0'
     }
   });
 }
