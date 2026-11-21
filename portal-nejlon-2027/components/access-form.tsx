@@ -44,7 +44,7 @@ export function AccessCreate({ejs,enabled=true}:{ejs:Ej[];enabled?:boolean}){
     <input name="full_name" maxLength={150} placeholder="Em branco: nome da EJ e do perfil" disabled={!enabled}/>
    </label>
    <label>Senha inicial
-    <input name="password" type="text" autoComplete="off" value={password} onChange={event=>setPassword(event.target.value)} minLength={6} maxLength={72} required disabled={!enabled}/>
+    <input name="password" type="password" autoComplete="new-password" value={password} onChange={event=>setPassword(event.target.value)} minLength={6} maxLength={72} required disabled={!enabled}/>
    </label>
   </div>
   <label>Telefone (opcional)<input name="phone" maxLength={40} placeholder="43 99999-9999" disabled={!enabled}/></label>
