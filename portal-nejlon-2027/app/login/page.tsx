@@ -41,6 +41,7 @@ export default function Login(){
           </a>
           <p className="muted small">Os acessos das EJs listados no PDF ainda não foram ativados no Supabase.</p>
         </div>
+        <p className="login-pdf-link"><a href="/guia-acessos.pdf" target="_blank" rel="noopener noreferrer" className="button outline">Abrir PDF com todos os 59 e-mails de teste e a senha prevista</a></p>
         <form onSubmit={enter} className="fieldset">
           <label>E-mail institucional<input type="email" autoComplete="username" placeholder="seuacesso@nejlondrina.com" required value={email} onChange={e=>setEmail(e.target.value)}/></label>
           <label>Senha<input type="password" required autoComplete="current-password" value={password} onChange={e=>setPassword(e.target.value)}/></label>
