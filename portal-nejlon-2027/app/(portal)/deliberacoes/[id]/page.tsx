@@ -7,6 +7,7 @@ import {formatDate,POSITIONS,type Deliberation,type ResponseRow} from '@/lib/con
 import {answersOf,scenariosOf} from '@/lib/deliberation-form';
 import {DeliberationResponseForm} from '@/components/deliberation-response-form';
 import {changeDeliberationStatus} from '@/app/actions';
+import {HistoricalDetail} from '@/components/historical-deliberation';
 
 export default async function DelibDetail({params}:{params:Promise<{id:string}>}){
   const {id}=await params;
@@ -15,6 +16,7 @@ export default async function DelibDetail({params}:{params:Promise<{id:string}>}
   const {data:row}=await db.from('deliberations').select('*').eq('id',id).maybeSingle();
   if(!row)notFound();
   const deliberation=row as Deliberation;
+  if(deliberation.is_historical)return <HistoricalDetail d={deliberation} showReportLink={viewer.role==='prescon'}/>;
   const scenarios=scenariosOf(deliberation);
   const {data:rawResponses,error}=await db.from(deliberation.is_demo?'demo_responses':'responses').select('*').eq('deliberation_id',id);
   if(error)throw Error(error.message);
