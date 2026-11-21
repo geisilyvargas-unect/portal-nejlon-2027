@@ -178,9 +178,20 @@ export async function changeDemandStatus(form:FormData) {
 export async function createEvent(form:FormData) {
   await requireRole(['prescon','nucleus_direx']);
   const supabase=await createClient();
-  const {error}=await supabase.from('events').insert({title:required(form,'title',250),description:maybe(form,'description')||'',kind:required(form,'kind',50),starts_at:dateTime(required(form,'starts_at'))});
+  const {error}=await supabase.from('events').insert({title:required(form,'title',250),description:maybe(form,'description')||'',kind:required(form,'kind',50),starts_at:dateTime(required(form,'starts_at')),visible_to_ej_direx:form.get('visible_to_ej_direx')==='on'});
   checkError(error);revalidatePath('/calendario');
 }
+export async function updateEventVisibility(form:FormData){
+  await requireRole(['prescon','nucleus_direx']);
+  const id=required(form,'event_id',50);
+  const db=await createClient();
+  const {error}=await db.from('events')
+    .update({visible_to_ej_direx:form.get('visible_to_ej_direx')==='on'})
+    .eq('id',id);
+  checkError(error);
+  revalidatePath('/calendario');
+}
+
 export async function createDocument(form:FormData) {
   await requireRole(['prescon']);
   const url=required(form,'url',2000); if(!url.startsWith('https://')) fail('Use um link HTTPS.');
