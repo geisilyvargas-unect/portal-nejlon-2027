@@ -241,6 +241,7 @@ export async function createPortalUser(_previous:AccessResult, form:FormData):Pr
     const phone=maybe(form,'phone',40);
     const password=required(form,'password',72);
     if(password.length<6)fail('A senha precisa ter pelo menos 6 caracteres.');
+    if(roleRaw==='prescon' && password==='123456')fail('A senha compartilhada de testes não pode ser usada em uma conta PRESCON.');
     const admin=adminClient();
     // Cada e-mail é uma conta Auth independente. A senha escolhida é definida
     // somente pelo servidor e NUNCA retorna para o navegador na resposta.
