@@ -35,6 +35,12 @@ export default function Login(){
           <p>Senha padrão planejada para as contas demonstrativas: <code>123456</code>.</p>
           <p>Essa senha funcionará apenas nos e-mails que forem cadastrados com ela. As contas da PRESCON já existentes continuam usando a senha configurada no Supabase. Para recuperar uma senha, use <strong>Esqueci minha senha</strong>.</p>
         </div>
+        <div className="access-pdf-link">
+          <a className="button outline" href="/acessos-demonstracao.pdf" target="_blank" rel="noopener noreferrer">
+            Abrir PDF com a relação de e-mails e senhas de teste
+          </a>
+          <p className="muted small">Os acessos das EJs listados no PDF ainda não foram ativados no Supabase.</p>
+        </div>
         <form onSubmit={enter} className="fieldset">
           <label>E-mail institucional<input type="email" autoComplete="username" placeholder="seuacesso@nejlondrina.com" required value={email} onChange={e=>setEmail(e.target.value)}/></label>
           <label>Senha<input type="password" required autoComplete="current-password" value={password} onChange={e=>setPassword(e.target.value)}/></label>
