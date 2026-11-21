@@ -6,10 +6,11 @@ export const ROLES = {
 } as const;
 export type Role = keyof typeof ROLES;
 export const POSITIONS = {
-  favorable: 'Favorável',
-  qualified: 'Favorável com ressalvas',
-  against: 'Contrário',
-  abstention: 'Abstenção',
+  favorable: 'Aprovo',
+  suggestions: 'Aprovo com sugestões',
+  qualified: 'Aprovo com ressalvas',
+  against: 'Reprovo',
+  abstention: 'Abstenho',
 } as const;
 export type Position = keyof typeof POSITIONS;
 export type Profile = {
@@ -23,11 +24,17 @@ export type Deliberation = {
   status: 'draft' | 'open' | 'closed'; direx_visible: boolean;
   is_demo: boolean; report_notes: string | null; report_followup: string | null;
   created_at: string;
+  scenarios?: DeliberationScenario[];
 };
+export type DeliberationScenario = { key: string; title: string; description?: string; material_url?: string };
+export type ScenarioAnswer = { scenario_key: string; position: Position; justification: string; caveats: string; suggestions: string };
+export type FinalFeedback = { clarity?: number; difficulty?: number; improvements?: string };
 export type ResponseRow = {
   id: string; deliberation_id: string; ej_id: string; position: Position;
   justification: string | null; caveats: string | null; suggestions: string | null;
   updated_at: string;
+  scenario_answers?: ScenarioAnswer[];
+  final_feedback?: FinalFeedback;
 };
 export const formatDate = (iso: string) => new Intl.DateTimeFormat('pt-BR', { dateStyle: 'medium', timeStyle: 'short', timeZone: 'America/Sao_Paulo' }).format(new Date(iso));
 export const isAdmin = (role: Role) => role === 'prescon';
