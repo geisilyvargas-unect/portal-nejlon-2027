@@ -10,7 +10,7 @@ import { scenariosOf } from '@/lib/deliberation-form';
 
 const isOneOf = <T extends string>(value: string, valid: readonly T[]): value is T => valid.includes(value as T);
 const validRoles = ['prescon','nucleus_direx','ej_direx','counselor'] as const;
-const validPositions = ['favorable','qualified','against','abstention'] as const;
+const validPositions = ['favorable','suggestions','qualified','against','abstention'] as const;
 function fail(message: string): never { throw new Error(message); }
 function required(form: FormData, key: string, max = 3000): string {
   const value = safeText(form.get(key));
