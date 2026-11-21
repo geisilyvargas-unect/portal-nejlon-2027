@@ -235,23 +235,34 @@ async function getCanonical(role:Role,ejId:string|null) {
 export async function createPortalUser(_previous:AccessResult, form:FormData):Promise<AccessResult> {
   try {
     await requireRole(['prescon']);
-    const name=required(form,'full_name',150);
     const roleRaw=required(form,'role');
     if(!isOneOf<Role>(roleRaw,validRoles))fail('Perfil inválido.');
     const {email,ej_id}=await getCanonical(roleRaw,safeText(form.get('ej_id'))||null);
     const phone=maybe(form,'phone',40);
+    const password=required(form,'password',72);
+    if(password.length<6)fail('A senha precisa ter pelo menos 6 caracteres.');
     const admin=adminClient();
-    // Conta ativada sem depender do e-mail institucional. Senha forte, aleatória e de uso inicial.
-    const password=randomBytes(24).toString('base64url');
+    // Cada e-mail é uma conta Auth independente. A senha escolhida é definida
+    // somente pelo servidor e NUNCA retorna para o navegador na resposta.
+    const {data:ejData,error:ejError}=ej_id
+      ?await admin.from('ejs').select('name').eq('id',ej_id).single()
+      :{data:null,error:null};
+    checkError(ejError);
+    const generatedName=roleRaw==='counselor'
+      ?'Conselho — '+(ejData?.name||'EJ')
+      :roleRaw==='ej_direx'?'DIREX — '+(ejData?.name||'EJ')
+      :roleRaw==='nucleus_direx'?'DIREX do Núcleo NEJLON'
+      :'Presidência do Conselho NEJLON';
+    const name=maybe(form,'full_name',150)||generatedName;
     const {data,error}=await admin.auth.admin.createUser({email,password,email_confirm:true});
     checkError(error);
     if(!data.user)fail('Supabase não retornou o usuário.');
     const {error:profileError}=await admin.from('profiles').insert({
-      id:data.user.id,email,full_name:name,role:roleRaw,ej_id,phone,active:true,must_change_password:true,
+      id:data.user.id,email,full_name:name,role:roleRaw,ej_id,phone,active:true,must_change_password:false,
     });
     if(profileError){await admin.auth.admin.deleteUser(data.user.id);fail(profileError.message);}
     revalidatePath('/acessos');
-    return {ok:true,message:`Conta ${email} criada. Copie a senha temporária agora; ela não será exibida novamente.`,password};
+    return {ok:true,message:`Conta ${email} criada e vinculada ao perfil correto. A senha foi definida conforme informada no formulário.`};
   } catch(error) {return {ok:false,message:error instanceof Error?error.message:'Falha ao criar usuário.'};}
 }
 export async function updatePortalUser(_previous:AccessResult,form:FormData):Promise<AccessResult> {
