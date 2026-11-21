@@ -1,6 +1,7 @@
 'use client';
 import {useMemo, useState} from 'react';
 import {updateEventVisibility} from '@/app/actions';
+import {googleCalendarUrl} from '@/lib/google-calendar-url';
 
 export type CalendarEvent = {
   id: string;
@@ -8,6 +9,7 @@ export type CalendarEvent = {
   description: string | null;
   kind: string;
   starts_at: string;
+  ends_at:string|null;
   visible_to_ej_direx:boolean;
 };
 
@@ -130,6 +132,7 @@ export function CouncilCalendar({events,canEditVisibility=false}:{events:Calenda
           <strong>{e.title}</strong>
           <div className="muted small">{timeLabel(e.starts_at)} · {kindName[e.kind]||e.kind}</div>
           {e.description&&<p className="whitespace small">{e.description}</p>}
+          <a href={googleCalendarUrl(e)} className="button outline calendar-google-link" target="_blank" rel="noopener noreferrer" title="Abre o formulário de evento no Google Agenda para você confirmar e salvar">Adicionar ao Google Agenda ↗</a>
           {canEditVisibility&&<form action={updateEventVisibility} className="calendar-visibility-form no-print">
             <input type="hidden" name="event_id" value={e.id}/>
             <label className="inline-check">
