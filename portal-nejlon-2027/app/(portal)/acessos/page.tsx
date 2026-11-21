@@ -28,7 +28,7 @@ export default async function Access({searchParams}:{searchParams:Promise<{role?
  const plannedCount=2*ejs.length+1;
  const alreadyPlanned=ejs.reduce((count,e)=>count+
    Number(registered.has(emailFor('ej_direx',e.slug)))+
-   Number(registered.has(emailFor('counselor',e.slug))),Number(registered.has('direx@nejlondrina.com'));
+   Number(registered.has(emailFor('counselor',e.slug))),Number(registered.has('direx@nejlondrina.com')));
  const countCouncil=profiles.filter(p=>p.role==='counselor').length;
  const countDirex=profiles.filter(p=>p.role==='ej_direx').length;
  const countNucleus=profiles.filter(p=>p.role==='nucleus_direx').length;
