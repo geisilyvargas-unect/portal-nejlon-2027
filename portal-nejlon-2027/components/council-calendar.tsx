@@ -1,5 +1,6 @@
 'use client';
 import {useMemo, useState} from 'react';
+import {updateEventVisibility} from '@/app/actions';
 
 export type CalendarEvent = {
   id: string;
@@ -7,6 +8,7 @@ export type CalendarEvent = {
   description: string | null;
   kind: string;
   starts_at: string;
+  visible_to_ej_direx:boolean;
 };
 
 const zone = 'America/Sao_Paulo';
@@ -36,7 +38,7 @@ const dateLabel = (value:string) => new Intl.DateTimeFormat('pt-BR',{timeZone:zo
 const timeLabel = (value:string) => new Intl.DateTimeFormat('pt-BR',{timeZone:zone,hour:'2-digit',minute:'2-digit'}).format(new Date(value));
 const week = ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
 
-export function CouncilCalendar({events}:{events:CalendarEvent[]}) {
+export function CouncilCalendar({events,canEditVisibility=false}:{events:CalendarEvent[];canEditVisibility?:boolean}) {
   const today=keyOf(new Date());
   const [month,setMonth]=useState(today.slice(0,7));
   const [selected,setSelected]=useState(today);
@@ -124,7 +126,19 @@ export function CouncilCalendar({events}:{events:CalendarEvent[]}) {
       {selectedEvents.length===0&&<p className="muted">Nenhum compromisso neste dia.</p>}
       {selectedEvents.map(e=><article key={e.id} className="calendar-detail">
         <span className={'calendar-detail-mark '+(palette[e.kind]||'gray')}/>
-        <div><strong>{e.title}</strong><div className="muted small">{timeLabel(e.starts_at)} · {kindName[e.kind]||e.kind}</div>{e.description&&<p className="whitespace small">{e.description}</p>}</div>
+        <div style={{flex:1,minWidth:0}}>
+          <strong>{e.title}</strong>
+          <div className="muted small">{timeLabel(e.starts_at)} · {kindName[e.kind]||e.kind}</div>
+          {e.description&&<p className="whitespace small">{e.description}</p>}
+          {canEditVisibility&&<form action={updateEventVisibility} className="calendar-visibility-form no-print">
+            <input type="hidden" name="event_id" value={e.id}/>
+            <label className="inline-check">
+              <input type="checkbox" name="visible_to_ej_direx" defaultChecked={e.visible_to_ej_direx} key={e.id+'-'+String(e.visible_to_ej_direx)}/>
+              Visível para DIREX de EJ?
+            </label>
+            <button type="submit" className="outline">Salvar visibilidade</button>
+          </form>}
+        </div>
       </article>)}
       <hr/>
       <h3>Próximos compromissos</h3>
