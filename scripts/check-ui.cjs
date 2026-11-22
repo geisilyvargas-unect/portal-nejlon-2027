@@ -20,7 +20,7 @@ for(const file of pages){
   const target=path.resolve(path.dirname(file),ref.split('?')[0]);
   if(!fs.existsSync(target))fail(file+' missing asset '+ref);
  }
- const localStyles=refs.filter(x=>x.endsWith('.css'));
+ const localStyles=refs.filter(x=>x.split(/[?#]/)[0].endsWith('.css'));
  if(!localStyles.at(-1)?.includes('ux-system.css'))fail(file+' UX CSS not loaded last');
 }
 for(const file of scripts){
