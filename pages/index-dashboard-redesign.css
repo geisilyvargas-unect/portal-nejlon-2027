@@ -23,3 +23,15 @@
 .portal-calendar-empty{padding:16px;margin-top:16px;border-left:4px solid #ff0000;background:rgba(128,128,128,.07)}
 .portal-calendar-empty p{margin:4px 0 0}
 @media(max-width:760px){.portal-calendar-day{min-height:48px;padding:5px;font-size:12px}.portal-calendar-controls strong{min-width:100px}.portal-admin-group{min-width:190px}.portal-calendar-heading{align-items:flex-start}}
+
+.portal-calendar-event{background:#ff0000;color:white;font-size:10px;line-height:1.25;font-weight:700;margin-top:4px;padding:4px 5px;overflow-wrap:anywhere}
+.portal-calendar-entry{display:flex;justify-content:space-between;align-items:center;gap:12px;border-bottom:1px solid var(--border,#555);padding:10px 0}
+.portal-calendar-entry p{margin:3px 0}
+.portal-calendar-entry button{border:1px solid currentColor;background:transparent;color:inherit;padding:6px 10px;cursor:pointer}
+.portal-calendar-manager{margin-top:18px;border:1px solid var(--border,#555);padding:14px}
+.portal-calendar-manager summary{font-weight:800;cursor:pointer}
+.portal-calendar-form{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:14px;align-items:end}
+.portal-calendar-form label{display:grid;gap:6px;font-weight:700;font-size:12px}
+.portal-calendar-form input,.portal-calendar-form select{width:100%;min-width:0;padding:10px;background:var(--panel,#fff);border:1px solid var(--border,#888);color:var(--text,#111);font:inherit}
+.portal-calendar-form button{grid-column:1/-1;justify-self:start}
+@media(max-width:760px){.portal-calendar-form{grid-template-columns:1fr}.portal-calendar-event{font-size:9px;padding:3px}.portal-calendar-entry{align-items:flex-start}}
