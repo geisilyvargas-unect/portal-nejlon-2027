@@ -8,6 +8,7 @@ import {
 import {EJS_DEMO,DEMO_ROLES,expectedEmail,type DemoRole} from '@/lib/demo-ejs';
 import {ThemeToggle} from '@/components/theme-toggle';
 import {NetworkEngagement} from '@/components/network-engagement';
+import {EjDirectory} from '@/components/ej-directory';
 import {buildEngagement} from '@/lib/engagement';
 import {DEMO_DELIBERATIONS,DEMO_POSITIONS,DEMO_EJ_BY_SLUG,demoVotesFor,demoPendingFor,demoCountsFor,demoSummary,type DemoDeliberationId} from '@/lib/demo-responses';
 
@@ -326,13 +327,8 @@ export function DemoTour(){
      </>}
      {section==='rede'&&<>
       <TitleBlock eyebrow="Rede • Empresas juniores" title="Rede NEJLON"
-       description="Conheça as EJs cadastradas e mantenha os contatos institucionais organizados."/>
-      <div className="demo-ej-grid">
-       {EJS_DEMO.slice(0,12).map(item=><div className="demo-ej-card" key={item.slug}>
-        <Building2 size={17} aria-hidden/><strong>{item.name}</strong>
-       </div>)}
-      </div>
-      <p className="muted small" style={{marginTop:12}}>E outras {EJS_DEMO.length-12} empresas juniores.</p>
+       description="Conheça as empresas, suas logos, áreas de atuação, serviços e contatos institucionais."/>
+      <EjDirectory ejs={EJS_DEMO}/>
      </>}
      <div className="demo-footer"><LockKeyhole size={17} aria-hidden/>
       <span>Esta apresentação não autentica usuários, não exibe dados privados e não envia alterações ao Supabase.</span>
