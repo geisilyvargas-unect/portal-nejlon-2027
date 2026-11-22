@@ -22,7 +22,21 @@
 <section class="panel"><div class="section-row"><div><span class="eyebrow">MODELO DE DELIBERAÇÃO 2026</span><h2>Formulário do Conselho</h2>
 <p class="sub">Falaaaa conselheiro pé vermelho! 👣❤️ Você analisará C1 e C2 antes de registrar os dois posicionamentos.</p></div>
 <span class="tag yellow">DEMONSTRAÇÃO</span></div>
-<details class="idealize-guide" open><summary>Conheça as cinco opções de votação</summary><div id="vote-guide"></div></details>
+<section class="idealize-manual-visual" aria-label="Manual integrado de deliberação">
+  <div class="idealize-manual-art">
+    <div class="eyebrow">CONHEÇA O MANUAL DE DELIBERAÇÃO</div>
+    <h3>SEU VOTO,<br><em>PASSO A PASSO.</em></h3>
+    <p>O portal orienta cada escolha e mostra apenas os campos que você precisa preencher.</p>
+    <a class="idealize-manual-link" href="https://canva.link/r1ejljffrfu6xu2" target="_blank" rel="noopener noreferrer">Ler o manual original ↗</a>
+  </div>
+  <div class="idealize-manual-steps">
+    <div><b>01</b><span>Analise C1 e C2</span></div>
+    <div><b>02</b><span>Escolha uma opção por cenário</span></div>
+    <div><b>03</b><span>Ressalvas seguem para a PRESCON</span></div>
+  </div>
+  <details class="idealize-guide" open><summary>Conheça as cinco possibilidades de votação</summary><div id="vote-guide"></div></details>
+  <p class="idealize-manual-note">Se a PRESCON acatar a ressalva, ela conta como aprovação. Se não acatar, como reprovação. Enquanto não decidir, a ressalva permanece em análise. Não há proclamação automática de resultado institucional.</p>
+ </section>
 <form id="idealize-vote-form"><div class="idealize-identity">
 <label>Nome Completo *<input name="full_name" autocomplete="off" placeholder="Utilize um nome fictício para testar" required maxlength="120"></label>
 <label>EJ *<select name="ej" id="ej" required></select></label></div>
@@ -30,7 +44,7 @@
 <fieldset class="idealize-final"><legend>Considerações Finais</legend>
 <div class="idealize-identity"><label>O quão claro ficou as opções e as formas de votação? *<select name="clarity" required id="clarity"><option value="">Selecione</option></select></label>
 <label>O quanto você sentiu dificuldade na deliberação *<select name="difficulty" required id="difficulty"><option value="">Selecione</option></select></label></div>
-<label>Como podemos melhorar? (opcional)<textarea name="improvements" rows="3" maxlength="2000"></textarea></label>
+<label>Como podemos melhorar? *<textarea name="improvements" required placeholder="Escreva uma sugestão ou Sem sugestões" rows="3" maxlength="2000"></textarea></label>
 </fieldset><div class="idealize-buttons"><button class="btn red" type="submit">✓ Enviar voto de demonstração</button>
 <button class="btn" type="button" id="export-csv">↓ Exportar respostas CSV</button></div><p id="submit-status" role="status" aria-live="polite" class="note"></p>
 </form></section>
