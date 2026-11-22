@@ -69,3 +69,20 @@ test('Conselheiro não consegue acessar acompanhamento individual pela navegaç�
  assert.doesNotMatch(app.element('screen').innerHTML,/Registrar acompanhamento fictício/);
  assert.match(app.element('screen').innerHTML,/Próximos compromissos/);
 });
+
+test('PRESCON abre agenda sem erro e vê eventos ordenados',()=>{
+ const app=boot();
+ app.element('tabs').listeners.click({target:{closest:()=>({dataset:{tab:'calendar'}})}});
+ const html=app.element('screen').innerHTML;
+ assert.match(html,/Agenda institucional/);
+ assert.ok(html.indexOf('Reunião de alinhamento')<html.indexOf('Oficina de análise crítica'));
+ assert.ok(html.indexOf('Oficina de análise crítica')<html.indexOf('Encontro da Rede'));
+});
+test('DIREX EJ vê apenas eventos públicos na agenda',()=>{
+ const app=boot();
+ app.change('role','ej_direx');
+ app.element('tabs').listeners.click({target:{closest:()=>({dataset:{tab:'calendar'}})}});
+ const html=app.element('screen').innerHTML;
+ assert.match(html,/Encontro da Rede/);
+ assert.doesNotMatch(html,/Reunião de alinhamento do Conselho|Oficina de análise crítica/);
+});
