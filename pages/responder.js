@@ -56,6 +56,7 @@ async function updateVoteStatus(){
  panel.hidden=!status.registered;
  requestForm.hidden=true;
  const button=$('respond-answer-form').querySelector('button[type=submit]');
+ button.disabled=false;
  button.textContent='Registrar resposta da EJ';
  if(!status.registered){$('respond-answer-form').hidden=false;return}
  const change=status.request;
@@ -105,18 +106,23 @@ $('respond-answer-form').addEventListener('submit',async e=>{
   answers[q.id]=value;
  }
  if(!confirm('Confirma o registro da resposta da sua EJ? Ela não poderá ser substituída automaticamente.'))return;
- const btn=e.target.querySelector('button[type=submit]');btn.disabled=true;showError('Registrando resposta…');
+ const btn=e.target.querySelector('button[type=submit]');if(btn.disabled)return;btn.disabled=true;showError('Registrando resposta…');
  try{
   const out=editAuthorizationId?
    await request('?action=apply_vote_change',{method:'POST',data:{authorizationId:editAuthorizationId,answers}}):
    await request('?action=submit',{method:'POST',data:{formId:form.id,answers}});
   showError(out.message||'Resposta registrada com sucesso!');
-  await updateVoteStatus();
+  try{await updateVoteStatus()}catch{
+   $('respond-answer-form').hidden=true;
+   $('respond-vote-change').hidden=false;
+   $('respond-vote-status').textContent='Resposta enviada. Não foi possível atualizar a situação do voto agora; recarregue a página antes de tentar novamente.';
+   showError('Resposta enviada. Consulte o status atualizado antes de realizar outra operação.');
+  }
  }catch(error){showError('Não foi possível registrar: '+error.message);btn.disabled=false}
 });
 $('respond-change-request-form').addEventListener('submit',async e=>{
  e.preventDefault();
- const button=e.target.querySelector('button');button.disabled=true;
+ const button=e.target.querySelector('button');if(button.disabled)return;button.disabled=true;
  try{
   const reason=String(new FormData(e.target).get('reason')||'').trim();
   const result=await request('?action=request_vote_change',{method:'POST',data:{formId:id,reason}});
