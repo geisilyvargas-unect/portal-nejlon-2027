@@ -1,3 +1,4 @@
+import './vote-rating.css';
 'use client';
 import {useState} from 'react';
 import {submitResponse} from '@/app/actions';
@@ -74,24 +75,23 @@ export function DeliberationResponseForm({deliberationId,scenarios,previous}:{de
     <section className="vote-scenario">
       <div className="eyebrow">Seção final</div>
       <h3>Considerações finais</h3>
-      <div className="form-grid">
-        <label>O quão claro ficou as opções e as formas de votação? *
-          <select name="clarity" required defaultValue={feedback.clarity===undefined?'':String(feedback.clarity)}>
-            <option value="" disabled>Selecione</option>
-            {[0,1,2,3,4,5].map(n=><option key={n} value={n}>{n}{n===0?' — Nada claro':n===5?' — Muito claro':''}</option>)}
-          </select>
-        </label>
-        <label>O quanto você sentiu dificuldade na deliberação *
-          <select name="difficulty" required defaultValue={feedback.difficulty===undefined?'':String(feedback.difficulty)}>
-            <option value="" disabled>Selecione</option>
-            {[0,1,2,3,4,5].map(n=><option key={n} value={n}>{n}{n===0?' — Sem dificuldade':n===5?' — Muita dificuldade':''}</option>)}
-          </select>
-        </label>
-      </div>
-      <label>Como podemos melhorar? *
-        <textarea name="improvements" required maxLength={2000} defaultValue={feedback.improvements||''} placeholder="Escreva uma sugestão ou informe 'Sem sugestões'."/>
+      {([
+        {name:'clarity',title:'O quão claro ficou as opções e as formas de votação?',low:'Nada claro',high:'Muito claro'},
+        {name:'difficulty',title:'O quanto você sentiu dificuldade na deliberação',low:'Sem dificuldade',high:'Muita dificuldade'}
+      ] as const).map(question=><fieldset key={question.name} className="vote-rating-question">
+        <legend>{question.title} <span aria-label="obrigatório">*</span></legend>
+        <div className="vote-rating-scale">
+          <span className="vote-rating-end">{question.low}</span>
+          {[0,1,2,3,4,5].map(n=><label key={n} className="vote-rating-choice">
+            <span>{n}</span>
+            <input type="radio" name={question.name} value={n} required defaultChecked={feedback[question.name]===n} aria-label={question.title+' — '+n}/>
+          </label>)}
+          <span className="vote-rating-end">{question.high}</span>
+        </div>
+      </fieldset>)}
+      <label>Como podemos melhorar? (opcional)
+        <textarea name="improvements" maxLength={2000} defaultValue={feedback.improvements||''} placeholder="Texto de resposta longa"/>
       </label>
-      <p className="muted small">Se não houver sugestões adicionais, escreva “Sem sugestões”.</p>
     </section>
     <button type="submit" className="primary">{previous?'Atualizar minha resposta':'Enviar deliberação completa'}</button>
     <p className="muted small">Só há uma resposta vigente por EJ. Se atualizar dentro do prazo, a resposta anterior será substituída e a PRESCON precisará rever eventuais ressalvas.</p>
