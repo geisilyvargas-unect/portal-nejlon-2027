@@ -91,3 +91,62 @@ html body .main :is(h3,h4) :is(span,em,strong){text-shadow:none!important;-webki
  html body .quick-action{min-height:0!important}
  html body .role-card{gap:14px!important}
 }
+
+/* CARTÕES EDITORIAIS — referência RNN: tipografia grande, bordas e sombras sólidas. */
+html body .quick-actions{
+ display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;
+ gap:18px!important;align-items:stretch!important;margin-top:20px!important;
+}
+html body .quick-actions .quick-action{
+ --tile-bg:#ff0000;--tile-fg:#101010;
+ position:relative!important;display:flex!important;flex-direction:column!important;
+ align-items:flex-start!important;justify-content:flex-end!important;gap:12px!important;
+ min-width:0!important;min-height:244px!important;padding:22px!important;
+ background:var(--tile-bg)!important;color:var(--tile-fg)!important;
+ border:3px solid #080808!important;border-radius:0!important;
+ box-shadow:8px 8px 0 #050505!important;text-align:left!important;
+ text-decoration:none!important;overflow-wrap:anywhere!important;
+ transition:transform .15s ease,box-shadow .15s ease!important;
+}
+html body .quick-actions .quick-action:nth-child(2){--tile-bg:#fff;--tile-fg:#080808}
+html body .quick-actions .quick-action:nth-child(3){--tile-bg:#141414;--tile-fg:#fff}
+html body .quick-actions .quick-action:nth-child(4){--tile-bg:#fff;--tile-fg:#080808}
+html body .quick-actions .quick-action :is(b,strong,span){
+ color:var(--tile-fg)!important;-webkit-text-stroke:0!important;
+ text-shadow:none!important;-webkit-text-fill-color:currentColor!important;
+ font-family:var(--nejlon-body-font)!important;
+}
+html body .quick-actions .quick-action b{
+ display:block!important;order:1!important;font-family:var(--nejlon-display-font)!important;
+ font-size:clamp(23px,2.1vw,34px)!important;line-height:1.02!important;
+ letter-spacing:-.045em!important;text-transform:uppercase!important;
+ font-weight:900!important;margin:0!important;
+}
+html body .quick-actions .quick-action span{
+ order:2!important;font-size:14px!important;line-height:1.45!important;
+ font-weight:600!important;max-width:34ch!important;
+}
+html body .quick-actions .quick-action strong{
+ order:3!important;display:inline-flex!important;align-items:center!important;
+ min-height:38px!important;margin-top:4px!important;
+ font-size:13px!important;line-height:1.2!important;font-weight:900!important;
+ text-transform:uppercase!important;text-decoration:underline!important;
+ text-decoration-thickness:2px!important;text-underline-offset:4px!important;
+}
+html body .quick-actions .quick-action:is(:hover,:focus-visible){
+ transform:translate(-3px,-3px)!important;box-shadow:11px 11px 0 #050505!important;
+}
+html body .quick-actions .quick-action:focus-visible{outline:3px solid #ff0000!important;outline-offset:12px!important}
+html[data-theme="dark"] body .quick-actions .quick-action:nth-child(3),
+html[data-theme="red"] body .quick-actions .quick-action:nth-child(3){
+ border-color:#fff!important;box-shadow:8px 8px 0 #ff0000!important;
+}
+html[data-theme="dark"] body .quick-actions .quick-action:nth-child(3):hover,
+html[data-theme="red"] body .quick-actions .quick-action:nth-child(3):hover{box-shadow:11px 11px 0 #ff0000!important}
+@media(max-width:1100px){html body .quick-actions{grid-template-columns:repeat(2,minmax(0,1fr))!important}}
+@media(max-width:640px){
+ html body .quick-actions{grid-template-columns:1fr!important;gap:18px!important}
+ html body .quick-actions .quick-action{min-height:190px!important;padding:20px!important}
+ html body .quick-actions .quick-action b{font-size:clamp(24px,7vw,32px)!important}
+}
+@media(prefers-reduced-motion:reduce){html body .quick-actions .quick-action{transition:none!important}}
