@@ -353,3 +353,25 @@ export async function uploadDeliberationPf(form:FormData){
  revalidatePath('/deliberacoes/'+id);revalidatePath('/deliberacoes/'+id+'/planejamento-financeiro');
  redirect('/deliberacoes/'+id);
 }
+
+/** Fluxo PF-first: upload privado e criação de rascunho em uma única operação PRESCON. */
+export async function createDeliberationFromPf(form:FormData):Promise<{id:string}>{
+ const viewer=await requireRole(['prescon']);
+ const title=required(form,'title',250);
+ const due_at=dateTime(required(form,'due_at'));
+ const scenarios=readScenarios(form);
+ const file=form.get('pf_file');
+ if(!(file instanceof File)||file.size<1||file.size>15*1024*1024||!(/\.(xlsx|xls|csv)$/i.test(file.name)))fail('Planilha inválida. Use XLSX, XLS ou CSV de até 15 MB.');
+ const db=await createClient();
+ const {data:d,error:de}=await db.from('deliberations').insert({title,description:'Deliberação gerada a partir do Planejamento Financeiro anexado pela PRESCON. Consulte o PF antes de votar.',due_at,status:'draft',direx_visible:false,created_by:viewer.id,is_demo:false,scenarios}).select('id').single();
+ checkError(de);if(!d)fail('Não foi possível criar o rascunho.');
+ const ext=file.name.split('.').pop()?.toLowerCase();
+ const path=d.id+'/'+crypto.randomUUID()+'.'+ext;
+ const contentType=ext==='xlsx'?'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet':ext==='xls'?'application/vnd.ms-excel':'text/csv';
+ const {error:uploadError}=await db.storage.from('deliberation-pf').upload(path,file,{contentType,upsert:false});
+ if(uploadError){await db.from('deliberations').delete().eq('id',d.id);checkError(uploadError)}
+ const {error:metadataError}=await db.from('deliberation_pf_files').insert({deliberation_id:d.id,storage_path:path,file_name:file.name.slice(0,180),file_size:file.size,uploaded_by:viewer.id});
+ if(metadataError){await db.storage.from('deliberation-pf').remove([path]);await db.from('deliberations').delete().eq('id',d.id);checkError(metadataError)}
+ revalidatePath('/deliberacoes');
+ return {id:d.id};
+}
