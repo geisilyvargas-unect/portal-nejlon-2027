@@ -1,6 +1,6 @@
 import {EJS_DEMO} from '@/lib/demo-ejs';
 /** Registros FICTÍCIOS e públicos da demonstração. Nunca contam como votos oficiais. */
-export type DemoDeliberationId='financeiro'|'calendario'|'encerramento';
+export type DemoDeliberationId='financeiro'|'calendario'|'encerramento'|'idealize';
 export type DemoPosition='favorable'|'suggestions'|'qualified'|'against'|'abstention';
 export type DemoVote={slug:string;position:DemoPosition;note:string};
 export const DEMO_POSITIONS:Record<DemoPosition,{label:string;color:string}>={
@@ -13,9 +13,29 @@ export const DEMO_POSITIONS:Record<DemoPosition,{label:string;color:string}>={
 export const DEMO_DELIBERATIONS=[
  {id:'financeiro',title:'Planejamento Financeiro 2027 — 1º ciclo',open:true,direxVisible:true},
  {id:'calendario',title:'Aprovação do Calendário Eleitoral',open:true,direxVisible:false},
- {id:'encerramento',title:'Relatório de Encerramento de Ciclo',open:false,direxVisible:true}
+ {id:'encerramento',title:'Relatório de Encerramento de Ciclo',open:false,direxVisible:true},
+ {id:'idealize',title:'IDEALIZE 2026 — Planejamento Financeiro (simulação)',open:true,direxVisible:true}
 ] as const;
 export const DEMO_VOTES:Record<DemoDeliberationId,readonly DemoVote[]> = {
+ idealize:[
+  {"slug":"unect","position":"favorable","note":"Voto fictício sobre a proposta UEL (C1): A proposta foi considerada viável nesta simulação."} as DemoVote,
+  {"slug":"3e","position":"suggestions","note":"Voto fictício sobre a proposta UEL (C1): Sugere detalhar o acompanhamento da execução financeira."} as DemoVote,
+  {"slug":"boson","position":"qualified","note":"Voto fictício sobre a proposta UEL (C1): Aprova desde que as despesas e condições sejam reavaliadas antes da contratação."} as DemoVote,
+  {"slug":"aprimora","position":"favorable","note":"Voto fictício sobre a proposta UEL (C1): A proposta foi considerada viável nesta simulação."} as DemoVote,
+  {"slug":"lex","position":"favorable","note":"Voto fictício sobre a proposta UEL (C1): A proposta foi considerada viável nesta simulação."} as DemoVote,
+  {"slug":"sete","position":"favorable","note":"Voto fictício sobre a proposta UEL (C1): A proposta foi considerada viável nesta simulação."} as DemoVote,
+  {"slug":"meca","position":"suggestions","note":"Voto fictício sobre a proposta UEL (C1): Sugere detalhar o acompanhamento da execução financeira."} as DemoVote,
+  {"slug":"notton","position":"favorable","note":"Voto fictício sobre a proposta UEL (C1): A proposta foi considerada viável nesta simulação."} as DemoVote,
+  {"slug":"artus","position":"favorable","note":"Voto fictício sobre a proposta UEL (C1): A proposta foi considerada viável nesta simulação."} as DemoVote,
+  {"slug":"bioma","position":"qualified","note":"Voto fictício sobre a proposta UEL (C1): Aprova desde que as despesas e condições sejam reavaliadas antes da contratação."} as DemoVote,
+  {"slug":"gaia","position":"favorable","note":"Voto fictício sobre a proposta UEL (C1): A proposta foi considerada viável nesta simulação."} as DemoVote,
+  {"slug":"kinase","position":"favorable","note":"Voto fictício sobre a proposta UEL (C1): A proposta foi considerada viável nesta simulação."} as DemoVote,
+  {"slug":"lion","position":"suggestions","note":"Voto fictício sobre a proposta UEL (C1): Sugere detalhar o acompanhamento da execução financeira."} as DemoVote,
+  {"slug":"select","position":"favorable","note":"Voto fictício sobre a proposta UEL (C1): A proposta foi considerada viável nesta simulação."} as DemoVote,
+  {"slug":"pegasus","position":"favorable","note":"Voto fictício sobre a proposta UEL (C1): A proposta foi considerada viável nesta simulação."} as DemoVote,
+  {"slug":"tcp","position":"qualified","note":"Voto fictício sobre a proposta UEL (C1): Aprova desde que as despesas e condições sejam reavaliadas antes da contratação."} as DemoVote,
+  {"slug":"vetjr","position":"favorable","note":"Voto fictício sobre a proposta UEL (C1): A proposta foi considerada viável nesta simulação."} as DemoVote,
+ ],
  financeiro:[
   {slug:"unect",position:"favorable" as DemoPosition,note:"A UNECT apoia a proposta de planejamento e a transparência dos critérios apresentados."},
   {slug:"3e",position:"qualified" as DemoPosition,note:"A 3E solicita detalhamento das despesas antes da aprovação definitiva."},
