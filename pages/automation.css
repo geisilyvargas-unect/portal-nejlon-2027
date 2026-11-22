@@ -98,3 +98,17 @@
 .automation-week-item details p{font-size:12px;color:var(--ux-muted,#ddd);line-height:1.65;margin-top:6px}
 .automation-week-item>.btn{align-self:flex-start;margin-top:auto}
 @media(max-width:860px){.automation-week-list{grid-template-columns:1fr}}
+
+/* Exploração sem senha: prévia pública, gestão real com autenticação opcional. */
+.automation-preview-mode .automation-user-bar{border-color:var(--ux-petrol,#00616d);background:var(--ux-alert,#eaf3f4)}
+.automation-preview-mode .automation-user-bar strong{font-size:clamp(13px,1.6vw,16px)}
+.automation-login-top{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap}
+.automation-login-top p{max-width:700px;margin:0;color:var(--ux-muted);font-size:12px}
+.automation-preview-mode .automation-note{border-left-color:var(--ux-lime,#bee252)}
+.automation-preview-mode .automation-week-item{border-top:4px solid var(--ux-petrol,#00616d)}
+.automation-preview-mode .automation-form-card{border-top:4px solid var(--ux-red,#ce333e)}
+.automation-preview-mode #auto-weekly-stats article strong{color:var(--ux-muted)}
+.automation-preview-mode #auto-weekly-demand a{color:var(--ux-text);font-weight:800;text-decoration:underline}
+.automation-preview-mode #auto-demands-root .demands-card{min-height:190px}
+#auto-login[hidden],#auto-app[hidden],.automation-user-bar button[hidden]{display:none!important}
+@media(max-width:600px){.automation-user-bar{align-items:stretch;flex-direction:column}.automation-user-bar .automation-actions{width:100%}.automation-user-bar button{width:100%}.automation-login-top button{width:100%}}
