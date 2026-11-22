@@ -16,8 +16,8 @@ const nav=[
 const roleMap={
  prescon:{name:'PRESCON',nav:nav.map(x=>x[0])},
  counselor:{name:'Conselho',nav:['painel','deliberacoes','demandas','calendario','jornada','rede']},
- ej_direx:{name:'DIREX da EJ',nav:['painel','deliberacoes','demandas','calendario','rede']},
- nucleus_direx:{name:'DIREX do Núcleo',nav:['painel','deliberacoes','demandas','calendario','rede']}
+ ej_direx:{name:'DIREX da EJ',nav:['painel','demandas']},
+ nucleus_direx:{name:'DIREX do Núcleo',nav:['painel','deliberacoes','demandas']}
 };
 const s={role:'prescon',section:'painel',ej:'unect',selected:'unect',filter:'all',search:'',delib:'financeiro',vote:'favorable',positionFilter:'all'};
 const $=id=>document.getElementById(id);
@@ -95,9 +95,9 @@ function reports(){
 function deliberations(){
  const cards=D.delibs.filter(d=>s.role!=='ej_direx'||d.visibility!=='Conselho');
  const id=s.delib,selected=delib(id);
- const rows=cards.map(d=>'<div class="list-item"><div><strong>'+esc(d.name)+'</strong><p>'+esc(d.visibility)+' • '+summary(d.id).votes+' votos fictícios</p></div><div class="right">'+tag(d.status,d.status==='Aberta'?'green':'yellow')+(d.id==='idealize'?'<a class="btn red" href="./pages/idealize.html">Abrir PF</a>':'<button class="btn" type="button" data-open-delib="'+d.id+'">Ver</button>')+'</div></div>').join('');
+ const rows=cards.map(d=>'<div class="list-item"><div><strong>'+esc(d.name)+'</strong><p>'+esc(d.visibility)+' • '+(s.role==='prescon'?summary(d.id).votes+' votos fictícios':'votos ocultos durante a deliberação')+'</p></div><div class="right">'+tag(d.status,d.status==='Aberta'?'green':'yellow')+(d.id==='idealize'?'<a class="btn red" href="./pages/idealize.html">Abrir PF</a>':'<button class="btn" type="button" data-open-delib="'+d.id+'">Ver</button>')+'</div></div>').join('');
  const extra=(s.role==='prescon')?panel('Respostas da deliberação selecionada',selected.name,recordList(id)) :
- s.role==='counselor'?panel('Simulação de voto • '+esc(D.ejs.find(x=>x.slug===s.ej)?.name||'EJ'),'Nenhum voto será gravado no Supabase.',(done(s.ej,id)?'<div class="notice">Exemplo registrado: '+esc(D.positions[done(s.ej,id).position].label)+'. '+esc(done(s.ej,id).note)+'</div>':'<p class="note">Esta EJ aparece como pendente neste exemplo.</p>')+'<div class="toolrow"><select class="select" id="vote-select">'+Object.entries(D.positions).map(([k,x])=>'<option value="'+k+'" '+(s.vote===k?'selected':'')+'>'+esc(x.label)+'</option>').join('')+'</select><button class="btn red" type="button" data-simulate>Simular envio</button></div>') :panel('Permissões nesta visão','A DIREX acompanha apenas conteúdos liberados para consulta.','<div class="notice">Apenas o perfil Conselho pode registrar votos institucionais na versão real.</div>');
+ s.role==='counselor'?panel('Simulação de voto • '+esc(D.ejs.find(x=>x.slug===s.ej)?.name||'EJ'),'Nenhum voto será gravado no Supabase.','<p class="note">Os votos individuais não são mostrados durante a deliberação. Alterações reais exigem autorização da PRESCON.</p>'+'<div class="toolrow"><select class="select" id="vote-select">'+Object.entries(D.positions).map(([k,x])=>'<option value="'+k+'" '+(s.vote===k?'selected':'')+'>'+esc(x.label)+'</option>').join('')+'</select><button class="btn red" type="button" data-simulate>Simular envio</button></div>') :panel('Permissões nesta visão','A DIREX acompanha apenas conteúdos liberados para consulta.','<div class="notice">Apenas o perfil Conselho pode registrar votos institucionais na versão real.</div>');
  return '<div class="view-grid">'+panel('Deliberações da Rede','Exemplos de diferentes tipos de votação e visibilidade.',rows)+panel('Consultar posicionamentos','Escolha uma deliberação na lista ou abaixo.',titleOptions())+extra+'</div>';
 }
 function overview(){
@@ -115,6 +115,11 @@ function extras(){
  if(s.section==='rede')return panel('Empresas juniores da Rede','Lista de 29 empresas de exemplo.','<div class="heatmap">'+D.ejs.map(x=>'<button class="heat none" type="button" data-select-rede="'+esc(x.slug)+'"><span class="name">'+esc(x.name)+'</span><span class="pct">EJ</span></button>').join('')+'</div>');
  return '';
 }
+function roleLanding(){
+ if(s.role==='ej_direx')return '<div class="view-grid">'+panel('Demandas da sua EJ','A DIREX da EJ consulta apenas título, classificação, prazo e situação das próprias demandas. Não acessa documentos ou formulários.','<a class="btn red" href="./pages/demandas.html">Consultar minhas demandas →</a>')+'</div>';
+ if(s.role==='nucleus_direx')return '<div class="view-grid">'+panel('Fiscalização da Rede','Acompanhe demandas, deliberações e formulários, sem editar registros ou consultar votos individuais.','<a class="btn red" href="./pages/fiscalizacao.html">Abrir fiscalização →</a>')+'</div>';
+ return '<div class="view-grid">'+panel('Painel do Conselho','As dez áreas históricas num só lugar. Consulte demandas de todas as EJs apenas em visão geral.','<div class="toolrow"><a class="btn red" href="./pages/painel-conselho.html">Painel do Conselho →</a><a class="btn" href="./pages/demandas.html">Panorama de demandas →</a></div>')+'</div>';
+}
 function render(){
  if(s.role!=='prescon'&&!role().nav.includes(s.section))s.section='painel';
  $('roles').innerHTML=Object.entries(roleMap).map(([key,r])=>'<button class="role-option '+(key===s.role?'active':'')+'" type="button" data-role="'+key+'" aria-pressed="'+(key===s.role)+'">'+esc(r.name)+'</button>').join('');
@@ -126,12 +131,12 @@ function render(){
  const mainNav=allowed.filter(n=>primary.includes(n[0]));
  const secondaryNav=allowed.filter(n=>!primary.includes(n[0]));
  const menu=mainNav.map(navButton).join('')+(secondaryNav.length?'<details class="nav-more" '+(secondaryNav.some(n=>n[0]===s.section)?'open':'')+'><summary>Outras áreas <span aria-hidden="true">⌄</span></summary>'+secondaryNav.map(navButton).join('')+'</details>':'');
- $('desktop-nav').innerHTML=menu+(s.role==='prescon'?'<a class="nav-button auto-portal-link" href="./pages/central-automacoes.html"><span class="nav-icon">⚙</span> Central de Automações</a>':'');
+ $('desktop-nav').innerHTML=menu+(s.role==='prescon'?'<a class="nav-button auto-portal-link" href="./pages/central-automacoes.html">⚙ Automações</a>':s.role==='counselor'?'<a class="nav-button auto-portal-link" href="./pages/painel-conselho.html">☷ Painel do Conselho</a>':s.role==='nucleus_direx'?'<a class="nav-button auto-portal-link" href="./pages/fiscalizacao.html">◉ Fiscalização</a>':'');
  // Em telas pequenas, navegação linear: evita opções ocultas em <details> dentro do carrossel.
- $('mobile-nav').innerHTML=allowed.map(navButton).join('')+(s.role==='prescon'?'<a class="nav-button auto-portal-link" href="./pages/central-automacoes.html">⚙ Automações</a>':'');
+ $('mobile-nav').innerHTML=allowed.map(navButton).join('')+(s.role==='prescon'?'<a class="nav-button auto-portal-link" href="./pages/central-automacoes.html">⚙ Automações</a>':s.role==='counselor'?'<a class="nav-button auto-portal-link" href="./pages/painel-conselho.html">☷ Conselho</a>':s.role==='nucleus_direx'?'<a class="nav-button auto-portal-link" href="./pages/fiscalizacao.html">◉ Fiscalização</a>':'');
  heading();
  if(s.role==='prescon')$('view').innerHTML=s.section==='painel'?overview():s.section==='engajamento'?'<div class="view-grid">'+heatmap()+trend()+'</div>':s.section==='deliberacoes'?deliberations():s.section==='pendencias'?pending():s.section==='relatorios'?reports():extras();
- else $('view').innerHTML=s.section==='painel'?'<div class="view-grid">'+panel('Acesso rápido','Escolha sua próxima atividade nesta demonstração.','<div class="quick-actions"><button type="button" class="quick-action" data-nav="deliberacoes"><b>Deliberações</b><span>Consulte os documentos e o andamento dos votos.</span><strong>Abrir →</strong></button>'+(role().nav.includes('demandas')?'<a class="quick-action" href="./pages/demandas.html"><b>Demandas da minha EJ</b><span>Consulte demandas reais, justifique e veja a decisão da PRESCON.</span><strong>Abrir demandas →</strong></a>':'')+'<a class="quick-action" href="./pages/institucional.html"><b>Conheça o NEJLON</b><span>História, valores e as EJs da Rede.</span><strong>Explorar →</strong></a></div>')+panel('Deliberações disponíveis','Informações fictícias, sem efeito institucional.',D.delibs.filter(d=>s.role!=='ej_direx'||d.visibility!=='Conselho').map(d=>'<div class="list-item"><div><strong>'+esc(d.name)+'</strong><p>'+esc(d.status)+'</p></div><button class="btn" data-open-delib="'+d.id+'">Ver →</button></div>').join(''))+'</div>':s.section==='deliberacoes'?deliberations():extras();
+ else $('view').innerHTML=s.section==='painel'?roleLanding():s.section==='deliberacoes'&&s.role==='counselor'?deliberations():s.section==='deliberacoes'&&s.role==='nucleus_direx'?panel('Deliberações e formulários','A DIREX do Núcleo acompanha pelo painel autenticado de fiscalização, sem editar nem ver votos individuais.','<a class="btn red" href="./pages/fiscalizacao.html">Abrir fiscalização →</a>'):extras();
 }
 document.addEventListener('click',e=>{
  const target=e.target.closest('button');if(!target)return;
