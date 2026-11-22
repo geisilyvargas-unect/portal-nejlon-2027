@@ -223,7 +223,7 @@ function render(){
   ['Automações',[['Criar formulários e PF','./pages/central-automacoes.html#pf'],['Formulários gerais','./pages/central-automacoes.html#criacao'],['Relatórios e resultados','./pages/central-automacoes.html#relatorios']]],
   ['Gestão de demandas',[['Analisar justificativas','./pages/demandas.html'],['Acompanhar demandas','./pages/central-automacoes.html#demandas']]],
   ['Gestão de deliberações',[['Criar deliberação','./pages/prescon-criar-deliberacao.html'],['Publicar e acompanhar','./pages/central-automacoes.html#formularios'],['Relatórios','./pages/relatorio.html']]],
-  ['Gestão do Conselho',[['Conselheiros e formação','./pages/gestao-conselho.html'],['Calendário oficial','./pages/calendar-live.html'],['Fiscalização','./pages/fiscalizacao.html']]],
+  ['Gestão do Conselho',[['Conselheiros e formação','./pages/gestao-conselho.html'],['Calendário oficial','./pages/calendar-live.html'],['Gestão de deliberações e relatórios','./pages/deliberation-hub.html'],['Fiscalização','./pages/fiscalizacao.html']]],
  ];
  const admin=s.role==='prescon'?'<div class="portal-admin-heading">ADMINISTRAÇÃO · PRESCON</div>'+adminLinks.map(([label,links])=>'<details class="portal-admin-group"><summary>'+esc(label)+'</summary>'+links.map(([name,url])=>'<a href="'+url+'">'+esc(name)+'</a>').join('')+'</details>').join(''):'';
  const supplemental='<a class="nav-button" href="./pages/ej-profile.html">⬡ Perfil da EJ</a>'+(s.role==='nucleus_direx'?'<a class="nav-button" href="./pages/fiscalizacao.html">◉ Fiscalização</a>':'');
