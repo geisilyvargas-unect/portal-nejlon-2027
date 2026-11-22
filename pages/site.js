@@ -11,17 +11,17 @@ if(D&&window.NEJLON_IDEALIZE_VOTES&&!D.delibs.some(x=>x.id==='idealize')){
 
 if(!D){document.getElementById('view').textContent='Dados demonstrativos indisponíveis.';return;}
 const nav=[
- ['painel','◫','Visão geral'],['engajamento','▦','Engajamento'],['deliberacoes','☷','Deliberações'],
+ ['painel','◫','Início'],['engajamento','▦','Indicadores'],['deliberacoes','☷','Deliberações'],
  ['pendencias','◷','Pendências'],['relatorios','▤','Relatórios'],['demandas','☑','Demandas'],
- ['calendario','▦','Calendário'],['jornada','✧','Jornada'],['rede','⬡','Rede de EJs']
+ ['calendario','▦','Calendário'],['jornada','✧','Formação'],['rede','⬡','Rede de EJs']
 ];
 const roleMap={
  prescon:{name:'PRESCON',nav:nav.map(x=>x[0])},
- counselor:{name:'Conselho',nav:['painel','deliberacoes','demandas','calendario','jornada','rede']},
- ej_direx:{name:'DIREX da EJ',nav:['painel','demandas']},
- nucleus_direx:{name:'DIREX do Núcleo',nav:['painel','deliberacoes','demandas']}
+ counselor:{name:'Conselho',nav:['painel','calendario','deliberacoes','demandas','jornada','rede']},
+ ej_direx:{name:'DIREX da EJ',nav:['painel','calendario','demandas']},
+ nucleus_direx:{name:'DIREX do Núcleo',nav:['painel','calendario','deliberacoes','demandas']}
 };
-const s={role:'prescon',section:'painel',ej:'unect',selected:'unect',filter:'all',search:'',delib:'financeiro',vote:'favorable',positionFilter:'all'};
+const s={role:'prescon',section:'painel',ej:'unect',selected:'unect',filter:'all',search:'',delib:'financeiro',vote:'favorable',positionFilter:'all',calendarMonth:new Date().getMonth(),calendarYear:new Date().getFullYear()};
 const $=id=>document.getElementById(id);
 const esc=x=>String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const fmt=n=>Math.round(n)+'%';
@@ -170,16 +170,25 @@ function deliberations(){
  s.role==='counselor'?panel('Simulação de voto • '+esc(D.ejs.find(x=>x.slug===s.ej)?.name||'EJ'),'Nenhum voto será gravado no Supabase.','<p class="note">Os votos individuais não são mostrados durante a deliberação. Alterações reais exigem autorização da PRESCON.</p>'+'<div class="toolrow"><select class="select" id="vote-select">'+Object.entries(D.positions).map(([k,x])=>'<option value="'+k+'" '+(s.vote===k?'selected':'')+'>'+esc(x.label)+'</option>').join('')+'</select><button class="btn red" type="button" data-simulate>Simular envio</button></div>') :panel('Permissões nesta visão','A DIREX acompanha apenas conteúdos liberados para consulta.','<div class="notice">Apenas o perfil Conselho pode registrar votos institucionais na versão real.</div>');
  return '<div class="view-grid">'+(s.role==='prescon'?panel('Criar deliberação financeira','A criação e a publicação são centralizadas na Central de Automações.','<p class="note">Para importar XLSX, gerar a análise e preparar a votação, use a aba Automação de PF.</p>'):'')+panel('Deliberações da Rede','Exemplos de diferentes tipos de votação e visibilidade.',rows)+panel('Consultar posicionamentos','Escolha uma deliberação na lista ou abaixo.',titleOptions())+extra+'</div>';
 }
+function calendarView(){
+ const y=s.calendarYear,m=s.calendarMonth,first=new Date(y,m,1).getDay(),days=new Date(y,m+1,0).getDate();
+ const month=new Intl.DateTimeFormat('pt-BR',{month:'long',year:'numeric'}).format(new Date(y,m,1));
+ const cells=Array.from({length:Math.ceil((first+days)/7)*7},(_,i)=>{
+  const d=i-first+1,valid=d>=1&&d<=days,today=valid&&new Date().toDateString()===new Date(y,m,d).toDateString();
+  return '<div class="portal-calendar-day '+(valid?'':'outside')+(today?' today':'')+'">'+(valid?'<span>'+d+'</span>':'')+'</div>';
+ }).join('');
+ return '<section class="panel portal-calendar-panel"><div class="portal-calendar-heading"><div><span class="mini-heading">AGENDA DO CONSELHO</span><h3>Calendário</h3><p class="sub">Consulte os meses e acompanhe os compromissos quando forem cadastrados.</p></div><div class="portal-calendar-controls"><button type="button" data-calendar-shift="-1" aria-label="Mês anterior">‹</button><strong>'+esc(month)+'</strong><button type="button" data-calendar-shift="1" aria-label="Próximo mês">›</button><button type="button" data-calendar-today>Hoje</button></div></div><div class="portal-calendar-week">'+['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'].map(d=>'<span>'+d+'</span>').join('')+'</div><div class="portal-calendar-grid">'+cells+'</div><div class="portal-calendar-empty"><strong>Agenda de 2027 aguardando publicação.</strong><p>O calendário de 2026 é uma referência histórica. Não transferimos datas antigas para 2027 nem inventamos compromissos.</p></div></section>';
+}
 function overview(){
  const p=summary('financeiro');
- return '<div class="view-grid">'+stats([metric('Respostas recebidas',p.votes,'Planejamento financeiro fictício','✓'),metric('EJs pendentes',p.pending,'Exemplo demonstrativo','◷'),metric('Participação',p.pct+'%','Respostas da simulação','◉')])+'</div>';
+ return '<div class="view-grid">'+calendarView()+stats([metric('Respostas recebidas',p.votes,'Planejamento financeiro fictício','✓'),metric('EJs pendentes',p.pending,'Exemplo demonstrativo','◷'),metric('Participação',p.pct+'%','Respostas da simulação','◉')])+'</div>';
 }
 function listPanel(title,sub,items){
  return panel(title,sub,items.map(x=>'<div class="list-item"><div><strong>'+esc(x[0])+'</strong><p>'+esc(x[1])+'</p></div>'+tag(x[2]||'Exemplo')+'</div>').join(''));
 }
 function extras(){
  if(s.section==='demandas')return '<div class="view-grid">'+panel('Demandas reais da Rede','A gestão de demandas funciona com login institucional e decisões registradas, separadamente dos indicadores fictícios desta demonstração.','<a class="btn red" href="./pages/demandas.html">Abrir Sistema de Demandas →</a>')+'</div>';
- if(s.section==='calendario')return listPanel('Compromissos de exemplo','Datas inventadas apenas para apresentação.',[['15 MAR · 19h','Reunião interna do Conselho','Conselho'],['20 MAR · 18h','Encontro da Rede NEJLON','Institucional'],['27 MAR · 14h','Imersão de Lideranças','Formação']]);
+ if(s.section==='calendario')return calendarView();
  if(s.section==='jornada')return listPanel('Trilha do Conselheiro','Materiais e formações sem exigência de registro extra.',[['Introdução à Governança','Material e atividade introdutória','Concluída'],['Como analisar uma deliberação','Trilha de formação','Em andamento'],['Boas práticas de participação','Encontro formativo','A iniciar']]);
  if(s.section==='rede')return panel('Empresas juniores da Rede','Lista de 29 empresas de exemplo.','<div class="heatmap">'+D.ejs.map(x=>'<button class="heat none" type="button" data-select-rede="'+esc(x.slug)+'"><span class="name">'+esc(x.name)+'</span></button>').join('')+'</div>');
  return '';
@@ -195,21 +204,28 @@ function render(){
  $('ej-picker-wrap').hidden=!['counselor','ej_direx'].includes(s.role);
  $('ej-picker').innerHTML=D.ejs.map(e=>'<option value="'+esc(e.slug)+'" '+(e.slug===s.ej?'selected':'')+'>'+esc(e.name)+'</option>').join('');
  const councilAccess=$('council-test-access');if(councilAccess){councilAccess.hidden=s.role!=='counselor';const email=$('council-test-email');if(email)email.textContent='conselho'+s.ej+'@nejlondrina.com';}
- const primary=['painel','deliberacoes','pendencias','relatorios'];
  const navButton=([key,icon,name])=>key==='demandas'?'<a class="nav-button" href="./pages/demandas.html"><span class="nav-icon" aria-hidden="true">'+icon+'</span>'+esc(name)+'</a>':'<button type="button" class="nav-button '+(key===s.section?'active':'')+'" data-nav="'+key+'" aria-current="'+(key===s.section?'page':'false')+'"><span class="nav-icon" aria-hidden="true">'+icon+'</span>'+esc(name)+'</button>';
+ const publicKeys=['painel','calendario','deliberacoes','demandas','engajamento','rede','jornada'];
  const allowed=nav.filter(n=>role().nav.includes(n[0]));
- const mainNav=allowed.filter(n=>primary.includes(n[0]));
- const secondaryNav=allowed.filter(n=>!primary.includes(n[0]));
- const menu=mainNav.map(navButton).join('')+(secondaryNav.length?'<details class="nav-more" '+(secondaryNav.some(n=>n[0]===s.section)?'open':'')+'><summary>Outras áreas <span aria-hidden="true">⌄</span></summary>'+secondaryNav.map(navButton).join('')+'</details>':'');
- $('desktop-nav').innerHTML=menu+(s.role==='prescon'?'<a class="nav-button auto-portal-link" href="./pages/central-automacoes.html">⚙ Automações</a>':s.role==='counselor'?'<a class="nav-button auto-portal-link" href="./pages/painel-conselho.html">☷ Painel do Conselho</a>':s.role==='nucleus_direx'?'<a class="nav-button auto-portal-link" href="./pages/fiscalizacao.html">◉ Fiscalização</a>':'');
- // Em telas pequenas, navegação linear: evita opções ocultas em <details> dentro do carrossel.
- $('mobile-nav').innerHTML=allowed.map(navButton).join('')+(s.role==='prescon'?'<a class="nav-button auto-portal-link" href="./pages/central-automacoes.html">⚙ Automações</a>':s.role==='counselor'?'<a class="nav-button auto-portal-link" href="./pages/painel-conselho.html">☷ Conselho</a>':s.role==='nucleus_direx'?'<a class="nav-button auto-portal-link" href="./pages/fiscalizacao.html">◉ Fiscalização</a>':'');
+ const common=allowed.filter(n=>publicKeys.includes(n[0]));
+ const adminLinks=[
+  ['Automações',[['Criar formulários e PF','./pages/central-automacoes.html#pf'],['Formulários gerais','./pages/central-automacoes.html#criacao'],['Relatórios e resultados','./pages/central-automacoes.html#relatorios']]],
+  ['Gestão de demandas',[['Analisar justificativas','./pages/demandas.html'],['Acompanhar demandas','./pages/central-automacoes.html#demandas']]],
+  ['Gestão de deliberações',[['Criar deliberação','./pages/prescon-criar-deliberacao.html'],['Publicar e acompanhar','./pages/central-automacoes.html#formularios'],['Relatórios','./pages/relatorio.html']]],
+  ['Gestão do Conselho',[['Conselheiros e formação','./pages/gestao-conselho.html'],['Fiscalização','./pages/fiscalizacao.html']]],
+ ];
+ const admin=s.role==='prescon'?'<div class="portal-admin-heading">ADMINISTRAÇÃO · PRESCON</div>'+adminLinks.map(([label,links])=>'<details class="portal-admin-group"><summary>'+esc(label)+'</summary>'+links.map(([name,url])=>'<a href="'+url+'">'+esc(name)+'</a>').join('')+'</details>').join(''):'';
+ const supplemental=s.role==='nucleus_direx'?'<a class="nav-button" href="./pages/fiscalizacao.html">◉ Fiscalização</a>':'';
+ $('desktop-nav').innerHTML=common.map(navButton).join('')+admin+supplemental;
+ $('mobile-nav').innerHTML=common.map(navButton).join('')+admin+supplemental;
  heading();
  if(s.role==='prescon')$('view').innerHTML=s.section==='painel'?overview():s.section==='engajamento'?'<div class="view-grid">'+heatmap()+trend()+'</div>':s.section==='deliberacoes'?deliberations():s.section==='pendencias'?pending():s.section==='relatorios'?reports():extras();
  else $('view').innerHTML=s.section==='painel'?roleLanding():s.section==='deliberacoes'&&s.role==='counselor'?deliberations():s.section==='deliberacoes'&&s.role==='nucleus_direx'?panel('Deliberações e formulários','A DIREX do Núcleo acompanha pelo painel autenticado de fiscalização, sem editar nem ver votos individuais.','<a class="btn red" href="./pages/fiscalizacao.html">Abrir fiscalização →</a>'):extras();
 }
 document.addEventListener('click',e=>{
  const target=e.target.closest('button');if(!target)return;
+ if(target.dataset.calendarShift){const d=new Date(s.calendarYear,s.calendarMonth+Number(target.dataset.calendarShift),1);s.calendarYear=d.getFullYear();s.calendarMonth=d.getMonth();render();return;}
+ if(target.hasAttribute('data-calendar-today')){s.calendarYear=new Date().getFullYear();s.calendarMonth=new Date().getMonth();render();return;}
  if(target.dataset.exportReport){exportReport(target.dataset.exportReport);return;}
  if(target.dataset.role){s.role=target.dataset.role;s.section='painel';render();return;}
  if(target.dataset.nav){s.section=target.dataset.nav;render();return;}
