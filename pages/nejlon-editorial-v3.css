@@ -1,0 +1,49 @@
+/* NEJLON 2027 · Sistema editorial v3
+   Referências: cartazes tipográficos, blocos de cor chapada, sombra rígida.
+   A camada anterior de estilos permanece para fluxos funcionais. */
+@import url('https://fonts.googleapis.com/css2?family=Archivo+Black&family=Poppins:wght@400;500;600;700;800;900&display=swap');
+:root{--poster-red:#ff0000;--poster-ink:#0b0b0b;--poster-paper:#fff;--poster-accent:#a6d525;--poster-display:'CY Grotesk V3 Key','Archivo Black',Impact,sans-serif;--poster-body:'Poppins',Arial,sans-serif}
+html body{font-family:var(--poster-body)!important}
+html body :is(input,button,textarea,select){font-family:var(--poster-body)!important}
+html body :is(h1,h2,h3,h4,h5,h6){text-transform:uppercase;font-weight:900!important;letter-spacing:-.025em!important;line-height:1.12!important}
+html body :is(h1,h2,h3,h4,h5,h6) :is(span,strong,em){-webkit-text-stroke:0!important;text-shadow:none!important}
+html body :is(.panel h2,.panel h3,.workhead h2,.section-title,.page-title,.mini-heading){-webkit-text-stroke:0!important;text-shadow:none!important;-webkit-text-fill-color:currentColor!important}
+html body .nejlon-title-back{display:none!important}
+html body .nejlon-layer-title::before{content:none!important}
+html[data-theme="light"] body :is(.intro h1,.workhead h2,.panel h2,.panel h3,.section-title,.page-title){color:#090909!important;-webkit-text-fill-color:#090909!important;-webkit-text-stroke:0!important;text-shadow:none!important}
+html[data-theme="light"] body :is(.intro h1,.workhead h2,.panel h2,.panel h3,.section-title,.page-title) :is(span,strong,em){color:#090909!important;-webkit-text-fill-color:#090909!important}
+html[data-theme="dark"] body :is(.intro h1,.workhead h2,.panel h2,.panel h3,.section-title,.page-title),
+html[data-theme="red"] body :is(.intro h1,.workhead h2,.panel h2,.panel h3,.section-title,.page-title){color:#fff!important;-webkit-text-fill-color:#fff!important}
+html body :is(.panel,.role-card,.stat-card,.demo-alert,.record){border-radius:3px!important}
+html body :is(.btn,.contact,.prescon-create-cta,.nav-button.active){border-radius:0!important;font-weight:900!important}
+html body :is(.btn.red,.contact,.prescon-create-cta){background:#ff0000!important;color:#fff!important;border:2px solid #fff!important;box-shadow:5px 5px 0 #a6d525!important;text-transform:uppercase}
+html body :is(.btn.red,.contact,.prescon-create-cta):hover{filter:brightness(.93);transform:translate(-2px,-2px)}
+html body :is(.btn,.contact,.prescon-create-cta):focus-visible{outline:3px solid #ff0000!important;outline-offset:7px!important}
+html body :is(.panel,.role-card) :is(p,.sub,.note){line-height:1.55!important}
+html body .quick-actions{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:22px!important;margin:24px 8px 16px 0!important;align-items:stretch!important}
+html body .quick-actions>.quick-action{
+ box-sizing:border-box!important;display:flex!important;flex-direction:column!important;justify-content:flex-end!important;align-items:flex-start!important;
+ min-width:0!important;min-height:285px!important;gap:13px!important;padding:27px!important;border:3px solid #090909!important;
+ border-radius:0!important;background:#ff0000!important;color:#fff!important;box-shadow:9px 9px 0 #090909!important;
+ text-decoration:none!important;text-align:left!important;transition:transform .15s ease,box-shadow .15s ease!important;
+}
+html body .quick-actions>.quick-action:nth-child(2),html body .quick-actions>.quick-action:nth-child(4){background:#fff!important;color:#090909!important}
+html body .quick-actions>.quick-action:nth-child(3){background:#101010!important;color:#fff!important;border-color:#090909!important}
+html body .quick-actions>.quick-action :is(b,span,strong){color:inherit!important;-webkit-text-stroke:0!important;text-shadow:none!important;-webkit-text-fill-color:currentColor!important}
+html body .quick-actions>.quick-action b{font-family:var(--poster-display)!important;font-size:clamp(25px,2.2vw,38px)!important;line-height:1.02!important;letter-spacing:-.045em!important;text-transform:uppercase!important;font-weight:900!important;overflow-wrap:anywhere}
+html body .quick-actions>.quick-action span{font-family:var(--poster-body)!important;font-size:14px!important;line-height:1.5!important;font-weight:500!important;max-width:34ch}
+html body .quick-actions>.quick-action strong{display:inline-flex!important;align-items:center!important;min-height:42px!important;margin-top:8px!important;padding:10px 14px!important;background:#ff0000!important;color:#fff!important;-webkit-text-fill-color:#fff!important;border:2px solid #fff!important;box-shadow:5px 5px 0 #a6d525!important;text-transform:uppercase!important;font-size:12px!important;line-height:1.2!important;font-weight:900!important;text-decoration:none!important}
+html body .quick-actions>.quick-action:nth-child(2) strong,html body .quick-actions>.quick-action:nth-child(4) strong{border-color:#090909!important}
+html body .quick-actions>.quick-action:is(:hover,:focus-visible){transform:translate(-3px,-3px)!important;box-shadow:12px 12px 0 #090909!important}
+html body .quick-actions>.quick-action:focus-visible{outline:3px solid #ff0000!important;outline-offset:12px!important}
+html body .quick-actions>.quick-action:nth-child(3) strong{background:#ff0000!important}
+html body .side .nav-button{min-height:44px!important;font-size:12px!important}
+html body .side .nav-button.active{background:#ff0000!important;color:#fff!important;border:2px solid #ff0000!important;box-shadow:none!important}
+html body .topbar .contact{font-size:12px!important}
+html body :is(.panel,.card,.role-card) :is(p,li,label){font-size:clamp(12px,1vw,15px);line-height:1.55}
+html body .quick-actions>.quick-action :is(b,span,strong){font-size-adjust:none}
+html[data-theme="red"] body .quick-actions>.quick-action:nth-child(2),html[data-theme="red"] body .quick-actions>.quick-action:nth-child(4){background:#fff!important;color:#090909!important}
+html[data-theme="dark"] body .quick-actions>.quick-action:nth-child(2),html[data-theme="dark"] body .quick-actions>.quick-action:nth-child(4){background:#fff!important;color:#090909!important}
+@media(max-width:1120px){html body .quick-actions{grid-template-columns:repeat(2,minmax(0,1fr))!important}}
+@media(max-width:670px){html body .quick-actions{grid-template-columns:1fr!important;gap:18px!important}html body .quick-actions>.quick-action{min-height:220px!important;padding:22px!important}html body .quick-actions>.quick-action b{font-size:clamp(27px,7vw,37px)!important}}
+@media(prefers-reduced-motion:reduce){html body .quick-actions>.quick-action{transition:none!important}}
