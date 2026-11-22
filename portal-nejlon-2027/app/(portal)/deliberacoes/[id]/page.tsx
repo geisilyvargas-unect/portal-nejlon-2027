@@ -8,6 +8,7 @@ import {answersOf,scenariosOf} from '@/lib/deliberation-form';
 import {DeliberationResponseForm} from '@/components/deliberation-response-form';
 import {changeDeliberationStatus} from '@/app/actions';
 import {HistoricalDetail} from '@/components/historical-deliberation';
+import {DeliberationLink} from '@/components/deliberation-link';
 
 export default async function DelibDetail({params}:{params:Promise<{id:string}>}){
   const {id}=await params;
@@ -31,6 +32,7 @@ export default async function DelibDetail({params}:{params:Promise<{id:string}>}
       <h1>{deliberation.title}</h1>
       <div className="action-row"><span className={'badge '+(deliberation.is_demo?'blue':deliberation.status==='open'?'lime':'red')}>{deliberation.is_demo?'DADOS FICTÍCIOS':deliberation.status==='open'?'ABERTA':deliberation.status==='closed'?'ENCERRADA':'RASCUNHO'}</span><span className="muted small">Prazo: {formatDate(deliberation.due_at)}</span></div>
     </div>
+    {viewer.role==='prescon'&&<section className="panel no-print"><h2>Link próprio do formulário</h2><p className="muted">Compartilhe este endereço com os conselheiros. O acesso exige autenticação, e o voto só é permitido durante o período aberto.</p><DeliberationLink id={id}/></section>}
     <div className="panel"><h2>Orientações gerais</h2><p className="whitespace">{deliberation.description||'Analise os documentos de cada cenário e registre seu posicionamento.'}</p></div>
     {deliberation.is_demo&&<div className="notice">Simulação: respostas fictícias não contam para pendências nem relatórios oficiais.</div>}
     {scenarios.map((scenario,i)=><div className="panel" key={scenario.key}>
