@@ -17,5 +17,57 @@ function parse(sheets){const alternatives=[];const warnings=[];const groups=[];
  }
  if(!alternatives.length)warnings.push('Nenhum painel completo reconhecido. Mantenha a planilha original e revise manualmente.');
  return {alternatives,warnings,sourceSheets:groups.map(x=>x.sheet),status:alternatives.length?'needs-review':'unrecognized'} }
- window.NEJLON_PF_PARSER={parse,money};
+
+/* Camada gratuita: descoberta flexível de tabelas, sem API paga.
+   Nunca substitui uma extração existente que já foi reconhecida. */
+function flexibleParse(sheets){
+ const warnings=[],alternatives=[],provenance=[];
+ const tokens=['PESSIMISTA','REALISTA','OTIMISTA'];
+ const typeOfLabel=t=>/^(TOTAL\\s+)?(RECEITAS?|ENTRADAS?|FATURAMENTO)(\\s+TOTAL)?$/.test(t)?'revenue':/^(TOTAL\\s+)?(DESPESAS?|CUSTOS?|GASTOS|SAIDAS)(\\s+TOTAL)?$/.test(t)?'expenses':/^(SALDO|RESULTADO|SUPERAVIT|DEFICIT)(\\s+(FINAL|PREVISTO|PROJETADO))?$/.test(t)?'balance':null;
+ for(const sheet of sheets){
+  const rows=sheet.rows||[];let blocks=[];
+  for(let i=0;i<rows.length;i++){
+   const cells=rows[i].map(norm),cols=tokens.map(t=>cells.findIndex(x=>x===t||x.startsWith(t+' ')));
+   if(cols.some(c=>c<0)||new Set(cols).size!==3)continue;
+   const data={revenue:null,expenses:null,balance:null},sources={};
+   for(let j=i+1;j<Math.min(rows.length,i+100);j++){
+    const row=rows[j]||[],next=row.map(norm);
+    if(tokens.every(t=>next.some(x=>x===t)))break;
+    const left=row.slice(0,Math.min(...cols)).map(norm).filter(Boolean);
+    const label=left.join(' ').replace(/\\s+/g,' ').trim();
+    const type=typeOfLabel(label)||left.map(typeOfLabel).find(Boolean);
+    if(!type)continue;
+    const vals=cols.map(c=>money(row[c]));
+    if(vals.some(v=>v===null))continue;
+    if(!data[type]||/TOTAL|SALDO/.test(label)){
+     data[type]=vals;
+     sources[type]={sheet:sheet.name,row:j+1,columns:cols.map(c=>c+1),label};
+    }
+   }
+   if(!data.revenue||!data.expenses){warnings.push(sheet.name+': projeções encontradas, mas totais de receitas/despesas não identificados na região da linha '+(i+1)+'.');continue}
+   const projections={};['pessimistic','realistic','optimistic'].forEach((key,k)=>{
+    const revenue=data.revenue[k],expenses=data.expenses[k],balance=revenue-expenses;
+    projections[key]={revenue,expenses,balance};
+    if(data.balance&&Math.abs(data.balance[k]-balance)>0.02)warnings.push(sheet.name+': saldo divergente na projeção '+tokens[k]+' (linha '+sources.balance.row+').');
+   });
+   blocks.push({projections,sources,headerRow:i+1});
+  }
+  blocks.forEach((b,i)=>{
+   const label=blocks.length>1?sheet.name+' · bloco '+(i+1):sheet.name;
+   alternatives.push({id:'alt-'+alternatives.length,label,projections:b.projections,source:b.sources});
+   provenance.push({label,headerRow:b.headerRow,sources:b.sources});
+  });
+ }
+ if(!alternatives.length)warnings.push('Não foram encontrados totais financeiros confiáveis. Confira o arquivo original antes de gerar gráficos.');
+ return {alternatives,warnings,sourceSheets:[...new Set(alternatives.map(a=>a.source.revenue.sheet))],provenance,status:alternatives.length?(warnings.length?'needs-review':'validated'):'unrecognized',engine:'free-rules-v2'};
+}
+function parseFree(sheets){
+ const primary=parse(sheets);
+ const flexible=flexibleParse(sheets);
+ if(!primary.alternatives.length)return flexible;
+ const seen=new Set(primary.alternatives.map(a=>a.label));
+ const extras=flexible.alternatives.filter(a=>!seen.has(a.label));
+ return {...primary,alternatives:[...primary.alternatives,...extras],warnings:[...new Set([...primary.warnings,...flexible.warnings.filter(w=>!w.includes('projeções encontradas'))])],provenance:flexible.provenance,engine:'free-rules-v2',status:primary.warnings.length?'needs-review':'validated'};
+}
+ window.NEJLON_PF_PARSER={parse:parseFree,money,flexibleParse};
 })();
