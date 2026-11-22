@@ -24,8 +24,24 @@ for(const file of pages){
  const uxIndex=localStyles.findIndex(x=>x.includes('ux-system.css'));
  if(uxIndex<0)fail(file+' missing UX baseline CSS');
  // Camadas de identidade posteriores são intencionais e devem ficar acima da base UX.
- const identityLayers=['brand-red-typography.css','red-black-layered.css','nejlon-idv-consistency.css','modern-idv.css'];
- if(localStyles.slice(uxIndex+1).some(x=>!identityLayers.some(layer=>x.includes(layer))&&!['dashboard-intro.css'].some(layer=>x.includes(layer))))fail(file+' unexpected stylesheet after UX baseline');
+ const identityLayers=new Set([
+  'brand-red-typography.css',
+  'red-black-layered.css',
+  'nejlon-idv-consistency.css',
+  'modern-idv.css',
+  'dashboard-intro.css',
+  'title-single-layer.css',
+  'nejlon-type-system.css',
+  'nejlon-editorial-v3.css',
+  'demo-accessibility.css'
+ ]);
+ // Compare exact asset basenames after stripping cache-busting query strings.
+ // Keep the allowlist explicit so unexpected CSS layers are still caught.
+ const unexpected=localStyles.slice(uxIndex+1).filter(ref=>{
+  const filename=path.posix.basename(ref.split(/[?#]/)[0]);
+  return !identityLayers.has(filename);
+ });
+ if(unexpected.length)fail(file+' unexpected stylesheet after UX baseline: '+unexpected.join(', '));
 }
 for(const file of scripts){
  if(!fs.existsSync(file)){fail('missing JS '+file);continue}
