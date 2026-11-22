@@ -15,7 +15,7 @@
 <div class="automation-user-bar"><div><span id="auto-access-label">MODO DE EXPLORAÇÃO</span><strong id="auto-user">Demonstração sem senha</strong></div><div class="automation-actions"></div></div>
 <nav class="automation-tabs" aria-label="Áreas da central">
 <button type="button" class="active" data-tab="inicio" aria-current="page">Visão geral</button>
-<button type="button" data-tab="criacao">Criar em minutos</button>
+<button type="button" data-tab="criacao">Formulários gerais</button>
 <button type="button" data-tab="pf">Automação de PF</button>
 <button type="button" data-tab="drive">Google Drive</button>
 <button type="button" data-tab="formularios">Formulários</button>
@@ -40,12 +40,12 @@
 <div class="automation-panel"><h2>Pontos que precisam da sua decisão</h2><div class="automation-checks"><p><strong>Segurança:</strong> respostas Google sem vínculo validado ficam para conferência antes de contar como voto aceito.</p><p><strong>Publicação:</strong> rascunhos só são disponibilizados após você publicar.</p><p><strong>WhatsApp:</strong> o texto é preparado automaticamente, mas você escolhe o grupo e confirma o envio.</p></div></div>
 </section>
 <section class="auto-tab" data-panel="criacao" hidden>
-<div class="automation-panel"><span class="eyebrow">ASSISTENTE DE CRIAÇÃO</span><h2>Nova deliberação ou formulário</h2>
-<p>Preencha apenas os dados essenciais. Para planejamento financeiro, os blocos Sistema de Rateios, C1 e C2 são gerados automaticamente.</p>
+<div class="automation-panel"><span class="eyebrow">ASSISTENTE DE CRIAÇÃO</span><h2>Novo formulário geral</h2>
+<p>Crie pesquisas, inscrições e formulários gerais. Para Planejamento Financeiro, utilize exclusivamente a aba Automação de PF.</p>
 <form id="auto-create-form" class="automation-form">
 <label>Nome da deliberação / formulário<input name="title" required minlength="3" maxlength="180" placeholder="Ex.: Deliberação PF — Idealize 2027"></label>
-<label>Tipo de formulário<select name="kind"><option value="pf">Planejamento financeiro (cenários configuráveis)</option><option value="generic">Formulário geral</option><option value="survey">Pesquisa de satisfação</option><option value="event">Inscrição / evento</option></select></label>
-<label>Quantidade de cenários do PF (1 a 5)<input name="scenarios" type="number" min="1" max="5" value="1" required></label>
+<label>Tipo de formulário<select name="kind"><option value="generic">Formulário geral</option><option value="survey">Pesquisa de satisfação</option><option value="event">Inscrição / evento</option></select></label>
+
 <label>Descrição ou instruções<textarea name="description" rows="3" placeholder="Resumo que os conselheiros precisam conhecer"></textarea></label>
 <label>Data e hora final (para o comunicado)<input name="due" type="datetime-local"></label>
 <div class="automation-switches"><label><input type="checkbox" name="google"> Criar também no Google Forms (requer ativar a integração Google; deixe desmarcado para criar agora)</label><label><input type="checkbox" name="folder"> Criar pasta no Google Drive (requer ativar a integração Google)</label></div>
