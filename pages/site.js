@@ -10,18 +10,14 @@ if(D&&window.NEJLON_IDEALIZE_VOTES&&!D.delibs.some(x=>x.id==='idealize')){
 }
 
 if(!D){document.getElementById('view').textContent='Dados demonstrativos indisponíveis.';return;}
-const nav=[
- ['painel','◫','Início'],['deliberacoes','☷','Deliberações'],
- ['pendencias','◷','Pendências'],['relatorios','▤','Relatórios'],['demandas','☑','Demandas'],
- ['calendario','▦','Calendário'],['rede','⬡','Rede de EJs']
-];
+const nav=[['deliberacoes','☷','Deliberações']];
 const roleMap={
- prescon:{name:'PRESCON',nav:nav.map(x=>x[0])},
- counselor:{name:'Conselho',nav:['painel','calendario','deliberacoes','demandas','rede']},
- ej_direx:{name:'DIREX da EJ',nav:['painel','calendario','demandas']},
- nucleus_direx:{name:'DIREX do Núcleo',nav:['painel','calendario','deliberacoes','demandas']}
+ prescon:{name:'PRESCON',nav:['deliberacoes']},
+ counselor:{name:'Conselho',nav:['deliberacoes']},
+ ej_direx:{name:'DIREX da EJ',nav:['deliberacoes']},
+ nucleus_direx:{name:'DIREX do Núcleo',nav:['deliberacoes']}
 };
-const s={role:'prescon',section:'painel',ej:'unect',selected:'unect',filter:'all',search:'',delib:'financeiro',vote:'favorable',positionFilter:'all',calendarMonth:new Date().getMonth(),calendarYear:new Date().getFullYear()};
+const s={role:'prescon',section:'deliberacoes',ej:'unect',selected:'unect',filter:'all',search:'',delib:'financeiro',vote:'favorable',positionFilter:'all',calendarMonth:new Date().getMonth(),calendarYear:new Date().getFullYear()};
 const $=id=>document.getElementById(id);
 // Perfis institucionais verificados em fonte universitária; não inferir URLs das demais EJs.
 const ejInstagram=Object.freeze({unect:'https://www.instagram.com/unectjr/',select:'https://www.instagram.com/select.eng/',elo:'https://www.instagram.com/eloconsultoria/',ecae:'https://www.instagram.com/ecaeuel/','3e':'https://www.instagram.com/3euel/',bioma:'https://www.instagram.com/biomambiental/',smartmec:'https://www.instagram.com/smartmec.ej/',smatjr:'https://www.instagram.com/smat.jr/',lex:'https://www.instagram.com/lexempresajr/',boson:'https://www.instagram.com/bosonconsultoria/',notton:'https://www.instagram.com/notton.ej/',cotton:'https://www.instagram.com/cottonconsultoria/',sete:'https://www.instagram.com/sete.consultoria/',therion:'https://www.instagram.com/therion.ej/',aprimora:'https://www.instagram.com/aprimora.ej/',gaia:'https://www.instagram.com/gaiajr_ambiental/',consoagro:'https://www.instagram.com/consoagro/',meca:'https://www.instagram.com/meca.jr/',artus:'https://www.instagram.com/artusjr/',catecz:'https://www.instagram.com/cateczjunior/',fertfield:'https://www.instagram.com/fertfield_junior/',kinase:'https://www.instagram.com/kinaseconsultoria/',pegasus:'https://www.instagram.com/pegasus.ej/',tcp:'https://www.instagram.com/tcp_londrina/',business:'https://www.instagram.com/businessconsultoria/',lion:'https://www.instagram.com/lionconsultingjr/',paracelso:'https://www.instagram.com/paracelsoconsultoria/',solucao:'https://www.instagram.com/solucaojr_ej/',vetjr:'https://www.instagram.com/vetjrconsultoria/'});
@@ -252,29 +248,17 @@ function roleLanding(){
  return '<div class="view-grid">'+panel('Painel do Conselho','Consulte deliberações, demandas e informações da Rede pelas áreas do menu.','<p class="note">O acesso à votação é feito pelo link autenticado de cada deliberação.</p>')+'</div>';
 }
 function render(){
- if(s.role!=='prescon'&&!role().nav.includes(s.section))s.section='painel';
+ if(s.section!=='deliberacoes')s.section='deliberacoes';
  $('roles').innerHTML=Object.entries(roleMap).map(([key,r])=>'<button class="role-option '+(key===s.role?'active':'')+'" type="button" data-role="'+key+'" aria-pressed="'+(key===s.role)+'">'+esc(r.name)+'</button>').join('');
  $('ej-picker-wrap').hidden=!['counselor','ej_direx'].includes(s.role);
  $('ej-picker').innerHTML=D.ejs.map(e=>'<option value="'+esc(e.slug)+'" '+(e.slug===s.ej?'selected':'')+'>'+esc(e.name)+'</option>').join('');
  const councilAccess=$('council-test-access');if(councilAccess){councilAccess.hidden=s.role!=='counselor';const email=$('council-test-email');if(email)email.textContent='conselho'+s.ej+'@nejlondrina.com';}
  const navButton=([key,icon,name])=>key==='calendario'?'<a class="nav-button" href="./pages/calendar-live.html"><span class="nav-icon" aria-hidden="true">'+icon+'</span>'+esc(name)+'</a>':key==='demandas'?'<a class="nav-button" href="./pages/demandas.html"><span class="nav-icon" aria-hidden="true">'+icon+'</span>'+esc(name)+'</a>':'<button type="button" class="nav-button '+(key===s.section?'active':'')+'" data-nav="'+key+'" aria-current="'+(key===s.section?'page':'false')+'"><span class="nav-icon" aria-hidden="true">'+icon+'</span>'+esc(name)+'</button>';
- const publicKeys=['painel','calendario','deliberacoes','demandas','engajamento','rede'];
- const allowed=nav.filter(n=>role().nav.includes(n[0]));
- const common=allowed.filter(n=>publicKeys.includes(n[0])&&n[0]!=='engajamento');
- const adminLinks=[
-  ['Automações',[['Criar formulários e PF','./pages/central-automacoes.html#pf'],['Formulários gerais','./pages/central-automacoes.html#criacao'],['Relatórios e resultados','./pages/central-automacoes.html#relatorios']]],
-  ['Gestão de demandas',[['Analisar justificativas','./pages/demandas.html'],['Acompanhar demandas','./pages/central-automacoes.html#demandas']]],
-  ['Gestão de deliberações',[['Criar deliberação','./pages/prescon-criar-deliberacao.html'],['Publicar e acompanhar','./pages/central-automacoes.html#formularios'],['Relatórios','./pages/relatorio.html']]],
-  ['Gestão do Conselho',[['Conselheiros e formação','./pages/gestao-conselho.html'],['Contas de teste e permissões','./pages/test-accounts.html'],['Calendário oficial','./pages/calendar-live.html'],['Gestão de deliberações e relatórios','./pages/deliberation-hub.html'],['Fiscalização','./pages/fiscalizacao.html']]],
- ];
- const admin=s.role==='prescon'?'<div class="portal-admin-heading">ADMINISTRAÇÃO · PRESCON</div>'+adminLinks.map(([label,links])=>'<details class="portal-admin-group"><summary>'+esc(label)+'</summary>'+links.map(([name,url])=>'<a href="'+url+'">'+esc(name)+'</a>').join('')+'</details>').join(''):'';
- const indicators=s.role==='prescon'?'<div class="portal-admin-heading">ANÁLISE · PRESCON</div>'+navButton(['engajamento','▦','Indicadores']):'';
- const supplemental='<a class="nav-button" href="./pages/ej-profile.html">⬡ Perfil da EJ</a>'+(s.role==='nucleus_direx'?'<a class="nav-button" href="./pages/fiscalizacao.html">◉ Fiscalização</a>':'');
- $('desktop-nav').innerHTML=common.map(navButton).join('')+admin+supplemental+indicators;
- $('mobile-nav').innerHTML=common.map(navButton).join('')+admin+supplemental+indicators;
+ const admin=s.role==='prescon'?'<div class="portal-admin-heading">GESTÃO · PRESCON</div><a class="nav-button" href="./pages/prescon-criar-deliberacao.html">＋ Criar deliberação / PF</a><a class="nav-button" href="./pages/central-automacoes.html#formularios">▤ Gerenciar formulários</a><a class="nav-button" href="./pages/deliberation-hub.html">◷ Acompanhar deliberações</a>':'';
+ $('desktop-nav').innerHTML=nav.map(navButton).join('')+admin;
+ $('mobile-nav').innerHTML=nav.map(navButton).join('')+admin;
  heading();
- if(s.role==='prescon')$('view').innerHTML=s.section==='painel'?overview():s.section==='engajamento'?'<div class="view-grid">'+heatmap()+trend()+'</div>':s.section==='deliberacoes'?deliberations():s.section==='pendencias'?pending():s.section==='relatorios'?reports():extras();
- else $('view').innerHTML=s.section==='painel'?roleLanding():s.section==='deliberacoes'&&s.role==='counselor'?deliberations():s.section==='deliberacoes'&&s.role==='nucleus_direx'?panel('Deliberações e formulários','A DIREX do Núcleo acompanha pelo painel autenticado de fiscalização, sem editar nem ver votos individuais.','<a class="btn red" href="./pages/fiscalizacao.html">Abrir fiscalização →</a>'):extras();
+ $('view').innerHTML=deliberations();
 }
 // Os cards de EJ são links reais, inclusive no radar de indicadores.
 // Em dispositivos que interceptam o clique, a navegação usa o href nativo.
@@ -294,7 +278,7 @@ document.addEventListener('click',e=>{
  if(target.dataset.calendarShift){const d=new Date(s.calendarYear,s.calendarMonth+Number(target.dataset.calendarShift),1);s.calendarYear=d.getFullYear();s.calendarMonth=d.getMonth();render();return;}
  if(target.hasAttribute('data-calendar-today')){s.calendarYear=new Date().getFullYear();s.calendarMonth=new Date().getMonth();render();return;}
  if(target.dataset.exportReport){exportReport(target.dataset.exportReport);return;}
- if(target.dataset.role){s.role=target.dataset.role;s.section='painel';render();return;}
+ if(target.dataset.role){s.role=target.dataset.role;s.section='deliberacoes';render();loadLiveForms();return;}
  if(target.dataset.nav){s.section=target.dataset.nav;render();if(s.section==='deliberacoes')loadLiveForms();return;}
  if(target.dataset.ej){s.selected=target.dataset.ej;render();return;}
  if(target.dataset.filter){s.filter=target.dataset.filter;render();return;}
