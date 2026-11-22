@@ -472,7 +472,7 @@ window.NEJLON_DEMO = {
     {
       "id": "calendario",
       "name": "Aprovação do Calendário Eleitoral",
-      "status": "Aberta",
+      "status": "Aguardando avaliação",
       "visibility": "Conselho",
       "due": "15/02/2027"
     },
