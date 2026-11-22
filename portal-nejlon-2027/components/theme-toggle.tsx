@@ -11,7 +11,7 @@ export function ThemeToggle(){
  function choose(next:Theme){document.documentElement.dataset.theme=next;localStorage.setItem('nejlon-theme',next);setTheme(next);}
  return <div className="theme-select" role="group" aria-label="Aparência do portal">
   {options.map(({value,label})=><button type="button" key={value} className={'theme-option'+(theme===value?' selected':'')} onClick={()=>choose(value)} aria-pressed={theme===value} title={'Tema '+label}>
-   {value==='dark'?<Moon size={15} aria-hidden/>:value==='light'?<Sun size={15} aria-hidden/>}<span>{label}</span>
+   {value==='dark'?<Moon size={15} aria-hidden/>:<Sun size={15} aria-hidden/>}<span>{label}</span>
   </button>)}
  </div>;
 }
