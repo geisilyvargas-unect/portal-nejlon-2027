@@ -9,7 +9,7 @@ const https=x=>{if(!x)return null;try{const u=new URL(String(x));if(u.protocol!=
 async function ejIds(){return db('ejs',{query:'select=id,name,slug&order=name.asc&limit=100'})}
 async function findDemand(id){
  if(!uuid(id))fail(400,'Demanda inválida.');
- const rows=await db('demands',{query:'select=id,ej_id,title,description,due_at,status,responsible,created_at,created_by,updated_at,completed_at,template_key&id=eq.'+id+'&limit=1'});
+ const rows=await db('demands',{query:'select=id,ej_id,title,description,due_at,status,responsible,created_at,created_by,updated_at,completed_at,template_key,severity&id=eq.'+id+'&limit=1'});
  if(!rows.length)fail(404,'Demanda não encontrada.');return rows[0];
 }
 async function event({demand,actor,action,note='',details={}}){
@@ -21,7 +21,7 @@ async function list(user){
  if(!owner&&user.role==='nucleus_direx')fail(403,'Acesso de gestão das demandas reservado à PRESCON. Consulte a gestão para permissões.');
  if(!owner&&!user.ej_id)fail(403,'Seu cadastro ainda não está vinculado a uma EJ.');
  const q=owner?'':'&ej_id=eq.'+user.ej_id;
- const demands=await db('demands',{query:'select=id,ej_id,title,description,due_at,status,responsible,created_at,created_by,updated_at,completed_at,template_key&order=created_at.desc&limit=1500'+q});
+ const demands=await db('demands',{query:'select=id,ej_id,title,description,due_at,status,responsible,created_at,created_by,updated_at,completed_at,template_key,severity&order=created_at.desc&limit=1500'+q});
  const justifications=await db('portal_demand_justifications',{query:'select=id,demand_id,ej_id,submitted_by,reason_type,explanation,evidence_url,state,decision_note,decided_by,decided_at,created_at&order=created_at.desc&limit=3000'+q});
  let events=[];
  if(demands.length){
@@ -67,10 +67,11 @@ async function handler(req,res){
   if(!description||description.length<8)fail(400,'Descreva a demanda para que a EJ entenda o que precisa fazer.');
   if(!responsible)fail(400,'Informe o responsável pela demanda.');
   const templateKey=clean(data.templateKey,80)||null;
+  const severity=['amarela','laranja','vermelha'].includes(data.severity)?data.severity:'amarela';
   const created=[];
   for(const id of ids){
    const rows=await db('demands',{method:'POST',prefer:'return=representation',data:{
-    ej_id:id,title,description,due_at:due,status:'pendente',responsible,created_by:user.userId,updated_at:new Date().toISOString(),template_key:templateKey
+    ej_id:id,title,description,due_at:due,status:'pendente',responsible,created_by:user.userId,updated_at:new Date().toISOString(),template_key:templateKey,severity
    }});
    const d=rows[0];if(!d)fail(500,'A demanda não foi confirmada pelo banco.');
    created.push(d);
@@ -86,7 +87,7 @@ async function handler(req,res){
   const reason=clean(data.reason,35),explanation=clean(data.explanation,5000);
   if(!['ausencia','prazo','dificuldade','impedimento','outro'].includes(reason))fail(400,'Selecione o motivo da justificativa.');
   if(explanation.length<10)fail(400,'Explique a situação em pelo menos 10 caracteres.');
-  const earlier=await db('portal_demand_justifications',{query:'select=id,state&demand_id=eq.'+demand.id+'&state=in.(pending_review,accepted)&limit=1'});
+  const earlier=await db('portal_demand_justifications',{query:'select=id,state&demand_id=eq.'+demand.id+'&state=eq.pending_review&limit=1'});
   if(earlier.length)fail(409,'Já existe justificativa enviada ou aceita para esta demanda.');
   const evidence=https(clean(data.evidenceUrl,1800));
   const created=await db('portal_demand_justifications',{method:'POST',prefer:'return=representation',data:{
