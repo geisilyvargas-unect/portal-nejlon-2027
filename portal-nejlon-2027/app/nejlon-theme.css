@@ -93,3 +93,13 @@ html[data-theme="light"]{--nejlon-petrol:#005663;--petrol:#005663}
 html[data-theme="dark"]{--nejlon-petrol:#00616d;--petrol:#00616d}
 html:is([data-theme="light"],[data-theme="dark"]) :is(.panel,.report-kpi,.profile-box)[data-accent="petrol"]{border-left:4px solid var(--nejlon-petrol)}
 html:is([data-theme="light"],[data-theme="dark"]) :is(.nav-link,.button,button)[data-accent="petrol"].active{background:var(--nejlon-petrol);color:#fff;border-color:var(--nejlon-petrol)}
+
+
+/* Sombra editorial rente às letras em Branco e Preto. */
+html:is([data-theme="light"],[data-theme="dark"]) :is(.hero h1,.panel h2,.panel h3,.main h1,.main h2,.main h3){
+ text-shadow:1px 2px 0 #ff0000,2px 3px 0 var(--nejlon-title-edge)!important;
+}
+html:is([data-theme="light"],[data-theme="dark"]) .hero h1{
+ text-shadow:2px 2px 0 #ff0000,2px 3px 0 var(--nejlon-title-edge)!important;
+}
+@media(max-width:600px){html:is([data-theme="light"],[data-theme="dark"]) .hero h1{text-shadow:1px 2px 0 #ff0000!important}}
