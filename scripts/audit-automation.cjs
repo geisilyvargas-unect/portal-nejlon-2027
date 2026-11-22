@@ -24,11 +24,11 @@ assert.match(ui,/scenarioCount/);
 assert.match(ui,/pfQuestions/);
 // A criação de PF foi transferida para uma página própria. Auditar o fluxo real,
 // em vez de exigir um campo legado inexistente na Central de Automações.
-assert.match(html,/prescon-criar-deliberacao\\.html/);
+assert.ok(html.includes('prescon-criar-deliberacao.html'));
 assert.match(pfHtml,/id="pf-file"/);
 assert.match(pfHtml,/id="create-form"/);
 assert.match(pfHtml,/id="scenarios"/);
-assert.match(pfJs,/getElementById\\(id\\)/);
+assert.ok(pfJs.includes('getElementById(id)'));
 assert.match(pfJs,/uploadedSheets/);
 const cfg=JSON.parse(read('vercel.json'));
 assert.equal(cfg.framework,null);
