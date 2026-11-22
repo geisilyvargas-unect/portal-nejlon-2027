@@ -3,7 +3,7 @@ const crypto=require('node:crypto');
 const SB=process.env.SUPABASE_URL||'https://imsisbixzkqphooxyfhr.supabase.co';
 const PUBLIC_KEY=process.env.SUPABASE_PUBLISHABLE_KEY||'sb_publishable_mS_TDGKZhUuJi-rxc5Nu1w_IXODeo-_';
 const SITE=process.env.PORTAL_PUBLIC_ORIGIN||'https://portal-nejlon-2027.vercel.app';
-const scopes=['https://www.googleapis.com/auth/drive.file','https://www.googleapis.com/auth/forms.body','https://www.googleapis.com/auth/forms.responses.readonly','https://www.googleapis.com/auth/spreadsheets'];
+const scopes=['openid','email','https://www.googleapis.com/auth/drive.file','https://www.googleapis.com/auth/forms.body','https://www.googleapis.com/auth/forms.responses.readonly','https://www.googleapis.com/auth/spreadsheets'];
 class HttpError extends Error{constructor(code,message){super(message);this.code=code}}
 function fail(code,message){throw new HttpError(code,message)}
 function json(res,status,data){res.status(status).setHeader('Cache-Control','no-store').setHeader('Content-Type','application/json; charset=utf-8').end(JSON.stringify(data))}
@@ -113,5 +113,14 @@ async function ensureChild(token,root,title){
 async function recordFile(userId,file,{kind,formId,folderId}={}){
  await db('portal_drive_files',{method:'POST',query:'on_conflict=owner_user_id,google_file_id',prefer:'resolution=merge-duplicates,return=representation',data:{owner_user_id:userId,form_id:formId||null,google_file_id:file.id,google_folder_id:folderId||null,kind,name:file.name,web_view_link:file.webViewLink||null}});
 }
-function protect(handler){return async(req,res)=>{try{await handler(req,res)}catch(e){json(res,e instanceof HttpError?e.code:500,{error:e instanceof HttpError?e.message:'Não foi possível concluir a operação. Tente novamente.'});}}}
+function protect(handler){return async(req,res)=>{
+ const origin=String(req.headers.origin||'');
+ const allowed=new Set(['https://geisilyvargas-unect.github.io','https://portal-nejlon-2027.vercel.app','https://portal-nejlon-2027-geisily.vercel.app',new URL(SITE).origin]);
+ for(const extra of String(process.env.PORTAL_ALLOWED_ORIGINS||'').split(',')){if(extra.trim().startsWith('https://'))allowed.add(extra.trim())}
+ if(origin){if(!allowed.has(origin))return json(res,403,{error:'Origem não autorizada.'});res.setHeader('Access-Control-Allow-Origin',origin);res.setHeader('Vary','Origin')}
+ res.setHeader('Access-Control-Allow-Headers','Authorization,Content-Type');
+ res.setHeader('Access-Control-Allow-Methods','GET,POST,OPTIONS');
+ if(req.method==='OPTIONS')return res.status(204).end();
+ try{await handler(req,res)}catch(e){json(res,e instanceof HttpError?e.code:500,{error:e instanceof HttpError?e.message:'Não foi possível concluir a operação. Tente novamente.'});}
+}}
 module.exports={SB,PUBLIC_KEY,SITE,scopes,fail,json,body,ready,envCheck,db,prescon,userFromToken,encrypt,decrypt,signState,verifyState,redirectUri,googleToken,connected,accessToken,google,textName,createFolder,upload,settings,ensureRoot,ensureChild,recordFile,protect};
