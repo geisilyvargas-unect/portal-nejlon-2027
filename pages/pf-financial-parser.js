@@ -67,7 +67,7 @@ function parseFree(sheets){
  if(!primary.alternatives.length)return flexible;
  const seen=new Set(primary.alternatives.map(a=>a.label));
  const extras=flexible.alternatives.filter(a=>!seen.has(a.label));
- return {...primary,alternatives:[...primary.alternatives,...extras],warnings:[...new Set([...primary.warnings,...flexible.warnings.filter(w=>!w.includes('projeções encontradas'))])],provenance:flexible.provenance,engine:'free-rules-v2',status:primary.warnings.length?'needs-review':'validated'};
+ return {...primary,alternatives:[...primary.alternatives,...extras],warnings:[...new Set([...primary.warnings,...flexible.warnings.filter(w=>!w.includes('projeções encontradas'))])],provenance:flexible.provenance,engine:'free-rules-v3',status:primary.warnings.length?'needs-review':'validated'};
 }
  window.NEJLON_PF_PARSER={parse:parseFree,money,flexibleParse};
 })();
