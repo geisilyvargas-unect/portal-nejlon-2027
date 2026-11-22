@@ -1,0 +1,18 @@
+.council-page .automation-shell{max-width:1300px}.council-directory{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px}
+.council-resource{display:grid;gap:11px;border:1px solid var(--ux-border);border-top:5px solid var(--ux-petrol);background:var(--ux-raised);border-radius:12px;padding:17px;min-width:0}
+.council-resource:nth-child(3n+2){border-top-color:var(--ux-red)}.council-resource:nth-child(3n){border-top-color:var(--ux-lime)}
+.council-resource-header{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.council-resource h3{color:var(--ux-text);font-size:16px;line-height:1.3;margin:0;overflow-wrap:anywhere}
+.council-resource p{color:var(--ux-muted);font-size:12px;line-height:1.6;margin:0}
+.council-resource .council-status{background:var(--ux-surface);border:1px solid var(--ux-border);padding:6px 9px;border-radius:99px;font-size:10px;font-weight:800;color:var(--ux-muted)}
+.council-resource a{color:var(--ux-text);font-size:12px;font-weight:800}
+.council-resource .btn{width:max-content;max-width:100%}
+.council-edit-form{margin-top:6px;border-top:1px solid var(--ux-border);padding-top:12px;display:grid;gap:10px}
+.council-edit-form label{display:grid;gap:6px;font-size:12px;font-weight:800}
+.council-edit-form input,.council-edit-form select{min-height:44px;padding:9px 11px;border:1px solid var(--ux-border);border-radius:9px;background:var(--ux-input);color:var(--ux-text)}
+.council-edit-form button{justify-self:start}
+.council-forms{display:grid;gap:10px}
+.council-form-row{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;flex-wrap:wrap;border:1px solid var(--ux-border);border-radius:10px;padding:15px;background:var(--ux-raised)}
+.council-form-row>div{display:grid;gap:6px;min-width:0}.council-form-row strong{font-size:13px;color:var(--ux-text)}.council-form-row small{font-size:11px;color:var(--ux-muted)}
+.council-empty{border:1px dashed var(--ux-border);padding:18px;border-radius:10px;color:var(--ux-muted);font-size:12px}
+@media(max-width:760px){.council-directory{grid-template-columns:1fr}.council-resource{padding:15px}}
