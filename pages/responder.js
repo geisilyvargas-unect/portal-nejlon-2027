@@ -90,7 +90,20 @@ $('respond-answer-form').addEventListener('submit',async e=>{
  e.preventDefault();
  if(!form)return;
  const answers={},data=new FormData(e.target);
- for(const q of form.questions||[])answers[q.id]=String(data.get(q.id)||'').trim();
+ for(const q of form.questions||[]){
+  const value=String(data.get(q.id)||'').trim();
+  if(q.required&&!value){
+   showError('Preencha a pergunta obrigatória: '+String(q.label||'sem título'));
+   const field=e.target.querySelectorAll('[name]');
+   for(const item of field){if(item.name===String(q.id)){item.focus();break}}
+   return;
+  }
+  if(q.type!=='text'&&value&&(!Array.isArray(q.options)||!q.options.includes(value))){
+   showError('A resposta selecionada não é válida. Atualize o formulário e tente novamente.');
+   return;
+  }
+  answers[q.id]=value;
+ }
  if(!confirm('Confirma o registro da resposta da sua EJ? Ela não poderá ser substituída automaticamente.'))return;
  const btn=e.target.querySelector('button[type=submit]');btn.disabled=true;showError('Registrando resposta…');
  try{
