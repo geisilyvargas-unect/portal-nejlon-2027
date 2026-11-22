@@ -31,7 +31,7 @@ const VISIBLE:Record<DemoRole,Section[]>={
  nucleus_direx:['painel','deliberacoes','demandas','calendario','rede']
 };
 const DEMO_PERIODS:Record<DemoDeliberationId,string>={
- financeiro:'2027-01-15T12:00:00Z',calendario:'2027-02-15T12:00:00Z',encerramento:'2027-03-15T12:00:00Z'
+ financeiro:'2027-01-15T12:00:00Z',calendario:'2027-02-15T12:00:00Z',encerramento:'2027-03-15T12:00:00Z',idealize:'2027-01-31T12:00:00Z'
 };
 const DEMO_NETWORK_SNAPSHOT=buildEngagement(
  EJS_DEMO.map(e=>({id:e.slug,name:e.name,slug:e.slug})),
@@ -198,6 +198,7 @@ export function DemoTour(){
      {section==='deliberacoes'&&<>
       <TitleBlock eyebrow="Governança • Deliberações" title="Deliberações"
        description={isPrescon?'A PRESCON acompanha e organiza os resultados.':isCouncil?'O Conselho responde em nome da própria EJ.':'Esta visão apenas consulta deliberações autorizadas, sem votar.'}/>
+      <div className="notice" style={{marginBottom:16}}>O IDEALIZE 2026 está aberto <strong>apenas nesta simulação</strong>. Veja o PF original, as opções UEL/AURORA, o formulário e a exportação CSV. <a className="button lime" href="/idealize" style={{marginTop:10,display:'inline-flex'}}>Abrir IDEALIZE ↗</a></div>
       <SampleList items={viewDelibs.map(item=>({heading:item.title,caption:(item.direxVisible?'Visível para DIREX':'Restrita ao Conselho')+' • '+demoSummary(item.id).received+' respostas fictícias',status:item.open?'Aberta':'Encerrada'}))}/>
       {isPrescon&&<div className="panel">
        <h3>Respostas recebidas por EJ</h3>
