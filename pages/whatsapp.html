@@ -1,42 +1,22 @@
-<!doctype html>
-<html lang="pt-BR">
-<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#1c1a1a">
-<title>Convites por WhatsApp · Portal NEJLON</title>
-<link rel="stylesheet" href="./site.css"><link rel="stylesheet" href="./visual-identity.css"><link rel="stylesheet" href="./whatsapp.css">
-<script defer src="./demo-data.js"></script><script defer src="./whatsapp.js"></script></head>
-<body class="wa-page">
-<main class="wa-shell">
-<nav class="wa-nav"><a href="../index.html">← Voltar ao Portal</a><span>FERRAMENTA DE PREPARAÇÃO · NÃO DISPARA SOZINHA</span></nav>
-<header class="wa-hero"><span class="eyebrow">PRESCON · COMUNICAÇÃO</span><h1>CONVITES PARA <em>WHATSAPP</em></h1><p>Monte uma mensagem uma única vez. O sistema personaliza cada convite com EJ, nome, prazo e os dois links de resposta.</p></header>
-<div class="wa-info" role="note"><strong>Como funciona:</strong> o portal prepara cada mensagem e abre a conversa correspondente no WhatsApp. Você confere e confirma o envio no aplicativo. Abertura da conversa não comprova entrega. Para disparos automáticos e acompanhamento de entrega é necessária uma integração autorizada com a Plataforma WhatsApp Business.</div>
-<section class="wa-panel">
-<h2>1. Configurar o convite</h2>
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#1c1a1a"><title>Mensagem para o Conselho · Portal NEJLON</title><link rel="stylesheet" href="./site.css"><link rel="stylesheet" href="./visual-identity.css"><link rel="stylesheet" href="./whatsapp.css"><script defer src="./whatsapp.js"></script></head>
+<body class="wa-page"><main class="wa-shell">
+<nav class="wa-nav"><a href="../index.html">← Voltar ao Portal</a><span>PRESCON · COMUNICADOS AO CONSELHO</span></nav>
+<header class="wa-hero"><span class="eyebrow">CENTRAL DE COMUNICAÇÃO</span><h1>MENSAGEM PARA O <em>CONSELHO</em></h1><p>Prepare um único comunicado para o grupo do Conselho, com prazo e dois caminhos de resposta: Portal NEJLON e Google Forms.</p></header>
+<div class="wa-info"><strong>Envio ao grupo:</strong> o botão abre o compartilhamento da mensagem no WhatsApp. Você escolhe o grupo do Conselho e confirma o envio. O portal não tem acesso ao grupo nem dispara mensagens sozinho.</div>
+<section class="wa-panel"><h2>1. Informações da deliberação</h2>
 <div class="wa-formgrid">
-<label>Nome do formulário<input id="wa-form-title" value="Deliberação do Planejamento Financeiro" maxlength="180"></label>
+<label>Assunto<input id="wa-form-title" value="Deliberação do Planejamento Financeiro" maxlength="180"></label>
 <label>Prazo da resposta<input id="wa-deadline" placeholder="Ex.: 30/11 às 12h" maxlength="100"></label>
-<label>Link para responder no Portal NEJLON<input id="wa-portal-link" type="url" placeholder="https://seu-portal/formularios/id"></label>
-<label>Link do Google Forms<input id="wa-google-link" type="url" placeholder="https://docs.google.com/forms/d/e/.../viewform"></label>
+<label>Link para responder pelo Portal NEJLON<input id="wa-portal-link" type="url" placeholder="https://portal-nejlon.../formularios/..."></label>
+<label>Link para responder pelo Google Forms<input id="wa-google-link" type="url" placeholder="https://docs.google.com/forms/..."></label>
 </div>
-<label>Mensagem personalizável<textarea id="wa-template" rows="12" spellcheck="true"></textarea></label>
-<div class="wa-hints">Campos automáticos: <code>{nome}</code> <code>{ej}</code> <code>{formulario}</code> <code>{prazo}</code> <code>{link_portal}</code> <code>{link_google}</code>. O link Google só é incluído se você o informar.</div>
+<label>Mensagem para o grupo<textarea id="wa-template" rows="12" spellcheck="true"></textarea></label>
+<p class="wa-hints">Campos automáticos: <code>{formulario}</code> <code>{prazo}</code> <code>{link_portal}</code> <code>{link_google}</code>. Você pode editar livremente o texto antes de enviar.</p>
 </section>
-<section class="wa-panel">
-<h2>2. Inserir os contatos</h2>
-<p>Adicione somente contatos com autorização para receber as comunicações institucionais. Nenhum número é salvo no GitHub ou enviado ao nosso servidor por esta ferramenta.</p>
-<label>Colar lista (uma linha por contato, separada por ponto e vírgula)<textarea id="wa-import" rows="5" placeholder="UNECT;Maria;43999999999&#10;3E;João;43988888888"></textarea></label>
-<div class="wa-actions">
-<button id="wa-load" class="btn red" type="button">Adicionar contatos</button>
-<label class="wa-upload">Ou importar CSV<input type="file" id="wa-csv" accept=".csv,text/csv"></label>
-<button id="wa-clear" class="btn" type="button">Limpar contatos</button>
-</div>
-<p class="wa-help">Formato: <strong>EJ; Nome; WhatsApp com DDD</strong>. Se a lista trouxer um cabeçalho “EJ;Nome;Telefone”, ele será ignorado. Aceita números brasileiros com ou sem +55.</p>
-</section>
-<section class="wa-panel">
-<h2>3. Conferir e abrir as conversas</h2>
-<div class="wa-actions"><input id="wa-filter" type="search" placeholder="Filtrar por EJ ou nome..." aria-label="Filtrar destinatários"><span id="wa-count" aria-live="polite">Nenhum contato adicionado.</span></div>
-<div class="wa-recipient-list" id="wa-list"></div>
-</section>
-<footer class="wa-footer">NEJLON · FERRAMENTA DE CONVITES · Os envios precisam ser confirmados no WhatsApp. Dados locais não ficam armazenados.</footer>
-</main>
-<div id="wa-toast" class="wa-toast" role="status" aria-live="polite"></div>
-</body></html>
+<section class="wa-panel"><h2>2. Conferir e compartilhar</h2><p>Prévia da mensagem que irá para o grupo:</p>
+<div id="wa-warning" role="status" aria-live="polite"></div>
+<pre id="wa-preview" class="wa-group-preview"></pre>
+<div class="wa-actions"><button type="button" class="btn" id="wa-copy">Copiar mensagem</button><button type="button" class="btn red" id="wa-share">Abrir no WhatsApp e escolher o grupo ↗</button></div>
+<p class="wa-help">O compartilhamento não identifica automaticamente o grupo. Caso o WhatsApp não ofereça seleção do grupo, copie a mensagem e cole diretamente na conversa do Conselho.</p></section>
+<footer class="wa-footer">NEJLON · Comunicação preparada no navegador · Nenhum envio é automático ou confirmado pelo portal.</footer>
+</main><div id="wa-toast" class="wa-toast" role="status" aria-live="polite"></div></body></html>
