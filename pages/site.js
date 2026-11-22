@@ -13,9 +13,7 @@ if(!D){document.getElementById('view').textContent='Dados demonstrativos indispo
 const nav=[['deliberacoes','☷','Deliberações']];
 const roleMap={
  prescon:{name:'PRESCON',nav:['deliberacoes']},
- counselor:{name:'Conselho',nav:['deliberacoes']},
- ej_direx:{name:'DIREX da EJ',nav:['deliberacoes']},
- nucleus_direx:{name:'DIREX do Núcleo',nav:['deliberacoes']}
+ counselor:{name:'Conselho',nav:['deliberacoes']}
 };
 const s={role:'prescon',section:'deliberacoes',ej:'unect',selected:'unect',filter:'all',search:'',delib:'financeiro',vote:'favorable',positionFilter:'all',calendarMonth:new Date().getMonth(),calendarYear:new Date().getFullYear()};
 const $=id=>document.getElementById(id);
