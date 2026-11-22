@@ -101,3 +101,13 @@ html[data-theme="light"]{--nejlon-petrol:#005663;--ux-petrol:#005663;--ux-petrol
 html[data-theme="dark"]{--nejlon-petrol:#00616d;--ux-petrol:#00616d;--ux-petrol-hover:#087b88}
 html:is([data-theme="light"],[data-theme="dark"]) :is(.stat-card,.comparison-insight)[data-accent="petrol"]{border-left:4px solid var(--nejlon-petrol)!important}
 html:is([data-theme="light"],[data-theme="dark"]) :is(.eyebrow,.mini-heading,.stat-icon)[data-accent="petrol"]{color:var(--nejlon-petrol)!important}
+
+
+/* Relevo mais justo: sombra encostada no título, nos dois temas. */
+html:is([data-theme="light"],[data-theme="dark"]) :is(.intro h1,.i-hero h1,.idealize-banner h1,.wa-hero h1,.workhead h2,.panel h3,.ej-directory-card h3,.wa-panel h2,.idealize-shell h2,.i-section h2){
+ text-shadow:1px 2px 0 var(--nejlon-title-shadow),2px 3px 0 var(--nejlon-title-edge)!important;
+}
+html:is([data-theme="light"],[data-theme="dark"]) :is(.intro h1,.i-hero h1,.idealize-banner h1,.wa-hero h1){
+ text-shadow:2px 2px 0 var(--nejlon-title-shadow),2px 3px 0 var(--nejlon-title-edge)!important;
+}
+@media(max-width:600px){html:is([data-theme="light"],[data-theme="dark"]) :is(.intro h1,.i-hero h1,.idealize-banner h1,.wa-hero h1){text-shadow:1px 2px 0 var(--nejlon-title-shadow)!important}}
