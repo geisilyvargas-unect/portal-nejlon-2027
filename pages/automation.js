@@ -9,6 +9,7 @@ const esc=x=>String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&
 const validUrl=x=>{try{const u=new URL(x);return u.protocol==='https:'?u.href:null}catch{return null}};
 const formURL=id=>new URL('./responder.html?id='+encodeURIComponent(id),location.href).href;
 let session=null,formRows=[],currentFiles=[],ejs=[],reportRows=[];
+let weeklyData=null;
 try{const stored=JSON.parse(sessionStorage.getItem(STORE)||'null');if(stored&&stored.access_token)session=stored}catch{}
 function toast(s){$('auto-toast').textContent=s;clearTimeout(toast.timer);toast.timer=setTimeout(()=>$('auto-toast').textContent='',6500)}
 function tab(which){document.querySelectorAll('.automation-tabs button').forEach(b=>{const yes=b.dataset.tab===which;b.classList.toggle('active',yes);if(yes)b.setAttribute('aria-current','page');else b.removeAttribute('aria-current')});document.querySelectorAll('.auto-tab').forEach(p=>p.hidden=p.dataset.panel!==which);window.scrollTo({top:0,behavior:'smooth'})}
@@ -75,11 +76,69 @@ function renderForms(){
  $('auto-forms').innerHTML=formRows.length?formRows.map(f=>'<article class="automation-form-card" data-form-id="'+esc(f.id)+'"><div class="automation-form-card-head"><div><strong>'+esc(f.title)+'</strong><small>'+esc(f.kind)+' · '+new Date(f.created_at).toLocaleDateString('pt-BR')+'</small></div><span class="tag '+(f.status==='open'?'green':f.status==='closed'?'red':'yellow')+'">'+esc(f.status==='open'?'ABERTO':f.status==='closed'?'ENCERRADO':'RASCUNHO')+'</span></div><div class="automation-actions">'+link(f.status==='open'?formURL(f.id):null,'Responder pelo Portal')+link(f.google_responder_url,'Google Forms ↗')+link(messageLink(f),'Preparar mensagem ↗')+'</div><div class="automation-actions">'+(f.status==='draft'?'<button type="button" data-activity="publish" class="btn red">Publicar</button>':f.status==='open'?'<button type="button" data-activity="close" class="btn">Encerrar</button>':'')+(f.google_form_id?'<button type="button" data-activity="sync" class="btn">Sincronizar Google</button>':'<label class="auto-google-attach">Vincular Forms existente <input type="text" class="auto-google-url" placeholder="URL de edição do Google Forms" aria-label="URL de edição do Google Forms"><button type="button" class="btn" data-activity="attach">Vincular</button></label>')+'<button type="button" data-activity="report" class="btn">Consultar resultados</button></div></article>').join(''):'<p>Nenhum formulário criado ainda. Comece em “Criar em minutos”.</p>';
  refreshFormsSelector();
 }
+function formatDue(value){
+ if(!value)return 'Prazo não cadastrado';
+ const d=new Date(value);
+ return Number.isNaN(d.getTime())?'Prazo inválido':d.toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'});
+}
+function weeklyMessage(){
+ if(!weeklyData)return 'Panorama semanal indisponível.';
+ const forms=weeklyData.open_forms||[];
+ const lines=['Falaaaa, Conselho! ❤️🖤','','Passando para compartilhar os prazos das deliberações em aberto:',''];
+ for(const f of forms){
+  const due=formatDue(f.due_at);
+  lines.push('📌 *'+f.title+'*');
+  lines.push('⏰ '+due);
+  lines.push('📋 '+f.pending_ejs.length+' EJs sem resposta válida registrada');
+  lines.push('🔴 Portal NEJLON: '+formURL(f.id));
+  if(f.google_responder_url)lines.push('🟢 Google Forms: '+f.google_responder_url);
+  lines.push('');
+ }
+ if(!forms.length)lines.push('Não há deliberações abertas para cobrar nesta semana. ❤️');
+ lines.push('Se você já respondeu pelo Google Forms, desconsidere a pendência até a sincronização e conferência da PRESCON.');
+ lines.push('Qualquer dúvida, podem me chamar! ❤️');
+ return lines.join('\n');
+}
+function overviewText(){
+ if(!weeklyData)return 'Panorama semanal ainda não carregado.';
+ const w=weeklyData,forms=w.open_forms||[];
+ return ['PRESCON · PANORAMA DA REDE','Atualizado: '+new Date(w.generated_at).toLocaleString('pt-BR'),
+  'Deliberações abertas: '+w.active_count,'Respostas externas para validar: '+w.pending_review_total,
+  'Prazos nos próximos 7 dias: '+w.due_soon.length,'Prazos ultrapassados: '+w.overdue.length,'',
+  ...forms.flatMap(f=>[f.title+' · '+formatDue(f.due_at),
+    'EJs sem resposta válida: '+f.pending_ejs.length+' / '+f.total_ejs,
+    'Respostas aguardando validação: '+f.pending_review,
+    f.pending_ejs.length?'Pendentes: '+f.pending_ejs.map(x=>x.name).join(', '):'Todas as EJs têm resposta validada',''])
+ ].join('\n');
+}
+async function loadWeekly(){
+ $('auto-weekly-status').textContent='Consultando dados reais do Portal…';
+ try{
+  const w=await request('/forms?action=weekly');
+  weeklyData=w;
+  $('auto-weekly-status').textContent='Atualizado em '+new Date(w.generated_at).toLocaleString('pt-BR')+'. Respostas externas pendentes de validação não contam como voto confirmado.';
+  const cards=[
+    ['Deliberações abertas',w.active_count],
+    ['Prazos nos próximos 7 dias',(w.due_soon||[]).length],
+    ['Respostas para conferir',w.pending_review_total],
+    ['Prazos ultrapassados',(w.overdue||[]).length]
+  ];
+  $('auto-weekly-stats').innerHTML=cards.map(([name,n])=>'<article><span>'+esc(name)+'</span><strong>'+esc(n)+'</strong></article>').join('');
+  $('auto-weekly-items').innerHTML=w.open_forms.length?w.open_forms.map(f=>{
+    const overdue=w.overdue.includes(f.id),soon=w.due_soon.includes(f.id);
+    const status=overdue?'PRAZO ULTRAPASSADO':soon?'PRAZO NESTA SEMANA':'EM ABERTO';
+    const warning=f.pending_review?'<p class="automation-week-alert">'+f.pending_review+' resposta(s) externa(s) aguardando conferência da EJ.</p>':'';
+    return '<article class="automation-week-item"><div class="automation-week-top"><div><strong>'+esc(f.title)+'</strong><span>'+esc(formatDue(f.due_at))+'</span></div><span class="tag '+(overdue?'red':soon?'yellow':'green')+'">'+status+'</span></div><div class="automation-week-count"><strong>'+f.pending_ejs.length+'</strong><span>EJs sem resposta validada, de '+f.total_ejs+'</span></div>'+warning+'<details><summary>Consultar EJs pendentes</summary><p>'+esc(f.pending_ejs.length?f.pending_ejs.map(e=>e.name).join(' · '):'Todas têm resposta validada.')+'</p></details><button type="button" class="btn" data-week-report="'+esc(f.id)+'">Ver respostas e ressalvas →</button></article>';
+  }).join(''):'<p class="automation-muted">Nenhuma deliberação aberta. Quando você publicar um formulário, ele aparecerá aqui automaticamente.</p>';
+ }catch(e){weeklyData=null;$('auto-weekly-status').textContent='Não foi possível carregar o panorama: '+e.message;$('auto-weekly-stats').innerHTML='';$('auto-weekly-items').innerHTML='';}
+}
+
 async function load(){
  const response=await request('/drive?action=status');
  authVisible(true);
  $('auto-user').textContent=session.user?.email||'PRESCON';
  statusNotice(response);formRows=response.forms||[];renderFiles(response.files||[]);renderForms();
+ await loadWeekly();
  const query=new URLSearchParams(location.search);
  if(query.get('google')==='conectado'){toast('Google autorizado. Verifique o status de conexão.');history.replaceState(null,'',location.pathname)}
  else if(query.get('google')==='cancelado'){toast('Conexão Google cancelada.');history.replaceState(null,'',location.pathname)}
@@ -99,7 +158,7 @@ async function createForm(ev){
  const result=$('auto-create-result');result.textContent='Criando o rascunho…';
  try{
   const questions=kind==='pf'?[]:[{id:'pergunta1',label:kind==='event'?'Confirma sua participação?':kind==='survey'?'Como avalia a atividade?':'Sua resposta',type:kind==='event'?'choice':kind==='survey'?'choice':'text',required:true,options:kind==='event'?['Sim','Não','Talvez']:kind==='survey'?['Ótima','Boa','Regular','Ruim']:[]}];
-  const response=await request('/forms?action=create',{method:'POST',data:{title,kind,description:x.get('description'),questions,createGoogle}});
+  const response=await request('/forms?action=create',{method:'POST',data:{title,kind,description:x.get('description'),questions,createGoogle,dueAt:x.get('due')?new Date(String(x.get('due'))).toISOString():null}});
   const created=response.form;if(!created?.id)throw Error('O servidor não devolveu o formulário criado.');
   let folderStatus='Pasta não solicitada.';
   if(createFolder){
@@ -150,6 +209,22 @@ async function review(id,state,ejId){
  toast('Situação da resposta atualizada.');
  await getReport($('auto-report-form').value);
 }
+$('auto-weekly-refresh').addEventListener('click',loadWeekly);
+$('auto-weekly-copy').addEventListener('click',async()=>{
+ try{await navigator.clipboard.writeText(overviewText());toast('Panorama semanal copiado.');}
+ catch{toast('Não foi possível copiar. Use o menu do navegador para copiar as informações.')}
+});
+$('auto-weekly-whatsapp').addEventListener('click',()=>{
+ if(!weeklyData){toast('Carregue primeiro o panorama semanal.');return}
+ const message=weeklyMessage();
+ // A pessoa escolhe o grupo e confirma o envio; não dispara automaticamente.
+ window.open('https://api.whatsapp.com/send?text='+encodeURIComponent(message),'_blank','noopener,noreferrer');
+ toast('Selecione o grupo do Conselho e confirme o envio pelo WhatsApp.');
+});
+$('auto-weekly-items').addEventListener('click',async e=>{
+ const b=e.target.closest('[data-week-report]');if(!b)return;
+ tab('relatorios');$('auto-report-form').value=b.dataset.weekReport;await getReport(b.dataset.weekReport);
+});
 document.querySelector('.automation-tabs').addEventListener('click',e=>{const button=e.target.closest('[data-tab]');if(button)tab(button.dataset.tab)});
 document.querySelectorAll('[data-go]').forEach(button=>button.addEventListener('click',()=>tab(button.dataset.go)));
 $('auto-login-form').addEventListener('submit',login);$('auto-logout').addEventListener('click',logout);
