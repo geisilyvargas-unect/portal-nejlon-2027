@@ -247,3 +247,40 @@ body :is(h1,h2,h3).nejlon-layer-title > .nejlon-title-back :is(em,span,strong){
  }
 }
 @media print{body :is(h1,h2,h3).nejlon-layer-title > .nejlon-title-back{display:none!important}}
+
+
+/* REFERÊNCIA VISUAL VALIDADA: capa PORTFÓLIO UNIFICADO NEJLON.
+   Branco #fff, borda preta grossa, extrusão vermelha #ff0000 contornada. */
+html body :is(h1,h2,h3,.page-title,.section-title).nejlon-layer-title{
+ position:relative!important;isolation:isolate!important;display:block;
+ font-family:var(--nejlon-title-font)!important;font-weight:1000!important;
+ font-stretch:condensed!important;letter-spacing:-.045em!important;
+ line-height:1.04!important;text-transform:uppercase!important;
+ color:#fff!important;-webkit-text-stroke:3.5px #000!important;
+ paint-order:stroke fill!important;text-shadow:none!important;
+ overflow:visible!important;
+}
+html body .nejlon-layer-title > .nejlon-title-front{
+ position:relative!important;z-index:2!important;display:block!important;
+ color:#fff!important;-webkit-text-stroke:3.5px #000!important;
+ paint-order:stroke fill!important;text-shadow:none!important;
+}
+html body .nejlon-layer-title > .nejlon-title-back{
+ position:absolute!important;inset:0!important;z-index:1!important;
+ display:block!important;transform:translate(-4px,9px)!important;
+ color:#e52d35!important;-webkit-text-stroke:3.5px #000!important;
+ paint-order:stroke fill!important;text-shadow:none!important;
+ font:inherit!important;letter-spacing:inherit!important;line-height:inherit!important;
+ text-transform:inherit!important;pointer-events:none!important;
+ white-space:inherit!important;overflow-wrap:inherit!important;
+}
+html body .nejlon-layer-title > :is(.nejlon-title-front,.nejlon-title-back) :is(span,em,strong){
+ color:inherit!important;-webkit-text-stroke:inherit!important;
+ font:inherit!important;
+}
+html body .nejlon-layer-title::before{content:none!important;display:none!important}
+@media(max-width:600px){
+ html body .nejlon-layer-title > :is(.nejlon-title-front,.nejlon-title-back){-webkit-text-stroke:2.5px #000!important}
+ html body .nejlon-layer-title > .nejlon-title-back{transform:translate(-2px,6px)!important}
+}
+@media print{html body .nejlon-layer-title > .nejlon-title-back{display:none!important}}
