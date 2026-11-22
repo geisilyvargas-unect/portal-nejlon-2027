@@ -12,7 +12,6 @@ export function DeliberationResponseForm({deliberationId,scenarios,previous}:{de
     if(a.scenario_key!==key)return a;
     if(field!=='position')return {...a,[field]:value};
     // Uma escolha não deve carregar ressalvas/sugestões de outro posicionamento.
-    if(value==='abstention')return {...a,position:value as Position,justification:'',suggestions:'',caveats:''};
     return {
       ...a,position:value as Position,
       suggestions:value==='suggestions'?a.suggestions:'',
@@ -30,7 +29,7 @@ export function DeliberationResponseForm({deliberationId,scenarios,previous}:{de
     <div className="voting-wizard-head">
       <span className="eyebrow">VOTAÇÃO INSTITUCIONAL • CONSELHO DELIBERATIVO</span>
       <h2>Seu voto, passo a passo</h2>
-      <p>Analise cada assunto, escolha uma opção e preencha somente os campos correspondentes. O sistema identifica sua EJ pelo login.</p>
+      <p>Analise cada assunto, escolha uma opção e registre seus pontos no campo de justificativa e, quando necessário, preencha sugestões ou ressalvas. O sistema identifica sua EJ pelo login.</p>
       <div className="voting-wizard-stats" aria-label="Progresso das respostas">
         <strong>{complete} / {scenarios.length}</strong>
         <span>cenários concluídos</span>
@@ -61,8 +60,8 @@ export function DeliberationResponseForm({deliberationId,scenarios,previous}:{de
         <p className="small muted vote-hint" style={{margin:0}}>{answer.position?VOTE_DESCRIPTIONS[answer.position]: 'Selecione a opção que representa o posicionamento da sua EJ.'}</p>
         {answer.position==='qualified'&&<div className="vote-manual-warning">Ressalva condicionada: a PRESCON avaliará sua condição antes que ela conte como aprovação ou reprovação.</div>}
         {answer.position==='suggestions'&&<div className="vote-manual-success">Esta opção já conta como aprovação; suas sugestões serão encaminhadas para análise.</div>}
-        {answer.position&&answer.position!=='abstention'&&<label>Justifique sua decisão {answer.position==='against'?'*':'(opcional)'}
-          <textarea required={answer.position==='against'} value={answer.justification} onChange={e=>change(scenario.key,'justification',e.target.value)} placeholder="Quais são os pontos que fundamentam seu posicionamento?"/>
+        {<label>Justifique a sua decisão e insira seus pontos {answer.position==='against'?'*':'(opcional)'}
+          <textarea required={answer.position==='against'} value={answer.justification} onChange={e=>change(scenario.key,'justification',e.target.value)} placeholder="Escreva seus pontos sobre este cenário (opcional, exceto em caso de reprovação)."/>
         </label>}
         {answer.position==='suggestions'&&<label>Sugestões de melhoria {answer.position==='suggestions'?'*':'(opcional)'}
           <textarea required={answer.position==='suggestions'} value={answer.suggestions} onChange={e=>change(scenario.key,'suggestions',e.target.value)} placeholder="Quais melhorias você propõe?"/>
