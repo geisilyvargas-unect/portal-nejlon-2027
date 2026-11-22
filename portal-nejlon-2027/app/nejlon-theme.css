@@ -1,0 +1,37 @@
+
+/* Tema por usuário (navegador): branco, preto e vermelho — IDV NEJLON. */
+:root{--nejlon-title-font:"CY Grotesk V3 Key","CY Grotesk V3","Arial Black",Impact,sans-serif}
+html[data-theme="light"]{color-scheme:light;--bg:#fff;--surface:#fff;--surface2:#f3f3f3;--border:#c9c9c9;--text:#121212;--muted:#444;--red:#df0000;--lime:#df0000;--petrol:#df0000}
+html[data-theme="dark"]{color-scheme:dark;--bg:#000;--surface:#111;--surface2:#202020;--border:#494949;--text:#fff;--muted:#d6d6d6;--red:#ff0000;--lime:#ff3838;--petrol:#ff0000}
+html[data-theme="red"]{color-scheme:dark;--bg:#ff0000;--surface:#101010;--surface2:#202020;--border:#535353;--text:#fff;--muted:#e2e2e2;--red:#ff0000;--lime:#ff3838;--petrol:#ff0000}
+html[data-theme="red"] :is(.sidebar,.mobile-header,.mobile-nav,.login-card,.hero,.panel,.profile-box,.scenario-editor,.vote-scenario,.notice,.report-kpi,.calendar-sidebar,.calendar-main){background:#101010;color:#fff;border-color:#484848}
+html[data-theme="red"] .sidebar{background:#070707}
+html[data-theme="red"] .main{background:#ff0000}
+html[data-theme="light"] :is(.sidebar,.mobile-header,.mobile-nav,.hero,.panel,.profile-box,.login-card,.notice,.scenario-editor,.vote-scenario){background:#fff;color:#111;border-color:#cecece}
+html[data-theme="light"] :is(.nav-link,.brand,.sidebar small,.eyebrow,.muted,.profile-box){color:#222}
+html[data-theme="red"] :is(.nav-link,.sidebar small,.profile-box,.muted){color:#eee}
+html[data-theme="red"] :is(.nav-link.active,button.primary,.button.primary){background:#ff0000;color:#fff;border-color:#ff0000}
+html[data-theme="light"] :is(button.primary,.button.primary,.nav-link.active){background:#df0000;color:#fff;border-color:#df0000}
+html[data-theme="red"] :is(input,select,textarea){background:#202020;color:#fff;border-color:#666}
+html[data-theme="light"] :is(input,select,textarea){background:#fff;color:#111;border-color:#aaa}
+html[data-theme="light"] :is(.calendar-day,.calendar-weekday,.calendar-day.outside){background:#f6f6f6;color:#111}
+html[data-theme="red"] :is(.calendar-day,.calendar-weekday,.calendar-day.outside){background:#171717;color:#fff}
+html[data-theme="red"] .calendar-day.selected{outline-color:#ff0000}
+html[data-theme="light"] .login-wrap{background:#fff}
+html[data-theme="red"] .login-wrap{background:#ff0000}
+html[data-theme="red"] .hero{background:#101010}
+html[data-theme="light"] .hero{background:#fff}
+h1,h2,h3,.brand{font-family:var(--nejlon-title-font);overflow-wrap:anywhere}
+h1{font-weight:900;text-transform:uppercase;letter-spacing:.012em;line-height:1.16}
+html[data-theme="red"] .hero h1{color:#fff;-webkit-text-stroke:1px #000;text-shadow:3px 5px 0 #ff0000}
+html[data-theme="light"] .hero h1{color:#111;text-shadow:2px 3px 0 #ffdddd}
+html[data-theme="dark"] .hero h1{color:#fff;text-shadow:2px 3px 0 #ff0000}
+:where(button,a,input,select,textarea,summary):focus-visible{outline:3px solid #ff3838;outline-offset:3px}
+@media(max-width:760px){.shell{min-width:0}.main{width:100%;overflow-wrap:anywhere}}
+@media print{html[data-theme] body{background:#fff;color:#111}html[data-theme] .panel{background:#fff;color:#111}}
+
+.theme-select{display:flex;align-items:center;gap:4px;flex-wrap:wrap;border:1px solid var(--border);border-radius:12px;padding:4px;background:var(--surface2)}
+.theme-select .theme-option{min-height:36px;padding:7px 9px;background:transparent;border:1px solid transparent;border-radius:8px;color:var(--text);font-size:.76rem;display:inline-flex;gap:5px}
+.theme-select .theme-option.selected{background:var(--red);color:#fff;border-color:var(--red)}
+.theme-select .theme-option:focus-visible{outline:3px solid #ff3838;outline-offset:2px}
+@media(max-width:430px){.theme-select .theme-option{padding:7px}.theme-select .theme-option span{display:none}}
