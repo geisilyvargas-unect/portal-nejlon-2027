@@ -8,11 +8,11 @@ function values(){
 }
 function message(){const v=values();return $('wa-template').value.replace(/\{(formulario|prazo|link_portal|link_google)\}/g,(_,key)=>v[key]).trim()}
 function validLinks(){
- const v=values();return /^https:\/\//i.test(v.link_portal)&&/^https:\/\//i.test(v.link_google);
+ const v=values();return (!$('wa-template').value.includes('{link_portal}')||/^https:\/\//i.test(v.link_portal))&&(!$('wa-template').value.includes('{link_google}')||/^https:\/\//i.test(v.link_google));
 }
 function render(){
  $('wa-preview').textContent=message();
- const w=$('wa-warning');w.textContent=validLinks()?'Mensagem pronta para compartilhar após conferência.':'Preencha os dois links HTTPS antes de compartilhar no grupo.';
+ const w=$('wa-warning');w.textContent=validLinks()?'Mensagem pronta para compartilhar após conferência.':'Preencha os links exigidos pelo modelo antes de compartilhar no grupo.';
  $('wa-share').disabled=!validLinks();
 }
 function toast(text){$('wa-toast').textContent=text;}
@@ -21,7 +21,7 @@ $('wa-copy').addEventListener('click',async()=>{
  catch{toast('Não foi possível copiar automaticamente. Selecione o texto na prévia.');}
 });
 $('wa-share').addEventListener('click',()=>{
- if(!validLinks()){toast('Insira os dois links válidos primeiro.');return}
+ if(!validLinks()){toast('Insira os links exigidos pelo modelo antes de compartilhar.');return}
  const url='https://api.whatsapp.com/send?text='+encodeURIComponent(message());
  const win=window.open(url,'_blank','noopener,noreferrer');
  if(!win)toast('O navegador bloqueou a nova aba. Copie a mensagem e cole no grupo do Conselho.');
