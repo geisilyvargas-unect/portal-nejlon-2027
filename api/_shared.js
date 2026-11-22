@@ -56,7 +56,7 @@ function verifyState(state){
  let payload;try{payload=JSON.parse(Buffer.from(parts[0],'base64url').toString())}catch{fail(400,'Autorização inválida.')}
  if(!payload.userId||!payload.expiry||Date.now()>payload.expiry)fail(400,'Autorização expirada.');return payload.userId;
 }
-function redirectUri(){return SITE+'/api/drive?action=callback'}
+function redirectUri(){return SITE+'/api/google-callback'}
 async function googleToken(code){
  return requestJson('https://oauth2.googleapis.com/token',{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:new URLSearchParams({client_id:process.env.GOOGLE_CLIENT_ID,client_secret:process.env.GOOGLE_CLIENT_SECRET,code,grant_type:'authorization_code',redirect_uri:redirectUri()}).toString()});
 }
