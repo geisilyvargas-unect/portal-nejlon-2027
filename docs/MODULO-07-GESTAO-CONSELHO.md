@@ -13,6 +13,12 @@
 5. **Acompanhamento:** PRESCON fictícia → registrar resumo de contato e próximo encontro → consultar histórico → excluir registro fictício.
 6. **Encaminhamentos:** PRESCON cria e atribui; conselheiro conclui apenas encaminhamentos atribuídos ao perfil fictício da sua EJ.
 
+## Cobertura das EJs na demonstração
+- A seleção de EJ utiliza o mesmo catálogo público de **29 EJs** de `pages/demo-data.js`, evitando listas divergentes entre os módulos.
+- Cada EJ recebe um conselheiro **inteiramente fictício**, com indicadores sintéticos e progresso individual independente. Nenhum nome ou dado de membro real é necessário.
+- A chave `sessionStorage` da demonstração passa à versão `v2` para evitar dados legados incompatíveis com o catálogo completo.
+- A seleção de EJ em DIREX Núcleo permanece desabilitada na interface; isso não é autenticação nem autorização real.
+
 ## Entidades da demonstração
 - `events`: id, title, date, time, type, agenda, visibility
 - `steps`: id, title, description, required
