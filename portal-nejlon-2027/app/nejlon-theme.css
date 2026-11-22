@@ -1,9 +1,9 @@
 
 /* Tema por usuário (navegador): branco, preto e vermelho — IDV NEJLON. */
 :root{--nejlon-title-font:"CY Grotesk V3 Key","CY Grotesk V3","Arial Black",Impact,sans-serif}
-html[data-theme="light"]{color-scheme:light;--bg:#fff;--surface:#fff;--surface2:#f3f3f3;--border:#c9c9c9;--text:#121212;--muted:#444;--red:#df0000;--lime:#9bc900;--petrol:#df0000}
-html[data-theme="dark"]{color-scheme:dark;--bg:#000;--surface:#111;--surface2:#202020;--border:#494949;--text:#fff;--muted:#d6d6d6;--red:#ff0000;--lime:#9bc900;--petrol:#ff0000}
-html[data-theme="red"]{color-scheme:dark;--bg:#ff0000;--surface:#101010;--surface2:#202020;--border:#535353;--text:#fff;--muted:#e2e2e2;--red:#ff0000;--lime:#9bc900;--petrol:#ff0000}
+html[data-theme="light"]{color-scheme:light;--bg:#fff;--surface:#fff;--surface2:#f3f3f3;--border:#c9c9c9;--text:#121212;--muted:#444;--red:#df0000;--lime:#9bc900;--petrol:#005663}
+html[data-theme="dark"]{color-scheme:dark;--bg:#000;--surface:#111;--surface2:#202020;--border:#494949;--text:#fff;--muted:#d6d6d6;--red:#ff0000;--lime:#9bc900;--petrol:#00616d}
+html[data-theme="red"]{color-scheme:dark;--bg:#ff0000;--surface:#101010;--surface2:#202020;--border:#535353;--text:#fff;--muted:#e2e2e2;--red:#ff0000;--lime:#9bc900;--petrol:#00616d}
 html[data-theme="red"] :is(.sidebar,.mobile-header,.mobile-nav,.login-card,.hero,.panel,.profile-box,.scenario-editor,.vote-scenario,.notice,.report-kpi,.calendar-sidebar,.calendar-main){background:#101010;color:#fff;border-color:#484848}
 html[data-theme="red"] .sidebar{background:#070707}
 html[data-theme="red"] .main{background:#ff0000}
@@ -87,3 +87,9 @@ html:is([data-theme="light"],[data-theme="dark"]) :is(.hero h1,.panel h2,.panel 
 html:is([data-theme="light"],[data-theme="dark"]) .hero h1{text-shadow:3px 5px 0 #ff0000,4px 6px 0 var(--nejlon-title-edge)!important}
 @media(max-width:600px){html:is([data-theme="light"],[data-theme="dark"]) .hero h1{-webkit-text-stroke:.7px var(--nejlon-title-edge)!important;text-shadow:2px 3px 0 #ff0000!important}}
 @media print{html:is([data-theme="light"],[data-theme="dark"]) :is(h1,h2,h3){text-shadow:none!important;-webkit-text-stroke:0!important}}
+
+/* Azul-petróleo: cor de apoio, sem tema adicional. */
+html[data-theme="light"]{--nejlon-petrol:#005663;--petrol:#005663}
+html[data-theme="dark"]{--nejlon-petrol:#00616d;--petrol:#00616d}
+html:is([data-theme="light"],[data-theme="dark"]) :is(.panel,.report-kpi,.profile-box)[data-accent="petrol"]{border-left:4px solid var(--nejlon-petrol)}
+html:is([data-theme="light"],[data-theme="dark"]) :is(.nav-link,.button,button)[data-accent="petrol"].active{background:var(--nejlon-petrol);color:#fff;border-color:var(--nejlon-petrol)}
