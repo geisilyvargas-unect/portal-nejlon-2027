@@ -168,7 +168,8 @@ function reports(){
 function deliberations(){
  const cards=D.delibs.filter(d=>s.role!=='ej_direx'||d.visibility!=='Conselho');
  const id=s.delib,selected=delib(id);
- const rows=cards.map(d=>'<div class="list-item"><div><strong>'+esc(d.name)+'</strong><p>'+esc(d.visibility)+' • '+(s.role==='prescon'?summary(d.id).votes+' votos fictícios':'votos ocultos durante a deliberação')+'</p></div><div class="right">'+tag(d.status,d.status==='Aberta'?'green':'yellow')+('<a class="btn red" href="./pages/formulario-deliberacao.html?id='+encodeURIComponent(d.id)+'" target="_blank" rel="noopener">Abrir formulário ↗</a><button class="btn" type="button" data-open-delib="'+d.id+'">Ver</button>')+'</div></div>').join('');
+ const stateOf=d=>{const status=String(d.status||'').toLocaleLowerCase('pt-BR');if(/avalia|análise|analise|pendente/.test(status))return 'review';if(/encerrad|fechad|concluíd|concluid|finalizad/.test(status))return 'closed';return 'open';};
+ const rows=cards.map(d=>{const state=stateOf(d),status=state==='open'?'Aberta':state==='closed'?'Encerrada':'Aguardando avaliação',action=state==='open'?'<a class="btn red" href="./pages/formulario-deliberacao.html?id='+encodeURIComponent(d.id)+'" target="_blank" rel="noopener noreferrer" aria-label="Responder formulário de '+esc(d.name)+'">Responder formulário ↗</a>':state==='closed'?'<button class="btn red" type="button" data-demo-report="'+esc(d.id)+'" aria-label="Ver relatório demonstrativo de '+esc(d.name)+'">Ver relatório ↗</button>':'<button class="btn" type="button" disabled aria-disabled="true" title="Aguardando avaliação do presidente do Conselho">Aguardando avaliação da PRESCON</button>';return '<div class="list-item deliberation-status-row"><div><strong>'+esc(d.name)+'</strong><p>'+esc(d.visibility)+' • '+(state==='open'?'Votação disponível':state==='review'?'Encaminhada à avaliação do presidente do Conselho':'Deliberação encerrada')+' · Demonstração</p></div><div class="right">'+tag(status,state==='open'?'green':state==='closed'?'yellow':'')+action+'</div></div>';}).join('');
  const extra=s.role==='prescon'?panel('Respostas da deliberação selecionada',selected.name,recordList(id)):panel('Permissões nesta visão','A DIREX e o Conselho consultam apenas os conteúdos autorizados.','<div class="notice">Para votar, utilize o formulário autenticado da deliberação.</div>');
  return '<div class="view-grid">'+(s.role==='prescon'?panel('Criar deliberação financeira','A criação e a publicação são centralizadas na Central de Automações.','<p class="note">Para importar XLSX, gerar a análise e preparar a votação, use a aba Automação de PF.</p>'):'')+panel('Deliberações da Rede','Exemplos de diferentes tipos de votação e visibilidade.',rows)+extra+'</div>';
 }
@@ -237,8 +238,17 @@ function render(){
 }
 // Os cards de EJ são links reais, inclusive no radar de indicadores.
 // Em dispositivos que interceptam o clique, a navegação usa o href nativo.
+function openDemoDeliberationReport(id){
+ const d=D.delibs.find(x=>x.id===id);
+ if(!d||!/encerrad|fechad|concluíd|concluid|finalizad/i.test(String(d.status)))return;
+ const vv=votes(id), counts=Object.entries(D.positions).map(([key,p])=>'<tr><td>'+esc(p.label)+'</td><td>'+vv.filter(v=>v.position===key).length+'</td></tr>').join('');
+ const html='<h1>'+esc(d.name)+'</h1><p><strong>RELATÓRIO DEMONSTRATIVO — DELIBERAÇÃO ENCERRADA</strong></p><p>Dados fictícios do protótipo. Não representam votos oficiais nem deliberação institucional.</p><p>Total de respostas fictícias: '+vv.length+'</p><table><thead><tr><th>Posicionamento</th><th>Respostas fictícias</th></tr></thead><tbody>'+counts+'</tbody></table><p>Qualquer parecer, sugestão ou ressalva exige análise humana da PRESCON.</p>';
+ const ref='nejlon-demo-report-'+id+'-'+Date.now();
+ try{sessionStorage.setItem(ref,JSON.stringify({demo:true,title:d.name,createdAt:Date.now(),html}));window.location.href='./pages/relatorio.html?ref='+encodeURIComponent(ref)}catch{alert('Não foi possível abrir o relatório demonstrativo neste navegador.')}
+}
 document.addEventListener('click',e=>{
  const target=e.target.closest('button');if(!target)return;
+ if(target.dataset.demoReport){openDemoDeliberationReport(target.dataset.demoReport);return;}
  if(target.dataset.calendarRemove&&s.role==='prescon'){const id=target.dataset.calendarRemove;if(calendarSave(calendarEntries().filter(x=>x.id!==id)))render();else alert('Não foi possível atualizar a agenda neste navegador.');return;}
  if(target.dataset.calendarShift){const d=new Date(s.calendarYear,s.calendarMonth+Number(target.dataset.calendarShift),1);s.calendarYear=d.getFullYear();s.calendarMonth=d.getMonth();render();return;}
  if(target.hasAttribute('data-calendar-today')){s.calendarYear=new Date().getFullYear();s.calendarMonth=new Date().getMonth();render();return;}
