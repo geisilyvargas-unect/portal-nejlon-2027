@@ -40,7 +40,7 @@ return '<h2>Agenda institucional</h2><div class="stack">'+events.map(e=>card(e.t
 }
 function learning(){
 const m=own(),done=data.progress[m.id]||[],pct=Math.round(100*done.length/data.steps.length);
-return '<h2>Jornada do Conselheiro</h2><p class="muted">Acompanhamento demonstrativo de '+esc(m.name)+' · '+esc(m.ej.toUpperCase())+'</p><div class="card"><div class="line"><strong>Progresso</strong><strong>'+pct+'%</strong></div><div class="progress" role="progressbar" aria-valuenow="'+pct+'" aria-valuemin="0" aria-valuemax="100" aria-label="Progresso na trilha"><div style="width:'+pct+'%"></div></div></div><div class="stack">'+data.steps.map((step,i)=>card('Etapa '+(i+1)+' — '+step.title,'<p>'+esc(step.description)+'</p><span class="tag">'+(step.required?'Obrigatória':'Opcional')+'</span> <span class="tag">'+(done.includes(step.id)?'Concluída':'A iniciar')+'</span><p>'+btn('step',done.includes(step.id)?'Desmarcar conclusão':'Marcar concluída',step.id)+'</p>')).join('')+'</div>'+note();
+return '<h2>Jornada do Conselheiro</h2><p class="muted">Acompanhamento demonstrativo de '+esc(m.name)+' · '+esc(m.ej.toUpperCase())+'</p><div class="card"><div class="line"><strong>Progresso</strong><strong>'+pct+'%</strong></div><div class="progress" role="progressbar" aria-valuenow="'+pct+'" aria-valuemin="0" aria-valuemax="100" aria-label="Progresso na trilha"><div style="width:'+pct+'%"></div></div></div><div class="stack">'+data.steps.map((step,i)=>card('Etapa '+(i+1)+' — '+esc(step.title),'<p>'+esc(step.description)+'</p><span class="tag">'+(step.required?'Obrigatória':'Opcional')+'</span> <span class="tag">'+(done.includes(step.id)?'Concluída':'A iniciar')+'</span><p>'+btn('step',done.includes(step.id)?'Desmarcar conclusão':'Marcar concluída',step.id)+'</p>')).join('')+'</div>'+note();
 }
 function engagement(){
 const members=data.members.filter(m=>isAdmin()||m.ej===state.ej);
@@ -57,7 +57,7 @@ return '<h2>Encaminhamentos</h2><div class="stack">'+allowed.map(a=>card(a.title
 const screens={overview,calendar,learning,engagement,checkins,resources,actions};
 function render(){
 if(!visibleTabs().some(t=>t[0]===state.tab))state.tab='overview';
-$('tabs').innerHTML=visibleTabs().map(([id,title])=>'<button type="button" data-tab="'+id+'" aria-selected="'+(state.tab===id)+'">'+title+'</button>').join('');
+$('tabs').innerHTML=visibleTabs().map(([id,title])=>'<button type="button" data-tab="'+id+'" aria-pressed="'+(state.tab===id)+'">'+title+'</button>').join('');
 $('screen').innerHTML=screens[state.tab]();
 $('ej').disabled=state.role==='nucleus_direx';
 }
