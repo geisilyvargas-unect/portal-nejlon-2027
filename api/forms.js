@@ -45,7 +45,7 @@ async function createGoogleForm(token,title,description,questions){
 }
 async function overview(user){
  const prescon=user.role==='prescon';
- const forms=await db('portal_forms',{query:'select=id,title,description,questions,kind,status,audience,google_form_id,google_responder_url,created_at&'+(prescon?'':'status=eq.open&')+'order=created_at.desc&limit=100'});
+ const forms=await db('portal_forms',{query:'select=id,title,description,questions,kind,status,audience,google_form_id,google_responder_url,created_at,due_at&'+(prescon?'':'status=eq.open&')+'order=created_at.desc&limit=100'});
  return prescon?forms:forms.filter(f=>f.audience==='all_members'||user.role==='counselor');
 }
 async function syncGoogle(user,formId){
@@ -86,6 +86,31 @@ async function handler(req,res){
  const user=await userFromToken(req);
  if(req.method==='GET'){
   if(action==='list')return json(res,200,{forms:await overview(user)});
+  if(action==='weekly'){
+   if(user.role!=='prescon')fail(403,'Somente a PRESCON pode consultar a situação da Rede.');
+   const forms=(await overview(user)).filter(f=>f.status==='open');
+   const ejs=await db('ejs',{query:'select=id,name,slug&order=name.asc&limit=100'});
+   const enriched=[];
+   for(const f of forms.slice(0,40)){
+    const submissions=await db('portal_form_submissions',{query:'select=ej_id,state,channel&form_id=eq.'+f.id+'&limit=2000'});
+    const accepted=new Set(submissions.filter(x=>x.state==='accepted'&&x.ej_id).map(x=>x.ej_id));
+    enriched.push({
+     id:f.id,title:f.title,kind:f.kind,due_at:f.due_at,
+     valid_votes:accepted.size,pending_ejs:ejs.filter(x=>!accepted.has(x.id)).map(x=>({id:x.id,name:x.name})),
+     pending_review:submissions.filter(x=>x.state==='pending_review').length,
+     google_responder_url:f.google_responder_url,
+     // A lista de ausentes parte das EJs cadastradas, não de comparação por e-mail.
+     total_ejs:ejs.length
+    });
+   }
+   const now=Date.now(),week=7*24*3600*1000;
+   const dueSoon=enriched.filter(f=>f.due_at&&Date.parse(f.due_at)>=now&&Date.parse(f.due_at)<=now+week);
+   const overdue=enriched.filter(f=>f.due_at&&Date.parse(f.due_at)<now);
+   return json(res,200,{generated_at:new Date().toISOString(),active_count:enriched.length,
+    open_forms:enriched,pending_review_total:enriched.reduce((n,f)=>n+f.pending_review,0),
+    due_soon:dueSoon.map(f=>f.id),overdue:overdue.map(f=>f.id),
+    scope:'Dados de formulários abertos cadastrados no Portal. Demandas e calendário ainda não integrados.'});
+  }
   if(action==='ejs'){if(user.role!=='prescon')fail(403,'Apenas PRESCON.');return json(res,200,{ejs:await db('ejs',{query:'select=id,name,slug&order=name.asc&limit=100'})});}
   if(action==='form'){
    const id=String(req.query.id||'');if(!uuid(id))fail(400,'Formulário inválido.');
@@ -107,8 +132,9 @@ async function handler(req,res){
  if(action==='submit'){
   if(user.role!=='counselor'||!user.ej_id)fail(403,'Somente conselheiros vinculados a uma EJ podem responder.');
   const formId=String(data.formId||'');if(!uuid(formId))fail(400,'Formulário inválido.');
-  const [form]=await db('portal_forms',{query:'select=id,questions,status,audience&status=eq.open&id=eq.'+formId+'&limit=1'});
+  const [form]=await db('portal_forms',{query:'select=id,questions,status,audience,due_at&status=eq.open&id=eq.'+formId+'&limit=1'});
   if(!form||form.audience!=='counselor'&&form.audience!=='all_members')fail(404,'Formulário não aberto para este perfil.');
+  if(form.due_at&&new Date(form.due_at).getTime()<Date.now())fail(409,'O prazo deste formulário encerrou. Entre em contato com a PRESCON.');
   const answerMap={};const input=data.answers||{};
   for(const q of form.questions){
    const answer=String(input[q.id]??'').trim().slice(0,10000);
@@ -128,13 +154,15 @@ async function handler(req,res){
   const kind=['pf','generic','survey','event'].includes(data.kind)?data.kind:'generic';
   const questions=normalizeQuestions(data.questions,kind);
   const description=String(data.description||'').trim().slice(0,3500);
+  const due_at=data.dueAt&&Number.isFinite(Date.parse(data.dueAt))?new Date(data.dueAt).toISOString():null;
+  if(data.dueAt&&!due_at)fail(400,'Prazo inválido.');
   let googleData={};
   if(data.createGoogle===true){
    const token=await accessToken(user.userId);
    const created=await createGoogleForm(token,title,description,questions);
    googleData={google_form_id:created.formId,google_responder_url:created.responderUrl,google_question_map:created.map};
   }
-  const created=await db('portal_forms',{method:'POST',prefer:'return=representation',data:{title,description,kind,questions,status:'draft',audience:data.audience==='all_members'?'all_members':'counselor',created_by:user.userId,...googleData}});
+  const created=await db('portal_forms',{method:'POST',prefer:'return=representation',data:{title,description,kind,questions,status:'draft',audience:data.audience==='all_members'?'all_members':'counselor',due_at,created_by:user.userId,...googleData}});
   return json(res,201,{form:created[0],message:'Rascunho criado. Revise e publique quando estiver pronto.'});
  }
  if(action==='publish'||action==='close'){
