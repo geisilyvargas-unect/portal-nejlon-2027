@@ -16,6 +16,7 @@
 <nav class="automation-tabs" aria-label="Áreas da central">
 <button type="button" class="active" data-tab="inicio" aria-current="page">Visão geral</button>
 <button type="button" data-tab="criacao">Criar em minutos</button>
+<button type="button" data-tab="pf">Automação de PF</button>
 <button type="button" data-tab="drive">Google Drive</button>
 <button type="button" data-tab="formularios">Formulários</button>
 <button type="button" data-tab="demandas">Demandas</button>
@@ -37,7 +38,7 @@
 <article><span>ARQUIVOS</span><strong id="auto-file-total">—</strong><small>No histórico da Central</small></article>
 </div>
 <div class="automation-panel"><div class="automation-panel-title"><div><span class="eyebrow">PRÓXIMA AÇÃO</span><h2>O que vamos fazer hoje?</h2></div></div>
-<div class="automation-shortcuts"><button type="button" data-go="criacao"><b>Nova deliberação</b><small>Formulário + organização + WhatsApp</small><span>Abrir criação →</span></button><button type="button" data-go="drive"><b>Guardar documento</b><small>Importe o arquivo para a pasta institucional</small><span>Enviar arquivo →</span></button><button type="button" data-go="demandas"><b>Demandas da Rede</b><small>Justificativas, prazos e decisões</small><span>Acompanhar demandas →</span></button><button type="button" data-go="relatorios"><b>Conferir respostas</b><small>Google + Portal no mesmo acompanhamento</small><span>Ver resultados →</span></button><a href="./whatsapp.html#biblioteca"><b>Biblioteca de mensagens</b><small>Modelos prontos para o Conselho</small><span>Preparar comunicado →</span></a></div>
+<div class="automation-shortcuts"><button type="button" data-go="pf"><b>Automatizar planejamento financeiro</b><small>Importar XLSX, visualizar PDF e gerar formulário</small><span>Abrir automação →</span></button><button type="button" data-go="drive"><b>Guardar documento</b><small>Importe o arquivo para a pasta institucional</small><span>Enviar arquivo →</span></button><button type="button" data-go="demandas"><b>Demandas da Rede</b><small>Justificativas, prazos e decisões</small><span>Acompanhar demandas →</span></button><button type="button" data-go="relatorios"><b>Conferir respostas</b><small>Google + Portal no mesmo acompanhamento</small><span>Ver resultados →</span></button><a href="./whatsapp.html#biblioteca"><b>Biblioteca de mensagens</b><small>Modelos prontos para o Conselho</small><span>Preparar comunicado →</span></a></div>
 </div>
 <div class="automation-panel"><h2>Pontos que precisam da sua decisão</h2><div class="automation-checks"><p><strong>Segurança:</strong> respostas Google sem vínculo validado ficam para conferência antes de contar como voto aceito.</p><p><strong>Publicação:</strong> rascunhos só são disponibilizados após você publicar.</p><p><strong>WhatsApp:</strong> o texto é preparado automaticamente, mas você escolhe o grupo e confirma o envio.</p></div></div>
 </section>
@@ -55,6 +56,15 @@
 <button type="submit" class="btn red">Criar rascunho e preparar recursos</button>
 </form><div id="auto-create-result" class="automation-result" role="status"></div></div>
 </section>
+<section class="auto-tab" data-panel="pf" hidden>
+<div class="automation-panel" id="pf-automation-area">
+<span class="eyebrow">PRESCON · AUTOMAÇÃO DE DELIBERAÇÕES FINANCEIRAS</span>
+<h2>Da planilha ao formulário, em um só lugar</h2>
+<p>Envie o planejamento financeiro original (XLSX), anexe um PDF para consulta visual, revise a análise e gere um formulário demonstrativo. Esta ferramenta é independente da criação de formulários institucionais autenticados da aba “Criar em minutos”.</p>
+<div class="automation-actions"><a class="btn" href="./prescon-criar-deliberacao.html" target="_blank" rel="noopener">Abrir automação em tela cheia ↗</a></div>
+<iframe title="Automação de planejamento financeiro — criação de deliberação" loading="lazy" src="./prescon-criar-deliberacao.html?origem=automacoes" style="display:block;width:100%;height:1100px;max-height:80vh;border:2px solid #000;background:#fff;margin-top:18px"></iframe>
+<p class="automation-muted">Demonstração local: arquivos preservados no navegador. Para publicar uma deliberação institucional, utilize o fluxo autenticado de formulários.</p>
+</div></section>
 <section class="auto-tab" data-panel="drive" hidden>
 <div class="automation-panel"><h2>Conta Google e pasta institucional</h2><p>Autorize sua conta Google para a Central criar e organizar arquivos em seu nome. Nenhuma senha do Google fica armazenada no portal.</p>
 <div class="automation-actions"><button type="button" class="btn red" id="auto-connect-google">Conectar conta Google</button><button type="button" class="btn" id="auto-create-root">Criar / abrir pasta NEJLON</button></div><div id="auto-drive-result" class="automation-result" role="status"></div></div>
