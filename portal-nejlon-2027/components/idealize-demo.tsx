@@ -4,8 +4,8 @@ import Link from 'next/link';
 import {CalendarDays,ChevronDown,Download,FileSpreadsheet,Info,MessageSquareText,Send} from 'lucide-react';
 import {EJS_DEMO} from '@/lib/demo-ejs';
 import {financialMeasure,money,PROJECTION_KEYS,PROJECTION_LABELS,type ProjectionKey,type FinancialAlternative} from '@/lib/financial-plan';
-import idealizeRaw from '../../pages/idealize-financial.json';
-import votesRaw from '../../pages/idealize-responses.json';
+import idealizeRaw from '@/lib/idealize-data.json';
+import votesRaw from '@/lib/idealize-responses.json';
 
 type DetailAlternative=FinancialAlternative&{
  id:string;scenarioKey:string;label:string;venue:string;title:string;
