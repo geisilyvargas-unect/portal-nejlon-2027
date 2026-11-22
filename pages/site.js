@@ -229,7 +229,7 @@ function render(){
  const indicators=s.role==='prescon'?'<div class="portal-admin-heading">ANÁLISE · PRESCON</div>'+navButton(['engajamento','▦','Indicadores']):'';
  const supplemental='<a class="nav-button" href="./pages/ej-profile.html">⬡ Perfil da EJ</a>'+(s.role==='nucleus_direx'?'<a class="nav-button" href="./pages/fiscalizacao.html">◉ Fiscalização</a>':'');
  $('desktop-nav').innerHTML=common.map(navButton).join('')+admin+supplemental+indicators;
- $('mobile-nav').innerHTML=common.map(navButton).join('')+admin+supplemental;
+ $('mobile-nav').innerHTML=common.map(navButton).join('')+admin+supplemental+indicators;
  heading();
  if(s.role==='prescon')$('view').innerHTML=s.section==='painel'?overview():s.section==='engajamento'?'<div class="view-grid">'+heatmap()+trend()+'</div>':s.section==='deliberacoes'?deliberations():s.section==='pendencias'?pending():s.section==='relatorios'?reports():extras();
  else $('view').innerHTML=s.section==='painel'?roleLanding():s.section==='deliberacoes'&&s.role==='counselor'?deliberations():s.section==='deliberacoes'&&s.role==='nucleus_direx'?panel('Deliberações e formulários','A DIREX do Núcleo acompanha pelo painel autenticado de fiscalização, sem editar nem ver votos individuais.','<a class="btn red" href="./pages/fiscalizacao.html">Abrir fiscalização →</a>'):extras();
