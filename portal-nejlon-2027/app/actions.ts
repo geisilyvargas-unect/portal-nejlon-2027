@@ -331,3 +331,25 @@ export async function publishDeliberationReport(form:FormData) {
  revalidatePath('/relatorios');revalidatePath('/deliberacoes');
  redirect('/relatorios/publicado/'+created!.id);
 }
+
+/** Upload privado do PF original pela PRESCON, vinculado à deliberação. */
+export async function uploadDeliberationPf(form:FormData){
+ const viewer=await requireRole(['prescon']);
+ const id=required(form,'deliberation_id',50);
+ if(!/^[0-9a-f-]{36}$/i.test(id))fail('Deliberação inválida.');
+ const file=form.get('pf_file');
+ if(!(file instanceof File)||file.size<1||file.size>15*1024*1024||!(/\.(xlsx|xls|csv)$/i.test(file.name)))fail('Envie uma planilha XLSX, XLS ou CSV de até 15 MB.');
+ const db=await createClient();
+ const {data:d,error:de}=await db.from('deliberations').select('id,is_demo,is_historical').eq('id',id).maybeSingle();
+ checkError(de);
+ if(!d||d.is_demo||d.is_historical)fail('Selecione uma deliberação oficial válida.');
+ const ext=file.name.split('.').pop()?.toLowerCase();
+ const path=id+'/'+crypto.randomUUID()+'.'+ext;
+ const contentType=ext==='xlsx'?'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet':ext==='xls'?'application/vnd.ms-excel':'text/csv';
+ const {error:up}=await db.storage.from('deliberation-pf').upload(path,file,{contentType,upsert:false});
+ checkError(up);
+ const {error:save}=await db.from('deliberation_pf_files').upsert({deliberation_id:id,storage_path:path,file_name:file.name.slice(0,180),file_size:file.size,uploaded_by:viewer.id},{onConflict:'deliberation_id'});
+ if(save){await db.storage.from('deliberation-pf').remove([path]);checkError(save)}
+ revalidatePath('/deliberacoes/'+id);revalidatePath('/deliberacoes/'+id+'/planejamento-financeiro');
+ redirect('/deliberacoes/'+id);
+}
