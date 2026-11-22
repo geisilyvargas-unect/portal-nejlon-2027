@@ -2,15 +2,15 @@
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#19191b">
 <title>Responder formulário · Portal NEJLON</title>
 <link rel="stylesheet" href="./site.css"><link rel="stylesheet" href="./visual-identity.css"><link rel="stylesheet" href="./automation.css"><link rel="stylesheet" href="./responder.css"><link rel="stylesheet" href="./ux-system.css">
-<script defer src="./ux-theme.js?v=two-themes-20261122"></script><script defer src="./demo-open-access.js?v=20261122-1"></script><link rel="stylesheet" href="./nejlon-idv-consistency.css?v=portfolio-20261122-v4"><script defer src="./layered-titles.js?v=portfolio-20261122-v4"></script><link rel="stylesheet" href="./nejlon-type-system.css?v=20261122-polish-3"><link rel="stylesheet" href="./nejlon-editorial-v3.css?v=figma-idv-20261122-2"><link rel="stylesheet" href="./demo-accessibility.css?v=20261122-1"></head>
+<script defer src="./ux-theme.js?v=two-themes-20261122"></script><script defer src="./responder.js?v=shared-pf-20261122-1"></script><link rel="stylesheet" href="./nejlon-idv-consistency.css?v=portfolio-20261122-v4"><script defer src="./layered-titles.js?v=portfolio-20261122-v4"></script><link rel="stylesheet" href="./nejlon-type-system.css?v=20261122-polish-3"><link rel="stylesheet" href="./nejlon-editorial-v3.css?v=figma-idv-20261122-2"><link rel="stylesheet" href="./demo-accessibility.css?v=20261122-1"></head>
 <body class="automation-page respond-page">
 <nav class="automation-top"><a href="../index.html">← Voltar ao Portal</a><span>CONSELHO DELIBERATIVO · NEJLON</span></nav>
 <main class="automation-shell" id="conteudo">
 <header class="automation-hero"><span class="eyebrow">CONSELHO · FORMULÁRIO OFICIAL QUANDO PUBLICADO</span><h1>PARTICIPE DA <em>DELIBERAÇÃO</em></h1><p>Responda diretamente pelo Portal NEJLON. Cada EJ tem direito a uma resposta válida por deliberação.</p></header>
 
 
-<section id="respond-app" hidden>
-<div class="automation-user-bar"><div><span>IDENTIFICAÇÃO DO CONSELHEIRO</span><strong id="respond-user"></strong></div></div>
+<section id="respond-login" class="automation-panel"><h2>ENTRAR PARA VOTAR</h2><p>Utilize sua conta institucional de conselheiro. O link não substitui a autenticação.</p><form id="respond-login-form" class="automation-form"><label>E-mail<input id="respond-email" type="email" autocomplete="username" required></label><label>Senha<input id="respond-password" type="password" autocomplete="current-password" required></label><button class="btn red" type="submit">Entrar e consultar deliberação</button></form><p id="respond-login-error" role="status"></p></section><section id="respond-app" hidden>
+<div class="automation-user-bar"><div><span>IDENTIFICAÇÃO DO CONSELHEIRO</span><strong id="respond-user"></strong></div><button id="respond-logout" class="btn" type="button">Sair</button></div>
 <section class="automation-panel"><div id="respond-form-header"><h2>Carregando formulário…</h2></div>
 <div id="respond-question-list"></div>
 <form id="respond-answer-form" class="automation-form" hidden><div id="respond-questions"></div><button class="btn red" type="submit">Registrar resposta da EJ</button></form>
@@ -27,5 +27,5 @@
 <div id="respond-google-link"></div>
 </section>
 </section>
-<footer class="automation-footer">NEJLON 2027 · AMBIENTE DE TESTE · Dados fictícios e ações simuladas; sem autenticação ou registros oficiais.</footer>
+<footer class="automation-footer">NEJLON 2027 · Acesso autenticado. Publicação e validade institucional dependem da autorização da PRESCON.</footer>
 </main></body></html>
