@@ -92,3 +92,9 @@ body {background:var(--bg);color:var(--text);}
 .quick-action span{font-size:12px;color:#ddd;line-height:1.5}
 .quick-action strong{margin-top:auto;font-size:11px;color:#fff}
 @media(max-width:860px){.quick-actions{grid-template-columns:1fr}.quick-action{min-height:unset}}
+
+/* Refinamento tipográfico: títulos expressivos, mas com letras legíveis e separadas. */
+.intro h1{letter-spacing:.025em;line-height:1.22;overflow-wrap:break-word;text-shadow:2px 3px 0 #121212,4px 5px 0 #ce2d32}
+.workhead h2,.panel h3,.ej-directory-card h3{letter-spacing:.035em;line-height:1.3}
+.brand strong{letter-spacing:.025em}
+@media(max-width:760px){.intro h1{letter-spacing:.018em;line-height:1.25;text-shadow:2px 3px 0 #ce2d32}}
