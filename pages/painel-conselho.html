@@ -1,0 +1,16 @@
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Painel do Conselho · NEJLON</title><meta name="description" content="As dez áreas históricas do Conselho reunidas no Portal NEJLON.">
+<link rel="stylesheet" href="./site.css"><link rel="stylesheet" href="./visual-identity.css"><link rel="stylesheet" href="./automation.css"><link rel="stylesheet" href="./conselho.css"><link rel="stylesheet" href="./ux-system.css">
+<script defer src="./ux-theme.js"></script><script defer src="./conselho.js"></script></head>
+<body class="automation-page council-page"><nav class="automation-top"><a href="../index.html">← Voltar ao Portal</a><span>CONSELHO DELIBERATIVO · NEJLON</span></nav>
+<main class="automation-shell" id="conteudo">
+<header class="automation-hero"><span class="eyebrow">ÁREAS INSTITUCIONAIS · CONSELHO</span><h1>PAINEL DO <em>CONSELHO</em></h1><p>Os dez espaços do painel histórico do Conselho, agora organizados em uma única área para consultar materiais, reuniões, deliberações e demandas da Rede.</p></header>
+<div class="automation-note"><strong>Referência:</strong> a organização das áreas vem do Painel do Conselho 2024. Links para documentos e reuniões devem ser atualizados pela PRESCON antes de serem considerados vigentes. O acesso a informações reais exige login institucional.</div>
+<section id="council-login" class="automation-panel"><h2>Entrar no Painel do Conselho</h2><p>Conselheiros e PRESCON têm acesso aos recursos institucionais. DIREX de EJ e DIREX do Núcleo possuem áreas próprias.</p>
+<form id="council-login-form" class="automation-form"><label>E-mail institucional<input id="council-email" type="email" autocomplete="username" required></label><label>Senha<input id="council-password" type="password" autocomplete="current-password" required></label><button class="btn red" type="submit">Entrar</button></form><p id="council-login-status" class="automation-message" role="status"></p></section>
+<section id="council-app" hidden><div class="automation-user-bar"><div><span>SESSÃO AUTORIZADA</span><strong id="council-email-display"></strong></div><button class="btn" id="council-logout" type="button">Sair</button></div>
+<div id="council-highlights" class="automation-stat-grid"></div>
+<section class="automation-panel"><h2>Áreas do Conselho</h2><p>Selecione a área para abrir um recurso. Quando ainda não houver link institucional, a PRESCON poderá cadastrá-lo nesta mesma página.</p><div class="council-directory" id="council-directory"></div></section>
+<section class="automation-panel"><h2>Deliberações e formulários em aberto</h2><div id="council-forms" class="council-forms"></div></section>
+</section><footer class="automation-footer">NEJLON 2027 · Acesso institucional · Consulta de demandas da Rede em modo resumido; detalhes completos exclusivos da PRESCON.</footer>
+</main></body></html>
