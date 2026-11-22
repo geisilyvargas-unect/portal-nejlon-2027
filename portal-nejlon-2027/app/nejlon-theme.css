@@ -42,3 +42,13 @@ html[data-theme="light"],html[data-theme="dark"],html[data-theme="red"]{--lime:v
 ::selection{background:var(--nejlon-lime);color:var(--nejlon-lime-ink)}
 :where(.hero,.panel,.report-kpi,.profile-box)[data-accent="lime"]{border-left:4px solid var(--nejlon-lime)}
 :where(.nav-link,button,.button)[data-accent="lime"].active{background:var(--nejlon-lime);color:#111;border-color:var(--nejlon-lime)}
+
+
+/* Assinatura gráfica: recorte em estrela e curva verde-limão. */
+.hero{position:relative;isolation:isolate;overflow:hidden}
+.hero::after{content:"";position:absolute;right:-62px;bottom:-83px;width:176px;height:176px;border:29px solid var(--nejlon-lime);border-radius:44% 56% 55% 45%;transform:rotate(-24deg);pointer-events:none;z-index:0}
+.hero::before{content:"";position:absolute;top:18px;right:23px;width:18px;height:28px;background:#fff;clip-path:polygon(50% 0,64% 35%,100% 50%,64% 65%,50% 100%,36% 65%,0 50%,36% 35%);pointer-events:none}
+.hero>*{position:relative;z-index:1}
+html[data-theme="light"] .hero::before{background:#111}
+@media(max-width:600px){.hero::after{width:108px;height:108px;border-width:17px;right:-50px;bottom:-50px;opacity:.5}}
+@media print{.hero::before,.hero::after{display:none}}
