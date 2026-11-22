@@ -2,7 +2,7 @@
 const G=require('./_shared');
 const {json,fail,body,protect,db,userFromToken}=G;
 const uuid=x=>/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(String(x||''));
-const canExplain=role=>role==='counselor'||role==='ej_direx';
+const canExplain=role=>role==='counselor';
 const clean=(v,max=2000)=>String(v??'').trim().slice(0,max);
 const validDate=d=>typeof d==='string'&&/^\d{4}-\d{2}-\d{2}$/.test(d)&&!Number.isNaN(Date.parse(d+'T12:00:00Z'))?d:null;
 const https=x=>{if(!x)return null;try{const u=new URL(String(x));if(u.protocol!=='https:')fail(400,'O link do comprovante deve começar com https://.');return u.href.slice(0,1800)}catch{fail(400,'Informe um link HTTPS válido para o comprovante.')}};
@@ -17,13 +17,14 @@ async function event({demand,actor,action,note='',details={}}){
 }
 async function list(user){
  const globalReader=['prescon','nucleus_direx'].includes(user.role);
- if(!globalReader&&!canExplain(user.role))fail(403,'Perfil sem acesso às demandas.');
+ if(!globalReader&&!['counselor','ej_direx'].includes(user.role))fail(403,'Perfil sem acesso às demandas.');
  if(!globalReader&&!user.ej_id)fail(403,'Seu cadastro ainda não está vinculado a uma EJ.');
  const q=globalReader?'':'&ej_id=eq.'+user.ej_id;
  const demands=await db('demands',{query:'select=id,ej_id,title,description,due_at,status,responsible,created_at,created_by,updated_at,completed_at,template_key,severity&order=created_at.desc&limit=1500'+q});
- const justifications=await db('portal_demand_justifications',{query:'select=id,demand_id,ej_id,submitted_by,reason_type,explanation,evidence_url,state,decision_note,decided_by,decided_at,created_at&order=created_at.desc&limit=3000'+q});
+ const viewSensitive=user.role!=='ej_direx';
+ const justifications=viewSensitive?await db('portal_demand_justifications',{query:'select=id,demand_id,ej_id,submitted_by,reason_type,explanation,evidence_url,state,decision_note,decided_by,decided_at,created_at&order=created_at.desc&limit=3000'+q}):[];
  let events=[];
- if(demands.length){
+ if(viewSensitive&&demands.length){
   const ids=demands.map(d=>d.id);
   for(let start=0;start<ids.length;start+=100){
    const part=ids.slice(start,start+100);
@@ -80,7 +81,7 @@ async function handler(req,res){
   return json(res,201,{ok:true,count:created.length,demands:created});
  }
  if(action==='justify'){
-  if(!canExplain(user.role)||!user.ej_id)fail(403,'Somente Conselho ou DIREX da própria EJ podem justificar.');
+  if(!canExplain(user.role)||!user.ej_id)fail(403,'Somente o conselheiro da própria EJ pode justificar.');
   const demand=await findDemand(data.demandId);
   if(demand.ej_id!==user.ej_id)fail(403,'Esta demanda pertence a outra EJ.');
   if(!['pendente','em_andamento'].includes(demand.status))fail(409,'Esta demanda já foi encerrada ou justificada.');
