@@ -52,3 +52,29 @@ html[data-theme="red"] body .paper{background:#000!important;color:#fff!importan
 html[data-theme="light"] body .paper{background:#fff!important;color:#000!important}
 html[data-theme="dark"] body .paper{background:#101010!important;color:#fff!important}
 @media(max-width:600px){html body .financial-table-wrap{padding:6px}html body .scenario-editor{padding:14px}html body .top{gap:8px}}
+
+/* Correção definitiva de contraste: cada superfície define a cor dos próprios textos.
+   Necessário porque folhas globais anteriores aplicam branco nos títulos mesmo em cartões claros. */
+html[data-theme="light"] body :is(.paper,.scenario-editor,.financial-table-wrap,.notice,.manual,.rating,.option){
+ background-color:#fff!important;color:#090909!important;
+}
+html[data-theme="light"] body .scenario-editor,
+html[data-theme="light"] body :is(.notice,.manual,.rating,.option){background-color:#f2f2f2!important}
+html[data-theme="light"] body :is(.paper,.scenario-editor,.financial-table-wrap,.notice,.manual,.rating,.option)
+ :is(h1,h2,h3,h4,h5,h6,p,span,small,strong,b,label,legend,th,td,summary,em){color:#090909!important;text-shadow:none!important}
+html[data-theme="light"] body :is(.paper,.scenario-editor) :is(input,select,textarea){
+ background:#fff!important;color:#090909!important;border-color:#090909!important;
+}
+html[data-theme="light"] body :is(.paper,.scenario-editor) :is(input,textarea)::placeholder{color:#555!important}
+html[data-theme="light"] body .paper :is(#status,#copy-status){color:#090909!important}
+html[data-theme="dark"] body :is(.paper,.scenario-editor,.financial-table-wrap,.notice,.manual,.rating,.option),
+html[data-theme="red"] body :is(.paper,.scenario-editor,.financial-table-wrap,.notice,.manual,.rating,.option){
+ background-color:#101010!important;color:#fff!important
+}
+html[data-theme="dark"] body :is(.paper,.scenario-editor,.financial-table-wrap,.notice,.manual,.rating,.option)
+ :is(h1,h2,h3,h4,h5,h6,p,span,small,strong,b,label,legend,th,td,summary,em),
+html[data-theme="red"] body :is(.paper,.scenario-editor,.financial-table-wrap,.notice,.manual,.rating,.option)
+ :is(h1,h2,h3,h4,h5,h6,p,span,small,strong,b,label,legend,th,td,summary,em){color:#fff!important;text-shadow:none!important}
+html[data-theme="light"] body .hero :is(h1,p,span){color:#fff!important}
+html body :is(.paper,.scenario-editor) :is(button,.create-primary){background:#ff0000!important;color:#fff!important}
+html body :is(.paper,.scenario-editor) :is(button,.create-primary):hover{background:#000!important;color:#fff!important}
