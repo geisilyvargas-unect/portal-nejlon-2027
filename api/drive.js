@@ -58,7 +58,7 @@ async function handle(req,res){
    root=await settings(uid);
    files=await db('portal_drive_files',{query:'select=name,kind,web_view_link,created_at&owner_user_id=eq.'+uid+'&order=created_at.desc&limit=20'});
   }
-  const forms=await db('portal_forms',{query:'select=id,title,status,kind,google_responder_url,created_at&order=created_at.desc&limit=40'});
+  const forms=await db('portal_forms',{query:'select=id,title,status,kind,google_form_id,google_responder_url,created_at&order=created_at.desc&limit=40'});
   formCount=forms.length;
   return json(res,200,{configured,missing:envCheck(),googleConnected,root,files,forms,formCount});
  }
