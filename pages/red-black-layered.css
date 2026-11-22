@@ -1,0 +1,48 @@
+/* Tema vermelho: cenário vermelho puro, índice e cartões pretos. */
+html[data-theme="red"]{
+ --ux-bg:#ff0000;--ux-side:#090909;--ux-surface:#101010;--ux-raised:#202020;
+ --ux-input:#161616;--ux-border:#525252;--ux-hover:#292929;
+ --ux-text:#ffffff;--ux-muted:#eeeeee;--ux-subtle:#d0d0d0;
+ --ux-red:#ff0000;--ux-red-hover:#ff3434;--ux-petrol:#ff0000;
+ --ux-alert:#1c1c1c;--ux-warning:#292020;--modern-glass:rgba(9,9,9,.96);
+ --modern-accent:#ff0000;--modern-accent-soft:#292020;
+}
+html[data-theme="red"] body,html[data-theme="red"] .main{background:#ff0000!important;color:#ffffff}
+html[data-theme="red"] .side{background:#090909!important;border-right:1px solid #383838!important}
+html[data-theme="red"] :is(.panel,.role-card,.stat-card,.ej-directory-card,.comparison-card,.analytics-bar,.voting-graph,.prescon-focus-card,.quick-action,.record,.side-foot,.demo-alert,.notice,.wa-panel,.idealize-financial-card,.idealize-scenario,.idealize-result,.pf-sheet){
+ background:#101010!important;color:#ffffff!important;border-color:#424242!important
+}
+html[data-theme="red"] :is(.panel,.role-card,.stat-card,.ej-directory-card,.comparison-card,.analytics-bar,.voting-graph,.prescon-focus-card,.quick-action,.record) :is(p,span,small,th,td,label){color:inherit}
+html[data-theme="red"] .topbar{background:#101010!important;border-color:#333!important}
+html[data-theme="red"] :is(.nav-button,.nav-more summary){color:#ffffff!important}
+html[data-theme="red"] .nav-button.active{background:#ff0000!important;color:#ffffff!important;border-color:#ff0000!important;box-shadow:inset 3px 0 #ffffff!important}
+html[data-theme="red"] .nav-button:hover{background:#282828!important;color:#ffffff!important}
+html[data-theme="red"] .side-section,html[data-theme="red"] .mini-heading,html[data-theme="red"] .top-year,html[data-theme="red"] .stat-icon{color:#ff0000!important}
+html[data-theme="red"] :is(.prescon-create-cta,.btn.red,.contact){background:#ff0000!important;color:#ffffff!important;border-color:#ff0000!important}
+html[data-theme="red"] :is(.prescon-create-cta,.btn.red,.contact):hover{background:#d60000!important;color:#ffffff!important}
+html[data-theme="red"] .role-option.active,html[data-theme="red"] .filter.active{background:#ff0000!important;color:#ffffff!important;border-color:#ff0000!important}
+html[data-theme="red"] :is(input:not([type="checkbox"]):not([type="radio"]),textarea,select){background:#202020!important;color:#ffffff!important;border-color:#646464!important}
+html[data-theme="red"] input::placeholder,html[data-theme="red"] textarea::placeholder{color:#c8c8c8!important}
+html[data-theme="red"] .intro{background:#101010!important;border:1px solid #555!important}
+html[data-theme="red"] .intro :is(h1,p){color:#ffffff!important}
+html[data-theme="red"] .intro .eyebrow{color:#ff0000!important}
+html[data-theme="red"] .intro h1 em{color:#ffffff!important}
+html[data-theme="red"] .ux-theme-picker,html[data-theme="red"] .ux-theme-choice{background:#101010;color:#fff}
+html[data-theme="red"] .ux-theme-choice.selected{background:#292929}
+/* Títulos de destaque: frente branca, contorno preto e duplicata vermelha
+   deslocada atrás. Equivalência visual da espessura '48' do editor gráfico,
+   dimensionada em CSS para não fechar os caracteres na tela. */
+html[data-theme="red"] :is(.intro h1,.workhead h2,.panel h3,.ej-directory-card h3,.wa-panel h2,.idealize-shell h2).nejlon-layer-title{
+ position:relative;isolation:isolate;text-transform:uppercase!important;
+ color:#ffffff!important;-webkit-text-stroke:2px #000000!important;
+ paint-order:stroke fill;text-shadow:none!important;
+ letter-spacing:.01em!important;
+}
+html[data-theme="red"] :is(.intro h1,.workhead h2,.panel h3,.ej-directory-card h3,.wa-panel h2,.idealize-shell h2).nejlon-layer-title::before{
+ content:attr(data-title-layer);position:absolute;inset:0;transform:translate(3px,7px);
+ z-index:-1;color:#ff0000;-webkit-text-stroke:2px #000000;
+ text-shadow:none;pointer-events:none;white-space:pre-line;
+}
+html[data-theme="red"] .nejlon-layer-title em{color:inherit!important;font-style:normal}
+html[data-theme="red"] .intro h1.nejlon-layer-title::before{transform:translate(4px,9px)}
+@media(max-width:600px){html[data-theme="red"] .nejlon-layer-title{-webkit-text-stroke:1.5px #000!important}html[data-theme="red"] .nejlon-layer-title::before{-webkit-text-stroke:1.5px #000!important;transform:translate(2px,5px)!important}}
