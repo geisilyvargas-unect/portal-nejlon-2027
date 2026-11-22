@@ -565,3 +565,30 @@ html[data-theme='light'] .demo-role-button.active{background:#e8f3d6}
 @media(max-width:360px){
  .demo-role-picker{grid-template-columns:minmax(0,1fr)}
 }
+
+
+/* Respostas fictícias da demonstração: abrir detalhes de cada EJ sem tabelas extensas */
+.demo-report-chart{margin:20px 0 22px}
+.demo-report-chart .report-pie{flex-shrink:0}
+.demo-report-chart .report-legend{min-width:0}
+.demo-vote-records{display:grid;gap:8px;margin-top:17px}
+.demo-vote-record{
+ border:1px solid var(--border);
+ border-radius:12px;
+ padding:12px 14px;
+ background:var(--surface2);
+ margin:8px 0;
+}
+.demo-vote-record summary{cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:10px;list-style:none}
+.demo-vote-record summary::-webkit-details-marker{display:none}
+.demo-vote-record summary strong{font-size:.9rem;overflow-wrap:anywhere}
+.demo-vote-record summary .badge{font-size:.72rem;white-space:normal;text-align:center}
+.demo-vote-record>p{line-height:1.65;margin:14px 0 8px}
+.demo-vote-record[open]{border-color:var(--lime)}
+@media(max-width:650px){
+ .demo-report-chart{display:flex;flex-direction:column;align-items:center}
+ .demo-report-chart .report-pie{max-width:220px}
+ .demo-report-chart .report-legend{width:100%}
+ .demo-vote-record{padding:11px}
+ .demo-vote-record summary{align-items:flex-start;flex-wrap:wrap}
+}
