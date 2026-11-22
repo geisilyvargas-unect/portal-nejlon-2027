@@ -28,5 +28,7 @@ jobs:
           node-version: '22'
       - name: Verificar sintaxe JavaScript da demonstração
         run: node --check pages/gestao-conselho.js
-      - name: Executar testes de visibilidade dos perfis
-        run: node --test tests/council-demo.test.cjs
+      - name: Verificar sintaxe do formulário de votação
+        run: node --check pages/responder.js
+      - name: Executar testes de perfis e votação
+        run: node --test tests/council-demo.test.cjs tests/vote-lifecycle.test.cjs
