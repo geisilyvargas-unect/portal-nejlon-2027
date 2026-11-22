@@ -1,0 +1,7 @@
+﻿Alternativa;Projeção;Local;Congressistas;Despesas (R$);Entradas sem rateio (R$);Saldo sem rateio (R$);Entradas com rateio (R$);Saldo com rateio (R$);Lote 1 qtd;Lote 2 qtd;Lote extra qtd
+C1 — UEL;Pessimista;UEL;180;6180;6000;-180;5944.5;-235.5;100;40;40
+C1 — UEL;Realista;UEL;200;5840;6600;760;6529.5;689.5;120;40;40
+C1 — UEL;Otimista;UEL;230;5375;7550;2175;7769.25;2394.25;140;50;40
+C2 — AURORA;Pessimista;AURORA;200;9850;8000;-1850;7915.5;-1934.5;130;40;30
+C2 — AURORA;Realista;AURORA;250;9775;10025;250;9889.875;114.875;160;50;40
+C2 — AURORA;Otimista;AURORA;300;9500;12050;2550;11864.25;2364.25;190;60;50
