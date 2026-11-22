@@ -716,3 +716,67 @@ html[data-theme='light'] .network-bar-fill{background:linear-gradient(to top,#08
  .network-controls{display:none!important}
  .network-ej-cell.selected{outline:none}
 }
+
+
+/* Deliberação IDEALIZE 2026: planilha original, voto modelo e exportação CSV. */
+.idealize-demo{display:grid;gap:17px}
+.idealize-hero{position:relative;overflow:hidden;isolation:isolate;background:#171717;color:#f7f7f5;border-top:12px solid #d02e33;border-bottom:8px solid #97c813;border-radius:14px;padding:32px clamp(22px,4vw,42px)}
+.idealize-hero::before{content:"";pointer-events:none;position:absolute;z-index:-1;right:-30px;bottom:-100px;width:280px;height:280px;opacity:.22;background:url('/nejlon-squirrel.svg') center/contain no-repeat}
+.idealize-hero .eyebrow{color:#b8e674;font-weight:900}
+.idealize-hero h1{font-family:'Arial Black',Impact,system-ui,sans-serif;font-size:clamp(1.8rem,5vw,3.4rem);text-transform:uppercase;text-shadow:3px 3px 0 #c4292d,5px 5px 0 #050505;letter-spacing:-.03em;line-height:1.05;margin:15px 0}
+.idealize-hero h1 span{color:#ccf08c}
+.idealize-hero p{color:#ddd;max-width:720px}
+.idealize-panel{display:grid;gap:15px}
+.idealize-options{display:flex;gap:12px;flex-wrap:wrap;align-items:center;justify-content:space-between}
+.idealize-options>div{display:flex;gap:8px;flex-wrap:wrap}
+.idealize-option{background:var(--surface2);border:1px solid var(--border);padding:10px 14px;border-radius:11px;font-weight:750;font-size:.84rem;cursor:pointer}
+.idealize-option.active{background:#a9d565;color:#101910;border-color:#93bc4b}
+.idealize-rateio{display:flex;align-items:center;gap:8px;font-size:.83rem}
+.idealize-rateio input{width:17px;height:17px;accent-color:#93c735}
+.idealize-comparison{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.idealize-alternative{min-width:0;border:1px solid var(--border);border-radius:14px;background:var(--surface2);padding:18px}
+.idealize-alt-tag{display:inline-block;background:#ce3c43;color:#fff;font-weight:850;letter-spacing:.05em;font-size:.68rem;padding:6px 10px;border-radius:6px}
+.idealize-alternative h3{font:850 1.45rem 'Arial Black',Impact,system-ui,sans-serif;margin:11px 0 15px}
+.idealize-metrics{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.idealize-metrics>div{display:grid;gap:7px;background:var(--surface);border:1px solid var(--border);border-radius:9px;padding:12px;min-width:0}
+.idealize-metrics span{font-size:.74rem;color:var(--muted);line-height:1.35}
+.idealize-metrics strong{font-size:clamp(1rem,2vw,1.5rem);letter-spacing:-.03em;overflow-wrap:anywhere;font-variant-numeric:tabular-nums}
+.idealize-metrics .positive strong{color:#63ce97}
+.idealize-metrics .negative strong{color:#ed7682}
+.idealize-details{margin-top:15px}
+.idealize-details summary,.idealize-instructions summary{display:flex;align-items:center;justify-content:space-between;gap:10px;cursor:pointer;border:1px solid var(--border);border-radius:8px;padding:11px 13px;font-size:.82rem;font-weight:850}
+.idealize-details h4{font-size:.86rem;margin:16px 0 7px}
+.idealize-table-scroll{max-width:100%;overflow-x:auto;margin:12px 0}
+.idealize-table-scroll table{width:100%;border-collapse:collapse;min-width:370px}
+.idealize-table-scroll td,.idealize-table-scroll th{border-bottom:1px solid var(--border);padding:8px 7px;text-align:left;font-size:.72rem}
+.idealize-table-scroll th{background:#bf343c;color:#fff;font-weight:850}
+.idealize-table-scroll small{display:block;color:var(--muted);margin-top:3px}
+.idealize-guide{display:grid;gap:9px;margin:12px 0}
+.idealize-guide>div{background:var(--surface2);border-left:3px solid #c73a43;border-radius:5px;padding:12px}
+.idealize-guide strong{font-size:.75rem}
+.idealize-guide p{margin:4px 0 0;color:var(--muted);font-size:.77rem}
+.idealize-form{display:grid;gap:20px}
+.idealize-form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.idealize-form label{display:grid;gap:6px;font-size:.82rem;font-weight:720}
+.idealize-form label input[type=radio]{height:17px;width:17px;accent-color:#b1d46e}
+.idealize-vote-section{display:grid;gap:13px;border:1px solid var(--border);background:var(--surface2);border-radius:13px;padding:19px}
+.idealize-vote-section h3{font-size:1.16rem;margin:0}
+.idealize-vote-section p{margin:0}
+.idealize-choice-field{border:0;padding:0;margin:0;min-width:0}
+.idealize-choice-field legend{font-size:.92rem;font-weight:850;margin-bottom:12px}
+.idealize-choice-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:8px}
+.idealize-choice-grid label{display:flex;align-items:center;gap:8px;border:1px solid var(--border);background:var(--surface);border-radius:10px;padding:12px;font-size:.78rem;cursor:pointer}
+.idealize-choice-grid label.chosen{border-color:#a1ca54;background:rgba(159,201,75,.12)}
+.idealize-submit{display:flex;gap:10px;flex-wrap:wrap}
+.idealize-sample-metrics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.idealize-sample-metrics>div{background:var(--surface2);padding:14px;border-radius:9px;display:flex;flex-direction:column;gap:4px;text-align:center}
+.idealize-sample-metrics strong{font-size:1.6rem;line-height:1.2}
+.idealize-sample-metrics span{color:var(--muted);font-size:.75rem}
+.idealize-results-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.idealize-result{background:var(--surface2);padding:14px;border-radius:10px}
+.idealize-result h3{margin:0 0 14px;font-size:1rem}
+.idealize-result-row{display:grid;grid-template-columns:minmax(140px,1fr) minmax(50px,2fr) 20px;gap:9px;align-items:center;margin:8px 0;font-size:.75rem}
+.idealize-result-row>div{height:11px;background:var(--surface);border-radius:99px;overflow:hidden}
+.idealize-result-row>div>span{display:block;background:linear-gradient(90deg,#ca3540,#a8cd5c);height:100%;border-radius:99px}
+@media(max-width:830px){.idealize-comparison,.idealize-results-grid{grid-template-columns:1fr}}
+@media(max-width:540px){.idealize-form-grid{grid-template-columns:1fr}.idealize-panel{padding:12px}.idealize-alternative{padding:12px}.idealize-metrics>div{padding:10px}.idealize-choice-grid{grid-template-columns:1fr}.idealize-vote-section{padding:12px}.idealize-sample-metrics>div{padding:8px}.idealize-result-row{grid-template-columns:1fr 1fr 20px}}
