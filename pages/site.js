@@ -195,6 +195,7 @@ function render(){
  $('roles').innerHTML=Object.entries(roleMap).map(([key,r])=>'<button class="role-option '+(key===s.role?'active':'')+'" type="button" data-role="'+key+'" aria-pressed="'+(key===s.role)+'">'+esc(r.name)+'</button>').join('');
  $('ej-picker-wrap').hidden=!['counselor','ej_direx'].includes(s.role);
  $('ej-picker').innerHTML=D.ejs.map(e=>'<option value="'+esc(e.slug)+'" '+(e.slug===s.ej?'selected':'')+'>'+esc(e.name)+'</option>').join('');
+ const councilAccess=$('council-test-access');if(councilAccess){councilAccess.hidden=s.role!=='counselor';const email=$('council-test-email');if(email)email.textContent='conselho'+s.ej+'@nejlondrina.com';}
  const primary=['painel','deliberacoes','pendencias','relatorios'];
  const navButton=([key,icon,name])=>key==='demandas'?'<a class="nav-button" href="./pages/demandas.html"><span class="nav-icon" aria-hidden="true">'+icon+'</span>'+esc(name)+'</a>':'<button type="button" class="nav-button '+(key===s.section?'active':'')+'" data-nav="'+key+'" aria-current="'+(key===s.section?'page':'false')+'"><span class="nav-icon" aria-hidden="true">'+icon+'</span>'+esc(name)+'</button>';
  const allowed=nav.filter(n=>role().nav.includes(n[0]));
