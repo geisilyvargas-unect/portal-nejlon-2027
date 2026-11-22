@@ -3,7 +3,7 @@
 .automation-top{min-height:64px;background:var(--ux-side,#151515);border-bottom:3px solid var(--ux-red,#ce333e);display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px clamp(15px,5vw,65px);font-size:12px;font-weight:900;letter-spacing:.035em}
 .automation-top a{color:var(--ux-text,#fff);text-decoration:none}.automation-top span{color:var(--ux-muted,#aaa)}
 .automation-shell{max-width:1290px;margin:0 auto;padding:18px clamp(14px,3vw,42px) 70px;display:grid;gap:17px}
-.automation-hero{min-height:245px;background:#1b191b url('./nejlon-stripes.svg') right top/42% auto no-repeat;color:#fff;border-top:6px solid #ce333e;border-radius:18px;padding:34px clamp(20px,4vw,52px);overflow:hidden}
+.automation-hero{min-height:245px;background:#1b191b;color:#fff;border-top:6px solid #ce333e;border-radius:18px;padding:34px clamp(20px,4vw,52px);overflow:hidden}
 .automation-hero .eyebrow{color:#d4ec7c;font-size:12px;font-weight:900;letter-spacing:.12em}
 .automation-hero h1{color:#fff;font:900 clamp(38px,6vw,71px)/1.17 Impact,'Arial Black',sans-serif;letter-spacing:.033em;text-transform:uppercase;text-shadow:2px 3px #101010,4px 5px #ce333e;margin:12px 0 16px;max-width:850px}
 .automation-hero h1 em{font-style:normal;color:#fff}
@@ -73,7 +73,7 @@
 .automation-toast:empty{display:none}
 .automation-page a:not(.btn):focus-visible{outline:3px solid var(--ux-focus,#fbb4b8);outline-offset:3px}
 @media(max-width:1040px){.automation-shortcuts{grid-template-columns:repeat(2,minmax(0,1fr))}.automation-checks{grid-template-columns:1fr}}
-@media(max-width:700px){.automation-grid,.automation-stat-grid{grid-template-columns:1fr}.automation-hero{background-size:90%;min-height:260px;padding:27px 18px}.automation-tabs{display:flex;flex-wrap:nowrap;overflow-x:auto;scroll-snap-type:x proximity}.automation-tabs button{white-space:nowrap;flex:0 0 auto;scroll-snap-align:start}.automation-file{grid-template-columns:1fr}.automation-top{flex-wrap:wrap}.automation-form button{width:100%}.automation-form-card .btn{width:auto}}
+@media(max-width:700px){.automation-grid,.automation-stat-grid{grid-template-columns:1fr}.automation-hero{min-height:260px;padding:27px 18px}.automation-tabs{display:flex;flex-wrap:nowrap;overflow-x:auto;scroll-snap-type:x proximity}.automation-tabs button{white-space:nowrap;flex:0 0 auto;scroll-snap-align:start}.automation-file{grid-template-columns:1fr}.automation-top{flex-wrap:wrap}.automation-form button{width:100%}.automation-form-card .btn{width:auto}}
 @media(max-width:475px){.automation-shortcuts{grid-template-columns:1fr}.automation-shortcuts button,.automation-shortcuts a{min-height:126px}.automation-hero h1{font-size:38px}}
 @media(prefers-reduced-motion:reduce){.automation-page *{scroll-behavior:auto!important;transition:none!important}}
 /* Integração de Forms existente: campos claros em ambos os temas */
