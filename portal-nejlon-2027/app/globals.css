@@ -501,3 +501,67 @@ html[data-theme='light'] .demo-preview-frame{box-shadow:0 20px 60px #25333b20}
  .demo-welcome{display:block}
  .demo-landing{padding:0}
 }
+
+
+/* Apresentação simplificada: acesso sem cadastro e seleção por perfil */
+.demo-entry-link{
+ display:grid;gap:7px;
+ margin:20px 0 23px;
+ padding:17px;
+ border:1px solid #58763b;
+ border-radius:13px;
+ background:linear-gradient(115deg,#1c3025,#14282a);
+}
+.demo-entry-link strong{font-size:.95rem;line-height:1.4}
+.demo-entry-link p{margin:0;line-height:1.6}
+.demo-entry-button{
+ width:100%;min-height:47px;
+ background:var(--lime)!important;
+ border-color:var(--lime)!important;
+ color:#10190c!important;
+ text-align:center;
+ white-space:normal;
+ font-size:.91rem;
+}
+.demo-entry-button:hover{filter:brightness(.92)}
+.demo-role-picker{
+ display:grid;
+ grid-template-columns:repeat(2,minmax(0,1fr));
+ gap:9px;
+ align-items:stretch;
+}
+.demo-role-button{
+ min-height:55px;
+ white-space:normal;
+ line-height:1.25;
+ text-align:center;
+ font-size:.83rem;
+ padding:12px 9px;
+ background:var(--surface2);
+ color:var(--text);
+ border:1px solid var(--border);
+ border-radius:11px;
+}
+.demo-role-button:hover{border-color:var(--lime);background:var(--surface)}
+.demo-role-button.active{
+ border-color:var(--lime);
+ background:rgba(155,201,13,.13);
+ box-shadow:inset 0 0 0 1px var(--lime);
+ color:var(--text);
+}
+html[data-theme='light'] .demo-entry-link{
+ background:linear-gradient(110deg,#e5f4dc,#e5f2f4);
+ border-color:#b7c4a2;
+}
+html[data-theme='light'] .demo-role-button.active{background:#e8f3d6;color:#2c4306}
+html[data-theme='light'] .demo-role-button{background:#f3f6f7;color:#253842}
+html[data-theme='light'] .demo-role-button.active{background:#e8f3d6}
+@media(max-width:650px){
+ .demo-entry-link{padding:13px;margin:15px 0}
+ .demo-role-picker{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .demo-role-button{min-height:55px;font-size:.8rem}
+ .demo-preview-main .kpi-grid .stat{font-size:clamp(1.55rem,6vw,2.1rem)}
+}
+@media(max-width:360px){
+ .demo-role-picker{grid-template-columns:minmax(0,1fr)}
+}
