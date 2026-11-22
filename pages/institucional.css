@@ -63,3 +63,44 @@
 @media(max-width:650px){
  .institutional .ej-logo{height:112px;flex-basis:112px}
 }
+
+/* Diretório de EJs: logos sem o retângulo preto e com maior legibilidade.
+   Os SVGs permanecem intocados. */
+.institutional .ej-logo{
+ background:transparent;
+ border:0;
+ border-radius:0;
+ box-shadow:none;
+ padding:4px 6px;
+ height:118px;
+ flex-basis:118px;
+ margin-bottom:6px;
+ overflow:visible;
+}
+.institutional .ej-logo img{
+ width:100%;
+ height:100%;
+ object-fit:contain;
+ object-position:center;
+ filter:drop-shadow(0 0 2px rgba(255,255,255,.38));
+}
+/* SVGs com arte pequena ou contraste baixo na área original:
+   ajuste apenas de apresentação, sem alterar os arquivos. */
+.institutional .ej-logo img[src$="/3e.svg"],
+.institutional .ej-logo img[src$="/catec-z.svg"],
+.institutional .ej-logo img[src$="/aprimora.svg"],
+.institutional .ej-logo img[src$="/tcp.svg"],
+.institutional .ej-logo img[src$="/paracelso.svg"],
+.institutional .ej-logo img[src$="/smat.svg"]{
+ transform:scale(1.2);
+ filter:drop-shadow(0 0 3px rgba(255,255,255,.75));
+}
+.institutional .ej-logo img[src$="/business.svg"],
+.institutional .ej-logo img[src$="/meca.svg"],
+.institutional .ej-logo img[src$="/vet-jr.svg"]{
+ transform:scale(1.12);
+ filter:drop-shadow(0 0 2px rgba(255,255,255,.7));
+}
+@media(max-width:650px){
+ .institutional .ej-logo{height:104px;flex-basis:104px}
+}
