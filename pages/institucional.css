@@ -96,3 +96,11 @@
 @media(max-width:650px){
  .institutional .ej-grid .ej .ej-logo{height:108px;flex-basis:108px}
 }
+
+/* Acervo histórico de relatórios de deliberação */
+.institutional .i-report-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-top:20px}
+.institutional .i-report-card{display:flex;flex-direction:column;gap:9px;background:#242222;border:1px solid #484646;border-radius:12px;padding:18px;min-width:0}
+.institutional .i-report-card small{color:#b9e56e;font-weight:750;text-transform:uppercase;letter-spacing:.06em}
+.institutional .i-report-card strong{color:#f6f6f6;font-size:16px;line-height:1.4}
+.institutional .i-report-card span{color:#aaa;font-size:12px;line-height:1.5}
+@media(max-width:650px){.institutional .i-report-grid{grid-template-columns:1fr}}
