@@ -3,6 +3,7 @@ import {useState} from 'react';
 import Link from 'next/link';
 import {createClient} from '@/lib/supabase/browser';
 import {AccessGuide} from '@/components/access-guide';
+import {ThemeToggle} from '@/components/theme-toggle';
 
 export default function Login(){
   const [email,setEmail]=useState('');
@@ -27,7 +28,7 @@ export default function Login(){
   return <main className="landing">
     <div className="login-wrap login-top">
       <div className="login-card">
-        <div className="eyebrow">Pé Vermelho • 2027</div>
+        <div className="login-theme"><ThemeToggle/></div><div className="eyebrow">Pé Vermelho • 2027</div>
         <h1 style={{fontSize:'2.8rem',marginTop:12}}>NEJ<span style={{color:'var(--red)'}}>LON</span></h1>
         <p className="muted">Portal de Governança<br/>Juntos pela excelência.</p>
         <div className="login-demo-note" role="note">
