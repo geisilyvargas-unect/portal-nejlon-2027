@@ -21,8 +21,8 @@ function chart(a){
  const series=[['Receitas','revenue','#0C535E'],['Despesas','expenses','#EA4335'],['Saldo projetado','balance','#97BF1E']];
  const rows=keys.map(k=>({key:k,name:labels[k],revenue:p[k].revenue,expenses:p[k].expenses,balance:p[k].revenue-p[k].expenses}));
  const width=760,left=170,right=30,top=55,rowHeight=43,groupHeight=176,plot=width-left-right;
- const max=Math.max(1,...rows.flatMap(r=>series.map(x=>Math.abs(r[x[1]]))));
- const zero=left+plot/2,scale=(plot/2-12)/max;
+ 
+ const minValue=Math.min(0,...rows.flatMap(r=>series.map(x=>r[x[1]]))),maxValue=Math.max(0,...rows.flatMap(r=>series.map(x=>r[x[1]])));const scale=(plot-20)/Math.max(1,maxValue-minValue);const zero=left+10-minValue*scale;
  const line=(x1,y1,x2,y2,color)=>'<line x1="'+x1+'" y1="'+y1+'" x2="'+x2+'" y2="'+y2+'" stroke="'+color+'" stroke-width="1"/>';
  let svg='<svg viewBox="0 0 760 630" role="img" aria-label="Gráfico comparativo de receitas, despesas e saldos projetados para os cenários pessimista, realista e otimista" style="width:100%;height:auto;max-width:900px" xmlns="http://www.w3.org/2000/svg">';
  svg+=line(zero,32,zero,595,'#888');
