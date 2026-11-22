@@ -110,7 +110,7 @@ export async function submitResponse(form: FormData) {
   const clarity=required(form,'clarity',2);
   const difficulty=required(form,'difficulty',2);
   if(!/^[0-5]$/.test(clarity)||!/^[0-5]$/.test(difficulty))fail('Avalie clareza e dificuldade de 0 a 5.');
-  const improvements=maybe(form,'improvements',2000)||'';
+  const improvements=required(form,'improvements',2000);
   const primary=answers[0];
   const {error}=await db.from('responses').upsert({
     deliberation_id:id,ej_id:viewer.ej_id,position:primary.position,
