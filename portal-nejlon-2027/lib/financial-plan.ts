@@ -13,7 +13,7 @@ export type FinancialProjection={
  revenue:number|null;revenueWithRateio:number|null;
 };
 export type FinancialAlternative={
- name:string;projections:Record<ProjectionKey,FinancialProjection>
+ name?:string;projections:Record<ProjectionKey,FinancialProjection>
 };
 export type FinancialMeasure={
  cost:number|null;revenue:number|null;balance:number|null;
