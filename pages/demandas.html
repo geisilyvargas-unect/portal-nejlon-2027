@@ -1,0 +1,14 @@
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#19191b">
+<title>Minhas demandas · Portal NEJLON</title><meta name="description" content="Consulte suas demandas, envie justificativas e acompanhe as decisões da PRESCON.">
+<link rel="stylesheet" href="./site.css"><link rel="stylesheet" href="./visual-identity.css"><link rel="stylesheet" href="./automation.css"><link rel="stylesheet" href="./demandas.css"><link rel="stylesheet" href="./ux-system.css">
+<script defer src="./ux-theme.js"></script><script defer src="./demandas-ui.js"></script><script defer src="./demandas.js"></script></head>
+<body class="automation-page demands-page"><nav class="automation-top"><a href="../index.html">← Voltar ao Portal</a><span>NEJLON · CONSELHO E DIREX DAS EJs</span></nav>
+<main class="automation-shell" id="conteudo">
+<header class="automation-hero"><span class="eyebrow">ACOMPANHAMENTO DA REDE</span><h1>MINHAS <em>DEMANDAS</em></h1><p>Veja prazos, registre uma justificativa e acompanhe o posicionamento da PRESCON em um só lugar.</p></header>
+<section class="automation-panel" id="demands-login">
+<h2>Entrar no Portal</h2><p>Conselheiros e diretorias podem consultar somente as demandas da própria EJ. A PRESCON tem acesso à gestão da Rede.</p>
+<form id="demands-login-form" class="automation-form"><label>E-mail institucional<input id="demands-email" type="email" autocomplete="username" required></label><label>Senha<input id="demands-password" type="password" autocomplete="current-password" required></label><button type="submit" class="btn red">Entrar nas demandas</button></form>
+<p id="demands-login-status" class="automation-message" role="status"></p></section>
+<section id="demands-app" hidden><div class="automation-user-bar"><div><span>ACESSO INSTITUCIONAL</span><strong id="demands-user"></strong></div><button id="demands-logout" type="button" class="btn">Sair</button></div>
+<div id="demands-root"></div></section>
+<footer class="automation-footer">Justificativas ficam pendentes até a análise da PRESCON. A aceitação ou recusa é registrada com o motivo da decisão.</footer></main></body></html>
