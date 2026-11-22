@@ -14,7 +14,7 @@ function removeAuth(id){const n=$(id);if(n)n.remove()}
 function banner(){const hero=document.querySelector('.automation-hero');if(hero){const n=document.createElement('div');n.className='automation-note';n.innerHTML='<strong>MODO DE TESTE · ACESSO LIVRE</strong> — Navegue sem e-mail ou senha. As ações desta página são simulações locais.';hero.after(n)}document.querySelectorAll('[id$="-logout"],#auto-open-login,#auto-connect-google').forEach(n=>n.remove())}
 function demands(){
  removeAuth('demands-login');openApp('demands-app');set('demands-user','Visitante · prévia sem autenticação');
- set('demands-root','<section class="automation-panel"><h2>DEMANDAS DA REDE · EXEMPLOS</h2>'+note+'<div class="automation-grid">'+sample.map(d=>card(d.ej+' · '+d.name,'<p>Prazo: '+d.date+'</p>'+tag(d.status)+'<p><label>Justificativa (simulação)<textarea placeholder="Escreva sua justificativa de teste"></textarea></label></p><button type="button" class="btn red" data-demo-save>Salvar rascunho local</button>')).join('')+'</div></section>');
+ set('demands-root','<section class="automation-panel"><h2>DEMANDAS DA REDE · EXEMPLOS</h2>'+note+'<div class="automation-grid">'+sample.map(d=>card(d.ej+' · '+d.name,'<p>Prazo: '+d.date+'</p>'+tag(d.status)+'<p class="automation-muted">Exemplo para consulta. Nenhuma ação de envio está disponível nesta prévia.</p>')).join('')+'</div></section>');
 }
 function oversight(){
  removeAuth('oversight-login');openApp('oversight-app');set('oversight-user','Visitante · DIREX Núcleo (simulado)');
@@ -52,6 +52,6 @@ function automation(){
  const form=$('auto-create-form');if(form)form.addEventListener('submit',e=>{e.preventDefault();set('auto-create-result','Formulário simulado criado nesta tela. Nenhum dado foi publicado. '+btn('Abrir criador de deliberação','./prescon-criar-deliberacao.html'))});
  ['auto-folder-form','auto-upload-form','auto-report-form'].forEach(id=>{const f=$(id);if(f)f.addEventListener('submit',e=>{e.preventDefault();const output=id==='auto-folder-form'?'auto-drive-result':id==='auto-upload-form'?'auto-files':'auto-report-list';set(output,'Operação simulada localmente. Nenhum arquivo ou dado foi enviado.');})});
 }
-document.addEventListener('click',e=>{const b=e.target.closest('[data-demo-save]');if(b){b.textContent='Rascunho de demonstração salvo nesta tela';b.disabled=true}});
+
 document.addEventListener('DOMContentLoaded',()=>{banner();const path=location.pathname.split('/').pop();if(path==='demandas.html')demands();else if(path==='fiscalizacao.html')oversight();else if(path==='painel-conselho.html')council();else if(path==='responder.html')respond();else if(path==='central-automacoes.html')automation()});
 })();
