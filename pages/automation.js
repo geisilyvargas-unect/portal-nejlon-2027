@@ -1,7 +1,7 @@
 (()=>{
 'use strict';
 const $=id=>document.getElementById(id);
-const API=(location.hostname.endsWith('github.io')?'https://portal-nejlon-2027.vercel.app':'')+'/api';
+const API='https://imsisbixzkqphooxyfhr.supabase.co/functions/v1';
 const SB='https://imsisbixzkqphooxyfhr.supabase.co';
 const PUBLIC='sb_publishable_mS_TDGKZhUuJi-rxc5Nu1w_IXODeo-_';
 const STORE='nejlon.prescon.central.session.v1';
@@ -25,7 +25,7 @@ async function refreshSession(){
  const data=await jsonResponse(res);session=data;sessionStorage.setItem(STORE,JSON.stringify(session));
 }
 async function request(endpoint,{method='GET',data,retry=true}={}){
- const fetchData=()=>fetch(API+endpoint,{method,headers:{'Content-Type':'application/json',Authorization:'Bearer '+session.access_token},...(data===undefined?{}:{body:JSON.stringify(data)})});
+ const fetchData=()=>fetch(API+endpoint,{method,headers:{'Content-Type':'application/json',apikey:PUBLIC,Authorization:'Bearer '+session.access_token},...(data===undefined?{}:{body:JSON.stringify(data)})});
  let response;
  try{response=await fetchData()}catch{throw Error('Não foi possível acessar a API do portal. Confira a publicação no Vercel.')}
  if(response.status===401&&retry){await refreshSession();return request(endpoint,{method,data,retry:false})}
