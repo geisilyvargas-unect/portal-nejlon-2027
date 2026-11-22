@@ -1,0 +1,10 @@
+.respond-page .automation-shell{max-width:940px}.respond-page .automation-hero{min-height:220px}.respond-page #respond-questions{display:grid;gap:17px}.respond-page .respond-question{border:1px solid var(--ux-border,#535054);border-radius:12px;background:var(--ux-raised,#302f32);padding:17px;display:grid;gap:12px}
+.respond-page .respond-question legend{font-size:15px;font-weight:900;color:var(--ux-text,#fff);padding:0 8px}.respond-page .respond-question small{font-weight:400;color:var(--ux-muted,#d3ced1)}.respond-page .respond-options{display:grid;gap:9px}
+.respond-page .respond-option{display:flex;align-items:center;gap:10px;padding:12px 15px;border:1px solid var(--ux-border,#535054);border-radius:9px;cursor:pointer;font-size:13px;background:var(--ux-surface,#252528);min-height:44px}
+.respond-page .respond-option:hover,.respond-page .respond-option:has(input:checked){border-color:var(--ux-red,#ce333e);background:var(--ux-alert,#25363a)}
+.respond-page .respond-option input{width:17px;height:17px;flex:0 0 17px;accent-color:var(--ux-red,#ce333e);min-height:auto}
+.respond-page #respond-google-link a{color:var(--ux-red,#f4949b);font-size:13px;font-weight:900}
+.respond-page #respond-submit-feedback{color:var(--ux-text,#fff)}
+.respond-page .respond-question textarea{width:100%;background:var(--ux-input,#18191b);color:var(--ux-text,#fff);border:1px solid var(--ux-border,#535054);border-radius:10px;padding:14px}
+.respond-page #respond-form-header p{font-size:12px;color:var(--ux-muted,#ddd)}
+.respond-page [hidden]{display:none!important}
