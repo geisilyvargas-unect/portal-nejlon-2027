@@ -138,7 +138,7 @@ export function DemoTour(){
         {EJS_DEMO.map(x=><option value={x.slug} key={x.slug}>{x.name}</option>)}
        </select>
       </label>}
-     <div className="demo-access-example"><span>E-mail institucional previsto para este perfil:</span><code>{email}</code></div>
+     <div className="demo-access-example"><span>E-mail institucional previsto para este perfil:</span><code>{email}</code>{isCouncil&&<><span>Senha de teste prevista: <code>1234</code></span><span className="muted small">Acesso demonstrativo: selecione Conselho e UNECT para visualizar o painel. A autenticação real ainda depende do cadastro da conta no Supabase.</span></>}</div>
     </div>
    </div>
    <div className="demo-preview-frame">
