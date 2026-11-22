@@ -23,6 +23,9 @@ if(centralSession?.access_token){
   }catch(err){fileNote='ATENÇÃO: o formulário foi salvo, mas o XLSX original não foi armazenado: '+err.message}
   const url=new URL('./responder.html',location.href);url.searchParams.set('id',created.id);
   $('form-link').href=url.href;$('form-link').textContent='Abrir formulário compartilhado ↗';$('result').hidden=false;
+  let screenLink=$('pf-screen-link');if(!screenLink){screenLink=document.createElement('a');screenLink.id='pf-screen-link';screenLink.className='create-primary';screenLink.style.marginLeft='10px';$('form-link').after(screenLink)}
+  const screenURL=new URL('./pf-deliberation-screen.html',location.href);screenURL.searchParams.set('id',created.id);
+  screenLink.href=screenURL.href;screenLink.target='_blank';screenLink.rel='noopener';screenLink.textContent='Visualizar página completa do PF ↗';
   $('copy-status').textContent='Rascunho criado. Publique-o na aba Formulários da Central antes de receber votos. '+fileNote;
   $('copy-link').onclick=async()=>{try{await navigator.clipboard.writeText(url.href);$('copy-status').textContent='Link copiado. Publique o rascunho na Central para liberar a votação. '+fileNote}catch{$('copy-status').textContent=url.href}};
   status.textContent='Rascunho compartilhado salvo no Supabase. '+fileNote;
