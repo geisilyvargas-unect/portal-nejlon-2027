@@ -1,0 +1,62 @@
+/* IDEALIZE: painel de orçamento + formulário inspirado no modelo de 2026 */
+body{background:#191919}
+.idealize-shell{max-width:1180px;margin:0 auto;padding:18px clamp(12px,3vw,28px) 45px;display:grid;gap:16px}
+.idealize-top{display:flex;justify-content:space-between;align-items:center;gap:10px;font-size:12px;font-weight:800}
+.idealize-top a{color:#b9e674}
+.idealize-banner{position:relative;isolation:isolate;overflow:hidden;background:#202020;border-top:11px solid #d02d32;border-bottom:8px solid #9dc710;border-radius:14px;padding:35px}
+.idealize-banner::before{content:"";position:absolute;z-index:-1;left:-34px;bottom:-26px;width:230px;height:160px;background:url('./nejlon-waves.svg') center/contain no-repeat;opacity:.8;pointer-events:none}
+.idealize-banner::after{content:"";position:absolute;z-index:-1;right:-24px;bottom:-64px;width:230px;height:240px;background:url('./nejlon-squirrel.svg') center/contain no-repeat;opacity:.3;pointer-events:none}
+.idealize-banner h1{font-family:'Arial Black',Impact,system-ui,sans-serif;font-size:clamp(28px,5vw,51px);line-height:1.06;text-shadow:3px 4px 0 #ac262d;letter-spacing:-1px;margin:15px 0}
+.idealize-banner h1 em{color:#9dc710;font-style:normal}
+.idealize-banner p{max-width:690px;color:#ddd;font-size:13px}
+.idealize-shell .panel{background:#212121;border-color:#4a4a4a}
+.idealize-shell h2{font-family:'Arial Black',Impact,system-ui,sans-serif;font-size:22px;text-transform:uppercase;margin:5px 0}
+.idealize-controls,.idealize-projections{display:flex;gap:9px;align-items:center;flex-wrap:wrap}
+.idealize-controls{justify-content:space-between;margin:16px 0}
+.idealize-projections button{background:#303030;border:1px solid #535353;color:#f0f0f0;padding:10px 13px;border-radius:9px;font-weight:800;font-size:12px}
+.idealize-projections button.active{background:#9dc710;color:#161616;border-color:#9dc710}
+.idealize-rateio{font-size:12px;display:flex;align-items:center;gap:8px}
+.idealize-rateio input{accent-color:#9dc710;width:17px;height:17px}
+.idealize-financial-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.idealize-financial-card{background:#2a2a2a;border:1px solid #535353;border-radius:12px;padding:17px;min-width:0}
+.idealize-financial-card h3{font:800 23px 'Space Grotesk',system-ui;margin:12px 0}
+.idealize-financial-stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.idealize-financial-stats div{display:grid;gap:4px;background:#1c1c1c;padding:11px;border-radius:8px}
+.idealize-financial-stats span{color:#b4b4b4;font-size:11px}
+.idealize-financial-stats strong{font-size:clamp(16px,1.8vw,23px);letter-spacing:-.4px;overflow-wrap:anywhere}
+.idealize-financial-stats .positive strong{color:#aae17b}
+.idealize-financial-stats .negative strong{color:#ff8c93}
+.idealize-financial-card details{margin-top:15px}
+.idealize-financial-card details summary,.idealize-guide summary{cursor:pointer;font-size:12px;font-weight:800;padding:10px;border:1px solid #626262;border-radius:8px}
+.idealize-financial-card h4{font-size:13px;margin:16px 0 7px}
+.idealize-overflow{max-width:100%;overflow:auto;margin-top:9px}
+.idealize-overflow table{width:100%;min-width:400px;border-collapse:collapse;font-size:11px}
+.idealize-overflow th,.idealize-overflow td{border-bottom:1px solid #474747;padding:7px;text-align:left}
+.idealize-overflow th{background:#cf3037}
+.idealize-overflow td small{display:block;color:#bbb}
+.idealize-guide{margin:14px 0}
+.idealize-guide>div{display:grid;gap:8px;margin-top:13px}
+.idealize-guide-item{background:#292929;border-left:4px solid #9dc710;padding:10px;border-radius:6px}
+.idealize-guide-item strong{font-size:12px}
+.idealize-guide-item p{color:#cecece;font-size:11px;margin:4px 0 0}
+#idealize-vote-form{display:grid;gap:20px}
+#idealize-vote-form label{display:grid;gap:6px;font-size:12px;font-weight:750}
+#idealize-vote-form input,#idealize-vote-form textarea,#idealize-vote-form select{background:#141414;color:white;border:1px solid #646464;border-radius:8px;padding:11px;min-height:42px;max-width:100%}
+.idealize-identity{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.idealize-scenario,.idealize-final{display:grid;gap:12px;background:#2a2a2a;border:1px solid #494949;border-radius:11px;padding:16px;min-width:0}
+.idealize-scenario h3,.idealize-final legend{font-size:17px;font-weight:850}
+.idealize-scenario fieldset{border:0;padding:0;margin:0;min-width:0}
+.idealize-scenario legend{font-size:13px;font-weight:800;margin-bottom:10px}
+.idealize-choices{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:8px}
+.idealize-choices label{display:flex!important;align-items:center;gap:7px;border:1px solid #555;border-radius:8px;padding:10px;background:#1c1c1c}
+.idealize-choices label.chosen{border-color:#9dc710;background:#2c3a1c}
+.idealize-choices input{min-height:initial!important;width:17px;height:17px;accent-color:#9dc710}
+.idealize-final legend{padding:0 5px}
+.idealize-buttons{display:flex;gap:9px;flex-wrap:wrap}
+.idealize-results{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:15px}
+.idealize-result{background:#2a2a2a;border:1px solid #555;padding:15px;border-radius:12px}
+.idealize-result-row{display:grid;grid-template-columns:minmax(130px,1fr) minmax(30px,1fr) 20px;align-items:center;gap:8px;margin:10px 0;font-size:11px}
+.idealize-track{height:12px;border-radius:20px;background:#131313;overflow:hidden}
+.idealize-track span{display:block;height:100%;border-radius:20px;background:linear-gradient(90deg,#cc2f3c,#acd36a)}
+@media(max-width:780px){.idealize-financial-grid,.idealize-results{grid-template-columns:1fr}.idealize-banner{padding:26px 20px}.idealize-banner::after{width:130px;height:140px;opacity:.2}}
+@media(max-width:540px){.idealize-identity{grid-template-columns:1fr}.idealize-financial-stats{grid-template-columns:1fr 1fr}.idealize-shell .panel{padding:13px}.idealize-choices{grid-template-columns:1fr}.idealize-result-row{grid-template-columns:1fr 1fr 20px}}
