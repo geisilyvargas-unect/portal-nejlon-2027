@@ -33,6 +33,22 @@ async function show(){
  const payload=await request('?action=form&id='+id);
  form=payload.form;if(!form)throw Error('Formulário não disponível.');
  switchLogin(true);
+ // Análise financeira compartilhada: leitura autorizada por RLS, sem valores fictícios.
+ try{
+  const financialRes=await fetch(SB+'/rest/v1/portal_pf_snapshots?form_id=eq.'+encodeURIComponent(id)+'&select=financial,original_filename',{headers:{apikey:KEY,Authorization:'Bearer '+session.access_token}});
+  if(financialRes.ok){
+   const entries=await financialRes.json(),snapshot=entries[0],alts=snapshot?.financial?.alternatives||[];
+   if(alts.length){
+    const fmt=n=>Number.isFinite(n)?new Intl.NumberFormat('pt-BR',{style:'currency',currency:'BRL'}).format(n):'—';
+    const wrap=document.createElement('section');wrap.className='respond-pf-financial';wrap.style.cssText='margin:20px 0;padding:18px;border:2px solid #f00;overflow:auto';
+    wrap.innerHTML='<h3>ANÁLISE FINANCEIRA DO PLANEJAMENTO</h3><p>Dados extraídos de '+esc(snapshot.original_filename)+'. Confira os valores antes de votar.</p>'+
+    alts.map(a=>'<h4>'+esc(a.label)+'</h4><table style="border-collapse:collapse;width:100%;min-width:480px"><thead><tr><th>Indicador</th><th>Pessimista</th><th>Realista</th><th>Otimista</th></tr></thead><tbody>'+
+    [['Receitas','revenue'],['Despesas','expenses'],['Saldo','balance']].map(([label,key])=>'<tr><th style="text-align:left">'+label+'</th>'+['pessimistic','realistic','optimistic'].map(k=>'<td style="padding:8px;border-bottom:1px solid #aaa">'+fmt(a.projections?.[k]?.[key])+'</td>').join('')+'</tr>').join('')+'</tbody></table>').join('')+
+    '<p>As projeções são estimativas, não resultados realizados. Ressalvas devem ser registradas no voto correspondente.</p>';
+    $('respond-form-header').after(wrap);
+   }
+  }
+ }catch(err){console.warn('Resumo financeiro indisponível:',err)}
  $('respond-user').textContent=session.user?.email||'Conselheiro(a)';
  $('respond-form-header').innerHTML='<h2>'+esc(form.title)+'</h2><p>'+esc(form.description||'')+'</p>';
  if(form.google_responder_url){
