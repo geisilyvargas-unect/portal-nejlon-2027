@@ -78,6 +78,7 @@ function showPreview(){
  $('auto-report-form').innerHTML='<option value="">Entre para consultar relatórios reais</option>';
  $('auto-report-overview').innerHTML=[['Votos aceitos','—'],['Aguardando análise','—'],['Canais de resposta','2']].map(([name,v])=>'<article><span>'+name+'</span><strong>'+v+'</strong><small>Prévia ilustrativa</small></article>').join('');
  $('auto-report-list').innerHTML='<p class="automation-muted">Os relatórios verdadeiros e dados das EJs só aparecem após login autorizado. As respostas do Portal e do Google Forms serão consolidadas nesta área quando a integração Google estiver habilitada.</p>';
+ $('auto-vote-changes').innerHTML='<p class="automation-muted">A autorização de alterações de voto é exclusiva da PRESCON e exige uma conta autenticada.</p>';
  $('auto-demands-root').innerHTML='<div class="demands-root"><header class="demands-head"><div><span class="eyebrow">PRÉVIA · SEM DADOS REAIS</span><h2>Sistema de Demandas</h2><p>Veja como a PRESCON administra justificativas de cada EJ, com classificação amarela, laranja e vermelha.</p></div></header><div class="demands-list"><article class="demands-card" data-severity="amarela"><div class="demands-card-head"><h4>Exemplo · Ausência em imersão</h4><span class="demands-chip">AMARELA</span></div><p>A EJ pode enviar o motivo e um comprovante. A PRESCON avalia e registra a decisão.</p><details><summary>Como a PRESCON decide?</summary><p class="demands-review-note"><strong>Aceitar ou recusar justificativa</strong> O sistema solicita uma explicação obrigatória, oferece textos-base editáveis e registra a decisão no histórico.</p></details></article><article class="demands-card" data-severity="laranja"><div class="demands-card-head"><h4>Exemplo · Atualização no Monday</h4><span class="demands-chip">LARANJA</span></div><p>O painel acompanha prazo, situação e justificativas. A EJ vê apenas suas demandas reais quando está autenticada.</p><details><summary>Como acompanhar?</summary><p>Um histórico registra quem criou, justificou ou decidiu cada demanda, com data e comentário.</p></details></article></div><p class="automation-muted">Para criar uma demanda, justificar ou decidir de verdade, é necessário entrar como usuário autorizado.</p></div>';
  $('auto-preview-create')?.addEventListener('click',()=>tab('criacao'));
 }
@@ -199,6 +200,25 @@ async function load(){
  if(query.get('google')==='conectado'){toast('Google autorizado. Verifique o status de conexão.');history.replaceState(null,'',location.pathname)}
  else if(query.get('google')==='cancelado'){toast('Conexão Google cancelada.');history.replaceState(null,'',location.pathname)}
  try{ejs=(await request('/forms?action=ejs')).ejs||[]}catch{}
+ await loadVoteChangeRequests();
+}
+async function loadVoteChangeRequests(){
+ if(!session?.access_token)return;
+ try{
+  const data=await request('/forms?action=vote_change_queue');
+  const requests=(data.requests||[]).filter(r=>r.source==='form'&&r.status==='requested');
+  const root=$('auto-vote-changes');
+  root.innerHTML=requests.length?requests.map(r=>{
+   const form=formRows.find(f=>f.id===r.form_id);
+   const ej=ejs.find(e=>e.id===r.ej_id);
+   return '<article class="automation-form-card" data-vote-change-id="'+esc(r.id)+'">'+
+    '<strong>'+esc(form?.title||'Formulário')+' · '+esc(ej?.name||'EJ')+'</strong>'+
+    '<small>Solicitado em '+new Date(r.created_at).toLocaleString('pt-BR')+'</small>'+
+    '<p>'+esc(r.reason)+'</p>'+
+    '<label class="automation-form">Motivo da decisão da PRESCON<textarea class="auto-vote-change-note" rows="3" minlength="8" maxlength="2500" placeholder="Explique por que a alteração será autorizada ou recusada."></textarea></label>'+
+    '<div class="automation-actions"><button type="button" class="btn red" data-vote-decision="approved">Autorizar uma alteração</button><button type="button" class="btn" data-vote-decision="denied">Recusar</button></div></article>';
+  }).join(''):'<p class="automation-muted">Nenhuma solicitação de alteração de voto aguardando decisão.</p>';
+ }catch(err){$('auto-vote-changes').textContent='Não foi possível consultar solicitações: '+err.message}
 }
 async function mutateForm(id,action){
  const result=await request('/forms?action='+action,{method:'POST',data:{id}});
@@ -346,6 +366,20 @@ $('auto-report-list').addEventListener('click',async e=>{
  const article=b.closest('[data-response-id]');if(!article)return;b.disabled=true;
  try{await review(article.dataset.responseId,b.dataset.review,article.querySelector('.auto-ej')?.value||'')}
  catch(err){toast(err.message)}finally{b.disabled=false}
+});
+$('auto-vote-changes').addEventListener('click',async event=>{
+ const button=event.target.closest('[data-vote-decision]');if(!button)return;
+ const card=button.closest('[data-vote-change-id]');if(!card)return;
+ const note=String(card.querySelector('.auto-vote-change-note')?.value||'').trim();
+ if(note.length<8){toast('Explique sua decisão com pelo menos 8 caracteres.');return}
+ const decision=button.dataset.voteDecision;
+ if(!confirm((decision==='approved'?'Autorizar':'Recusar')+' esta alteração de voto? Sua decisão será registrada no histórico.'))return;
+ button.disabled=true;
+ try{
+  const result=await request('/forms?action=review_vote_change',{method:'POST',data:{id:card.dataset.voteChangeId,decision,note}});
+  toast(result.message||'Decisão registrada.');
+  await loadVoteChangeRequests();
+ }catch(error){toast(error.message)}finally{button.disabled=false}
 });
 fetch(API+'/drive?action=health').then(r=>r.ok?r.json():Promise.reject()).then(x=>{$('auto-setup-status').textContent=x.configured?'Backend Supabase disponível. Faça login para continuar. As integrações Google são independentes.':'O backend do Portal está configurado, mas a integração Google ainda precisa de autorização.'}).catch(()=>{$('auto-setup-status').textContent='Não foi possível confirmar o backend Supabase. Confira sua conexão e as funções do projeto.'});
 if(session)load().catch(e=>{
