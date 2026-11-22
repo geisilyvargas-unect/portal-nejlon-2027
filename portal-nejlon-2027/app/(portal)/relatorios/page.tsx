@@ -5,6 +5,8 @@ import {formatDate} from '@/lib/constants';
 
 export default async function Reports(){
   await requireRole(['prescon']);
+  const db=await (await import('@/lib/supabase/server')).createClient();
+  const {data:published}=await db.from('published_deliberation_reports').select('id,title,version,published_at').order('published_at',{ascending:false}).limit(100);
   const all=(await getDeliberations()).filter(d=>!d.is_demo);
   const current=all.filter(d=>!d.is_historical);
   const historical=all.filter(d=>d.is_historical);

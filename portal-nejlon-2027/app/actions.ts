@@ -295,3 +295,38 @@ export async function resetPortalPassword(_previous:AccessResult,form:FormData):
     return {ok:true,message:result.message,password:result.password};
   }catch(e){return {ok:false,message:e instanceof Error?e.message:'Falha ao redefinir senha.'};}
 }
+
+/** Publica uma versão imutável. Apenas totais agregados: sem EJ, resposta, comentário ou identificador de votante. */
+export async function publishDeliberationReport(form:FormData) {
+ const viewer=await requireRole(['prescon']);
+ const id=required(form,'deliberation_id',50);
+ if(!/^[0-9a-f]{8}-[0-9a-f-]{27,}$/i.test(id))fail('Identificador inválido.');
+ const db=await createClient();
+ const {data:d,error:de}=await db.from('deliberations').select('id,title,description,scenarios,status,is_demo,is_historical,due_at').eq('id',id).maybeSingle();
+ checkError(de);
+ if(!d||d.is_demo||d.is_historical)fail('Publicação disponível apenas para deliberações atuais não demonstrativas.');
+ const {data:rows,error:re}=await db.from('responses').select('id,position,scenario_answers').eq('deliberation_id',id);
+ checkError(re);
+ const {data:ejs,error:ee}=await db.from('ejs').select('id');
+ checkError(ee);
+ const scenarios=Array.isArray(d.scenarios)?d.scenarios:[];
+ const positions=['favorable','suggestions','qualified','against','abstention'];
+ const results=scenarios.map((sc:unknown,index:number)=>{
+  const scenario=sc&&typeof sc==='object'?sc as Record<string,unknown>:{};
+  const votes=(rows||[]).map((r:Record<string,unknown>)=>{
+   const answers=Array.isArray(r.scenario_answers)?r.scenario_answers:[];
+   const answer=answers[index] as Record<string,unknown>|undefined;
+   return String(answer?.position||r.position||'');
+  });
+  return {title:String(scenario.title||'Cenário '+(index+1)),votes:votes.length,counts:Object.fromEntries(positions.map(p=>[p,votes.filter(v=>v===p).length]))};
+ });
+ const content={description:d.description||'',status:d.status,due_at:d.due_at,total_ejs:(ejs||[]).length,voters:(rows||[]).length,scenarios:results,
+  privacy:'Relatório agregado. Comentários individuais e identidades das EJs não são publicados.'};
+ const {data:existing,error:ex}=await db.from('published_deliberation_reports').select('version').eq('deliberation_id',id).order('version',{ascending:false}).limit(1);
+ checkError(ex);
+ const version=(existing?.[0]?.version||0)+1;
+ const {data:created,error:ce}=await db.from('published_deliberation_reports').insert({deliberation_id:id,version,title:d.title,content,published_by:viewer.id}).select('id').single();
+ checkError(ce);
+ revalidatePath('/relatorios');revalidatePath('/deliberacoes');
+ redirect('/relatorios/publicado/'+created!.id);
+}
