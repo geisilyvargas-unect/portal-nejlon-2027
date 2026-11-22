@@ -4,8 +4,8 @@
 const fs=require('node:fs');
 const path=require('node:path');
 const vm=require('node:vm');
-const pages=['index.html','pages/idealize.html','pages/institucional.html','pages/whatsapp.html','pages/central-automacoes.html','pages/responder.html'];
-const scripts=['pages/site.js','pages/idealize.js','pages/visual-analytics.js','pages/ux-theme.js','pages/whatsapp.js','pages/message-library.js','pages/pf-import.js','pages/automation.js','pages/responder.js','api/_shared.js','api/drive.js','api/forms.js','api/google-callback.js','api/cron-sync.js'];
+const pages=['index.html','pages/idealize.html','pages/institucional.html','pages/whatsapp.html','pages/central-automacoes.html','pages/responder.html','pages/demandas.html'];
+const scripts=['pages/site.js','pages/idealize.js','pages/visual-analytics.js','pages/ux-theme.js','pages/whatsapp.js','pages/message-library.js','pages/pf-import.js','pages/automation.js','pages/responder.js','api/_shared.js','api/drive.js','api/forms.js','api/google-callback.js','api/cron-sync.js','api/demands.js','pages/demandas.js','pages/demandas-ui.js'];
 const css=['pages/ux-system.css'];
 let failures=0;
 function fail(message){console.error('FAIL: '+message);failures++;}
