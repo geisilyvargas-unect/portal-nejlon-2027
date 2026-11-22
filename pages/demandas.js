@@ -16,7 +16,7 @@ async function refresh(){
 }
 async function request(endpoint,{method='GET',data,retry=true}={}){
  const run=()=>fetch(API+endpoint,{method,headers:{'Content-Type':'application/json',apikey:KEY,Authorization:'Bearer '+session.access_token},...(data===undefined?{}:{body:JSON.stringify(data)})});
- let response;try{response=await run()}catch{throw Error('A API ainda não está disponível. Confira a publicação no Vercel.')}
+ let response;try{response=await run()}catch{throw Error('Não foi possível acessar o Supabase. Verifique a conexão ou a função de demandas.')}
  if(response.status===401&&retry){await refresh();return request(endpoint,{method,data,retry:false})}
  return parse(response);
 }
