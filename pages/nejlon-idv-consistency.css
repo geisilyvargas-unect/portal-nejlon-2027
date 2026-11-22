@@ -2,9 +2,9 @@
    CY Grotesk V3 Key só será renderizada quando o usuário tiver a fonte
    instalada ou quando um arquivo licenciado for disponibilizado. */
 :root {--nejlon-title-font:"CY Grotesk V3 Key","CY Grotesk V3","Arial Black",Impact,sans-serif;--nejlon-red:#ff0000}
-html[data-theme="light"]{--ux-bg:#fff;--ux-side:#fff;--ux-surface:#fff;--ux-raised:#f4f4f4;--ux-text:#101010;--ux-muted:#323232;--ux-subtle:#454545;--ux-red:#e00000;--ux-petrol:#e00000;--ux-lime:#a90000;--modern-line:#d0d0d0;--modern-accent:#e00000;--modern-accent-soft:#fff0f0;--modern-glass:rgba(255,255,255,.96)}
-html[data-theme="dark"]{--ux-bg:#000;--ux-side:#050505;--ux-surface:#111;--ux-raised:#1d1d1d;--ux-text:#fff;--ux-muted:#e2e2e2;--ux-subtle:#c7c7c7;--ux-red:#ff0000;--ux-petrol:#ff0000;--ux-lime:#ff3838;--modern-line:#444;--modern-accent:#ff0000;--modern-accent-soft:#291010;--modern-glass:rgba(0,0,0,.96)}
-html[data-theme="red"]{color-scheme:dark;--ux-bg:#ff0000;--ux-side:#050505;--ux-surface:#101010;--ux-raised:#202020;--ux-text:#fff;--ux-muted:#eaeaea;--ux-subtle:#ccc;--ux-border:#565656;--ux-red:#ff0000;--ux-petrol:#ff0000;--ux-lime:#ff3838;--modern-line:#4a4a4a;--modern-accent:#ff0000;--modern-accent-soft:#2b1111;--modern-glass:rgba(8,8,8,.97)}
+html[data-theme="light"]{--ux-bg:#fff;--ux-side:#fff;--ux-surface:#fff;--ux-raised:#f4f4f4;--ux-text:#101010;--ux-muted:#323232;--ux-subtle:#454545;--ux-red:#e00000;--ux-petrol:#e00000;--ux-lime:#9bc900;--modern-line:#d0d0d0;--modern-accent:#e00000;--modern-accent-soft:#fff0f0;--modern-glass:rgba(255,255,255,.96)}
+html[data-theme="dark"]{--ux-bg:#000;--ux-side:#050505;--ux-surface:#111;--ux-raised:#1d1d1d;--ux-text:#fff;--ux-muted:#e2e2e2;--ux-subtle:#c7c7c7;--ux-red:#ff0000;--ux-petrol:#ff0000;--ux-lime:#9bc900;--modern-line:#444;--modern-accent:#ff0000;--modern-accent-soft:#291010;--modern-glass:rgba(0,0,0,.96)}
+html[data-theme="red"]{color-scheme:dark;--ux-bg:#ff0000;--ux-side:#050505;--ux-surface:#101010;--ux-raised:#202020;--ux-text:#fff;--ux-muted:#eaeaea;--ux-subtle:#ccc;--ux-border:#565656;--ux-red:#ff0000;--ux-petrol:#ff0000;--ux-lime:#9bc900;--modern-line:#4a4a4a;--modern-accent:#ff0000;--modern-accent-soft:#2b1111;--modern-glass:rgba(8,8,8,.97)}
 :is(.intro h1,.workhead h2,.panel h3,.ej-directory-card h3,.i-hero h1,.i-section h2,.idealize-banner h1,.idealize-manual-art h3,.wa-hero h1,.wa-panel h2,.idealize-shell h2){font-family:var(--nejlon-title-font)!important;font-weight:900!important}
 :is(.intro h1,.i-hero h1,.idealize-banner h1,.wa-hero h1){text-transform:uppercase;letter-spacing:.012em!important;line-height:1.16!important;overflow-wrap:anywhere}
 html[data-theme="red"] :is(body,.main){background:#ff0000!important}
@@ -24,3 +24,14 @@ html[data-theme="dark"] :is(.nav-button.active,.role-option.active,.filter.activ
 :where(button,a,input,select,textarea,summary):focus-visible{outline:3px solid #ff3838!important;outline-offset:3px}
 @media(max-width:760px){.intro{min-width:0}.intro-copy{min-width:0}.panel,.role-card,.stat-card{min-width:0}table{max-width:100%}}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;transition:none!important}}
+
+/* Verde-limão do Portfólio Unificado NEJLON: acento gráfico, não substitui os temas. */
+:root{--nejlon-lime:#9bc900;--nejlon-lime-ink:#111}
+html[data-theme="light"]{--ux-lime:var(--nejlon-lime)}
+html[data-theme="dark"],html[data-theme="red"]{--ux-lime:var(--nejlon-lime)}
+:is(.intro,.i-hero,.idealize-banner){position:relative}
+:is(.intro,.i-hero,.idealize-banner)::selection{background:var(--nejlon-lime);color:var(--nejlon-lime-ink)}
+:is(.intro h1,.i-hero h1,.idealize-banner h1)::selection{background:var(--nejlon-lime);color:#111}
+:where(.stat-icon,.eyebrow,.top-year)[data-accent="lime"]{color:var(--nejlon-lime)!important}
+:where(.panel,.stat-card,.role-card,.ej-directory-card)[data-accent="lime"]{border-left:4px solid var(--nejlon-lime)!important}
+:where(.nav-button,.filter,.btn)[data-accent="lime"].active{background:var(--nejlon-lime)!important;color:#111!important;border-color:var(--nejlon-lime)!important}
