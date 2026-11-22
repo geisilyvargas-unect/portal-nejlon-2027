@@ -64,7 +64,7 @@ function flexibleParse(sheets){
 function parseFree(sheets){
  const primary=parse(sheets);
  const flexible=flexibleParse(sheets);
- if(!primary.alternatives.length)return flexible;
+ if(!primary.alternatives.length||flexible.alternatives.length>primary.alternatives.length)return flexible;
  const seen=new Set(primary.alternatives.map(a=>a.label));
  const extras=flexible.alternatives.filter(a=>!seen.has(a.label));
  return {...primary,alternatives:[...primary.alternatives,...extras],warnings:[...new Set([...primary.warnings,...flexible.warnings.filter(w=>!w.includes('projeções encontradas'))])],provenance:flexible.provenance,engine:'free-rules-v3',status:primary.warnings.length?'needs-review':'validated'};
