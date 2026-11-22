@@ -27,7 +27,7 @@ async function refreshSession(){
 async function request(endpoint,{method='GET',data,retry=true}={}){
  const fetchData=()=>fetch(API+endpoint,{method,headers:{'Content-Type':'application/json',apikey:PUBLIC,Authorization:'Bearer '+session.access_token},...(data===undefined?{}:{body:JSON.stringify(data)})});
  let response;
- try{response=await fetchData()}catch{throw Error('Não foi possível acessar a API do portal. Confira a publicação no Vercel.')}
+ try{response=await fetchData()}catch{throw Error('Não foi possível acessar a API no Supabase. Verifique sua conexão ou a função publicada.')}
  if(response.status===401&&retry){await refreshSession();return request(endpoint,{method,data,retry:false})}
  return jsonResponse(response);
 }
@@ -47,7 +47,7 @@ async function login(ev){
 }
 function logout(){session=null;sessionStorage.removeItem(STORE);authVisible(false);$('auto-login-message').textContent='Sessão encerrada.'}
 function statusNotice(root){
- if(!root.configured){$('auto-google-state').textContent='Configuração pendente';$('auto-drive-result').textContent='Falta configurar as credenciais de integração no servidor Vercel. A Central está preparada, mas o Drive ainda não pode ser autorizado.'}
+ if(!root.configured){$('auto-google-state').textContent='Configuração pendente';$('auto-drive-result').textContent='As demandas e os formulários do Portal funcionam pelo Supabase. Para usar Google Drive, é preciso ativar a integração Google separadamente.'}
  else{
   $('auto-google-state').textContent=root.googleConnected?'Conectado':'Não conectado';
   $('auto-drive-result').textContent=root.root?.root_folder_url?'Pasta institucional disponível: '+root.root.root_folder_url:'Conecte o Google e crie a pasta institucional.';
@@ -292,7 +292,7 @@ $('auto-report-list').addEventListener('click',async e=>{
  try{await review(article.dataset.responseId,b.dataset.review,article.querySelector('.auto-ej')?.value||'')}
  catch(err){toast(err.message)}finally{b.disabled=false}
 });
-fetch(API+'/drive?action=health').then(r=>r.ok?r.json():Promise.reject()).then(x=>{$('auto-setup-status').textContent=x.configured?'Integração de servidor configurada. Faça login para continuar.':'A integração está preparada no GitHub, mas ainda falta configurar as credenciais de acesso Google/Supabase na Vercel.'}).catch(()=>{$('auto-setup-status').textContent='A nova versão do servidor ainda não está disponível no Vercel. A publicação precisa ser concluída.'});
+fetch(API+'/drive?action=health').then(r=>r.ok?r.json():Promise.reject()).then(x=>{$('auto-setup-status').textContent=x.configured?'Backend Supabase disponível. Faça login para continuar. As integrações Google são independentes.':'O backend do Portal está configurado, mas a integração Google ainda precisa de autorização.'}).catch(()=>{$('auto-setup-status').textContent='Não foi possível confirmar o backend Supabase. Confira sua conexão e as funções do projeto.'});
 if(session)load().catch(e=>{authVisible(false);$('auto-login-message').textContent=e.message||'Não foi possível validar a sessão. Verifique o servidor.'});
 else authVisible(false);
 })();
