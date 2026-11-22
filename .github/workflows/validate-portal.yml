@@ -1,0 +1,30 @@
+name: Validar Portal NEJLON
+on:
+  pull_request:
+    paths:
+      - 'portal-nejlon-2027/**'
+      - '.github/workflows/validate-portal.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'portal-nejlon-2027/**'
+      - '.github/workflows/validate-portal.yml'
+permissions:
+  contents: read
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: portal-nejlon-2027
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Instalar dependências
+        run: npm install --no-audit --no-fund
+      - name: Testar regras de deliberação
+        run: npm test
+      - name: Verificar TypeScript
+        run: npm run typecheck
