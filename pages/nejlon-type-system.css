@@ -1,0 +1,27 @@
+@import url('https://fonts.googleapis.com/css2?family=Archivo+Black&family=Poppins:wght@400;500;600;700;800;900&display=swap');
+/* Sistema tipográfico e contraste NEJLON — todas as telas e temas. */
+:root{--nejlon-body-font:'Poppins','Arial',sans-serif;--nejlon-display-font:'CY Grotesk V3 Key','Archivo Black',Impact,'Arial Black',sans-serif}
+html body,html body :is(button,input,select,textarea){font-family:var(--nejlon-body-font)!important}
+html body :is(p,li,td,th,label,legend,summary,small,span,button,a,input,textarea,select){letter-spacing:normal}
+html body :is(h1,h2,h3,h4,h5,h6,.page-title,.section-title){font-family:var(--nejlon-display-font)!important;font-weight:900!important;text-transform:uppercase;line-height:1.12;overflow-wrap:anywhere}
+html body :is(h1,h2,h3,h4,h5,h6) .nejlon-title-back{display:none!important}
+html body .nejlon-layer-title::before{content:none!important;display:none!important}
+html body :is(.intro h1,.hero h1,.i-hero h1,.wa-hero h1,.idealize-banner h1,.workhead h2){letter-spacing:-.035em!important;text-shadow:none!important}
+html[data-theme="light"] body{color:#111!important}
+html[data-theme="light"] body :is(.paper,.panel,.card,.role-card,.stat-card,.ej-directory-card,.scenario-editor,.financial-table-wrap,.manual,.rating,.option,.record,.pf-sheet){color:#111!important}
+html[data-theme="light"] body :is(.paper,.panel,.card,.role-card,.stat-card,.ej-directory-card,.scenario-editor,.financial-table-wrap,.manual,.rating,.option,.record,.pf-sheet) :is(h1,h2,h3,h4,h5,h6,p,li,label,legend,summary,small,strong,b,th,td){color:#111!important}
+html[data-theme="light"] body :is(input:not([type=checkbox]):not([type=radio]),textarea,select){color:#111!important;background:#fff!important}
+html[data-theme="light"] body :is(input,textarea)::placeholder{color:#555!important}
+html[data-theme="dark"] body :is(.paper,.panel,.card,.role-card,.stat-card,.ej-directory-card,.scenario-editor,.financial-table-wrap,.manual,.rating,.option,.record,.pf-sheet),
+html[data-theme="red"] body :is(.paper,.panel,.card,.role-card,.stat-card,.ej-directory-card,.scenario-editor,.financial-table-wrap,.manual,.rating,.option,.record,.pf-sheet){background-color:#101010!important;color:#fff!important}
+html[data-theme="dark"] body :is(.paper,.panel,.card,.role-card,.stat-card,.ej-directory-card,.scenario-editor,.financial-table-wrap,.manual,.rating,.option,.record,.pf-sheet) :is(h1,h2,h3,h4,h5,h6,p,li,label,legend,summary,small,strong,b,th,td),
+html[data-theme="red"] body :is(.paper,.panel,.card,.role-card,.stat-card,.ej-directory-card,.scenario-editor,.financial-table-wrap,.manual,.rating,.option,.record,.pf-sheet) :is(h1,h2,h3,h4,h5,h6,p,li,label,legend,summary,small,strong,b,th,td){color:#fff!important}
+html[data-theme="dark"] body :is(input:not([type=checkbox]):not([type=radio]),textarea,select),
+html[data-theme="red"] body :is(input:not([type=checkbox]):not([type=radio]),textarea,select){background:#202020!important;color:#fff!important;border-color:#aaa!important}
+html[data-theme="dark"] body :is(input,textarea)::placeholder,html[data-theme="red"] body :is(input,textarea)::placeholder{color:#ccc!important}
+html body :is(.hero,.intro,.i-hero,.wa-hero,.idealize-banner){isolation:isolate}
+html[data-theme="light"] body :is(.hero,.intro,.i-hero,.wa-hero,.idealize-banner)[class]{color:#fff}
+html body :is(.hero,.intro,.i-hero,.wa-hero,.idealize-banner) :is(h1,h2,p,span){color:inherit}
+html body :is(button,.btn,.create-primary){font-weight:800!important}
+html body :is(button,.btn,.create-primary):focus-visible,html body :is(a,input,textarea,select):focus-visible{outline:3px solid #ff0000!important;outline-offset:3px}
+@media(max-width:600px){html body :is(h1,h2,h3,h4,h5,h6){overflow-wrap:anywhere}html body :is(.intro h1,.hero h1,.i-hero h1){font-size:clamp(1.8rem,8vw,3.5rem)}}
