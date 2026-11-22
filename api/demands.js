@@ -68,15 +68,16 @@ async function handler(req,res){
   if(!responsible)fail(400,'Informe o responsável pela demanda.');
   const templateKey=clean(data.templateKey,80)||null;
   const severity=['amarela','laranja','vermelha'].includes(data.severity)?data.severity:'amarela';
-  const created=[];
-  for(const id of ids){
-   const rows=await db('demands',{method:'POST',prefer:'return=representation',data:{
-    ej_id:id,title,description,due_at:due,status:'pendente',responsible,created_by:user.userId,updated_at:new Date().toISOString(),template_key:templateKey,severity
-   }});
-   const d=rows[0];if(!d)fail(500,'A demanda não foi confirmada pelo banco.');
-   created.push(d);
-   await event({demand:d.id,actor:user,action:'created',note:'Demanda cadastrada pela PRESCON.',details:{ej_id:id,title,due_at:due}});
-  }
+  // Um único envio em lote: 29 EJs não exigem dezenas de requisições separadas.
+  const created=await db('demands',{method:'POST',prefer:'return=representation',data:ids.map(id=>({
+   ej_id:id,title,description,due_at:due,status:'pendente',responsible,
+   created_by:user.userId,updated_at:new Date().toISOString(),template_key:templateKey,severity
+  }))});
+  if(!Array.isArray(created)||created.length!==ids.length)fail(500,'Não foi possível confirmar todas as demandas no banco.');
+  await db('portal_demand_events',{method:'POST',prefer:'return=minimal',data:created.map(d=>({
+   demand_id:d.id,actor_id:user.userId,actor_role:'prescon',action:'created',
+   note:'Demanda cadastrada pela PRESCON.',details:{ej_id:d.ej_id,title,due_at:due,severity}
+  }))});
   return json(res,201,{ok:true,count:created.length,demands:created});
  }
  if(action==='justify'){
