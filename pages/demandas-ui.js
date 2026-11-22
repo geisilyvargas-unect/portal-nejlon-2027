@@ -19,9 +19,10 @@ function mount({containerId,request}){
  if(!root)throw Error('Container de demandas não encontrado');
  let info=null,query='',filter='all',ejFilter='all',template='custom',creating=false,notice='';
  const isPrescon=()=>info?.role==='prescon';
- const isGlobalReader=()=>['prescon','nucleus_direx'].includes(info?.role);
+ const isGlobalReader=()=>['prescon','nucleus_direx','counselor'].includes(info?.role);
  const canJustify=()=>info?.role==='counselor';
  const isEjDirex=()=>info?.role==='ej_direx';
+ const canJustifyThis=d=>canJustify()&&info?.ownEjId===d.ej_id;
  const ejs=()=>info?.ejs||[];
  const list=()=>info?.demands||[];
  const justs=()=>info?.justifications||[];
@@ -34,8 +35,8 @@ function mount({containerId,request}){
  const roleNice=role=>({prescon:'PRESCON',counselor:'Conselho',ej_direx:'DIREX da EJ'})[role]||role;
  function header(){
   const s=info.summary||{};
-  return '<header class="demands-head"><div><span class="eyebrow">GESTÃO DA REDE · REGISTROS REAIS</span><h2>'+(isPrescon()?'Demandas da Rede':isGlobalReader()?'Demandas da Rede (consulta)':'Demandas da minha EJ')+'</h2><p>'+(isPrescon()?'Crie demandas para uma ou várias EJs, analise justificativas e registre suas decisões em poucos cliques.':isGlobalReader()?'Consulte as demandas institucionais. A análise de justificativas é exclusiva da PRESCON.':isEjDirex()?'Consulte apenas as demandas e os prazos da sua EJ. Documentos, formulários e justificativas são exclusivos do Conselho.':'Acompanhe os prazos, explique impedimentos e consulte as decisões registradas pela PRESCON.')+'</p></div><button type="button" class="btn" data-act="refresh">Atualizar demandas</button></header>'+
-  '<div class="demands-metrics">'+[['Demandas',s.total||0],['Em aberto',s.waiting||0],['Justificativas para análise',s.pendingReview||0],['Justificadas',s.justified||0]].map(([name,n])=>'<div class="demands-metric"><span>'+esc(name)+'</span><strong>'+n+'</strong></div>').join('')+'</div>';
+  return '<header class="demands-head"><div><span class="eyebrow">GESTÃO DA REDE · REGISTROS REAIS</span><h2>'+(isPrescon()?'Demandas da Rede':isGlobalReader()?'Demandas da Rede (consulta)':'Demandas da minha EJ')+'</h2><p>'+(isPrescon()?'Crie demandas para uma ou várias EJs, analise justificativas e registre suas decisões em poucos cliques.':isGlobalReader()?'Veja o panorama das EJs em modo de consulta. Apenas a PRESCON vê especificações, documentos e histórico.':isEjDirex()?'Consulte apenas as demandas e os prazos da sua EJ. Documentos, formulários e justificativas são exclusivos do Conselho.':'Veja o panorama de todas as EJs e justifique somente demandas da sua EJ. As especificações são restritas à PRESCON.')+'</p></div><button type="button" class="btn" data-act="refresh">Atualizar demandas</button></header>'+
+  '<div class="demands-metrics">'+[['Demandas',s.total||0],['Em aberto',s.waiting||0],...(isPrescon()?[['Justificativas para análise',s.pendingReview||0]]:[]),['Justificadas',s.justified||0]].map(([name,n])=>'<div class="demands-metric"><span>'+esc(name)+'</span><strong>'+n+'</strong></div>').join('')+'</div>';
  }
  function createForm(){
   if(!isPrescon())return '';
@@ -62,6 +63,7 @@ function mount({containerId,request}){
     '<small>'+esc(fullDate(j.created_at))+'</small>'+(j.decision_note?'<p><b>Decisão da PRESCON:</b> '+esc(j.decision_note)+'</p>':'')+'</div>').join('');
  }
  function justificationForm(d){
+  if(!canJustifyThis(d))return '';
   const j=latest(d);
   if(!['pendente','em_andamento'].includes(d.status))return '<p class="demands-help">Esta demanda já está encerrada ou justificada.</p>';
   if(j?.state==='pending_review')return '<div class="demands-review-note"><strong>Justificativa enviada</strong>A PRESCON irá avaliar sua explicação. Você pode acompanhar o resultado por aqui.</div>';
@@ -83,7 +85,18 @@ function mount({containerId,request}){
  function updateForm(d){
   return '<details><summary>Alterar andamento da demanda</summary><form class="demands-status-form" data-form="status" data-id="'+d.id+'"><div><select name="status" aria-label="Situação da demanda"><option value="pendente" '+(d.status==='pendente'?'selected':'')+'>Pendente</option><option value="em_andamento" '+(d.status==='em_andamento'?'selected':'')+'>Em andamento</option><option value="concluida" '+(d.status==='concluida'?'selected':'')+'>Concluída</option></select><button class="btn" type="submit">Salvar situação</button></div><label>Nota da PRESCON (obrigatória na reabertura)<textarea name="note" rows="2" placeholder="Motivo da atualização..."></textarea></label></form></details>';
  }
+ function overviewCard(d){
+  const overdue=isOverdue(d);
+  const own=canJustifyThis(d);
+  return '<article class="demands-card demands-card-overview" data-id="'+esc(d.id)+'" data-severity="'+esc(d.severity||'amarela')+'">'+
+  '<div class="demands-card-head"><div><h4>'+esc(d.title)+'</h4>'+(isGlobalReader()?'<p>'+esc(ejName(d.ej_id))+'</p>':'')+'</div><span class="demands-chip">'+esc((d.severity||'amarela').toUpperCase())+'</span></div>'+
+  '<div class="demands-card-meta"><span class="demands-chip '+(['concluida','justificada'].includes(d.status)?'done':'wait')+'">'+esc(statusNames[d.status]||d.status)+'</span>'+
+  '<span class="demands-chip '+(overdue?'overdue':'')+'">Prazo '+esc(date(d.due_at))+'</span></div>'+
+  (own?justificationForm(d):'<p class="demands-help">Visão geral: especificação, comprovantes e histórico são restritos à PRESCON.</p>')+
+  '</article>';
+ }
  function card(d){
+  if(!isPrescon())return overviewCard(d);
   const j=latest(d),overdue=isOverdue(d);
   const status=d.status==='justificada'?'justificada':statusNames[d.status]||d.status;
   return '<article class="demands-card" data-id="'+d.id+'" data-severity="'+esc(d.severity||'amarela')+'">'+
@@ -97,7 +110,7 @@ function mount({containerId,request}){
  function filtered(){
   const term=query.toLowerCase(),candidates=list().filter(d=>{
     const j=latest(d);
-    const hay=(d.title+' '+d.description+' '+ejName(d.ej_id)+' '+d.responsible).toLowerCase();
+    const hay=(d.title+' '+(isPrescon()?d.description||'':'')+' '+ejName(d.ej_id)+' '+(isPrescon()?d.responsible||'':'')).toLowerCase();
     if(term&&!hay.includes(term))return false;
     if(ejFilter!=='all'&&d.ej_id!==ejFilter)return false;
     if(filter==='review')return j?.state==='pending_review';
@@ -122,7 +135,7 @@ function mount({containerId,request}){
   '<section class="demands-section"><div class="demands-head"><div><h3>Acompanhar demandas</h3><p>Os dados são do banco do Portal, não da demonstração.</p></div><span id="demands-count" class="demands-help"></span></div>'+
   '<div class="demands-toolbar"><input type="search" id="demand-search" placeholder="Pesquisar por EJ ou assunto" value="'+esc(query)+'" aria-label="Pesquisar demandas">'+
   '<select id="demand-filter" aria-label="Filtrar demandas">'+
-  [['all','Todas as situações'],['review','Aguardando decisão'],['overdue','Prazo vencido'],...Object.entries(statusNames)].map(([k,v])=>'<option value="'+k+'" '+(filter===k?'selected':'')+'>'+esc(v)+'</option>').join('')+'</select>'+
+  [['all','Todas as situações'],...(isPrescon()?[['review','Aguardando decisão']]:[]),['overdue','Prazo vencido'],...Object.entries(statusNames)].map(([k,v])=>'<option value="'+k+'" '+(filter===k?'selected':'')+'>'+esc(v)+'</option>').join('')+'</select>'+
   (isGlobalReader()?'<select id="demand-ej-filter" aria-label="Filtrar por EJ"><option value="all">Todas as EJs</option>'+ejs().map(e=>'<option value="'+esc(e.id)+'" '+(ejFilter===e.id?'selected':'')+'>'+esc(e.name)+'</option>').join('')+'</select>':'')+'</div>'+
   '<div id="demands-results" class="demands-list"></div></section>'+
   (notice?'<div class="demands-toast" role="status">'+esc(notice)+'</div>':'');
