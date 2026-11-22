@@ -60,3 +60,5 @@ body{background:#191919}
 .idealize-track span{display:block;height:100%;border-radius:20px;background:linear-gradient(90deg,#cc2f3c,#acd36a)}
 @media(max-width:780px){.idealize-financial-grid,.idealize-results{grid-template-columns:1fr}.idealize-banner{padding:26px 20px}.idealize-banner::after{width:130px;height:140px;opacity:.2}}
 @media(max-width:540px){.idealize-identity{grid-template-columns:1fr}.idealize-financial-stats{grid-template-columns:1fr 1fr}.idealize-shell .panel{padding:13px}.idealize-choices{grid-template-columns:1fr}.idealize-result-row{grid-template-columns:1fr 1fr 20px}}
+
+#idealize-vote-form [hidden]{display:none!important}
