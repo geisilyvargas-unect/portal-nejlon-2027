@@ -10,6 +10,7 @@ const validUrl=x=>{try{const u=new URL(x);return u.protocol==='https:'?u.href:nu
 const formURL=id=>new URL('./responder.html?id='+encodeURIComponent(id),location.href).href;
 let session=null,formRows=[],currentFiles=[],ejs=[],reportRows=[];
 let weeklyData=null,demandSummary=null,demandUI=null;
+let loginExpanded=false;
 try{const stored=JSON.parse(sessionStorage.getItem(STORE)||'null');if(stored&&stored.access_token)session=stored}catch{}
 function toast(s){$('auto-toast').textContent=s;clearTimeout(toast.timer);toast.timer=setTimeout(()=>$('auto-toast').textContent='',6500)}
 function tab(which){document.querySelectorAll('.automation-tabs button').forEach(b=>{const yes=b.dataset.tab===which;b.classList.toggle('active',yes);if(yes)b.setAttribute('aria-current','page');else b.removeAttribute('aria-current')});document.querySelectorAll('.auto-tab').forEach(p=>p.hidden=p.dataset.panel!==which);window.scrollTo({top:0,behavior:'smooth'})}
@@ -25,6 +26,7 @@ async function refreshSession(){
  const data=await jsonResponse(res);session=data;sessionStorage.setItem(STORE,JSON.stringify(session));
 }
 async function request(endpoint,{method='GET',data,retry=true}={}){
+ if(!session?.access_token)throw Error('Você está no modo de exploração. Para consultar ou alterar dados reais, clique em “Entrar para salvar alterações”.');
  const fetchData=()=>fetch(API+endpoint,{method,headers:{'Content-Type':'application/json',apikey:PUBLIC,Authorization:'Bearer '+session.access_token},...(data===undefined?{}:{body:JSON.stringify(data)})});
  let response;
  try{response=await fetchData()}catch{throw Error('Não foi possível acessar a API no Supabase. Verifique sua conexão ou a função publicada.')}
@@ -32,7 +34,14 @@ async function request(endpoint,{method='GET',data,retry=true}={}){
  return jsonResponse(response);
 }
 function authVisible(logged){
- $('auto-login').hidden=logged;$('auto-app').hidden=!logged;
+ const guest=!logged;
+ $('auto-app').hidden=false;
+ $('auto-login').hidden=logged||!loginExpanded;
+ $('auto-open-login').hidden=logged;
+ $('auto-logout').hidden=guest;
+ $('auto-access-label').textContent=logged?'ACESSO INSTITUCIONAL AUTORIZADO':'MODO DE EXPLORAÇÃO · SEM SENHA';
+ $('auto-user').textContent=logged?(session?.user?.email||'PRESCON'):'Prévia da Central · Sem dados reais';
+ document.body.classList.toggle('automation-preview-mode',guest);
 }
 async function login(ev){
  ev.preventDefault();
@@ -41,11 +50,38 @@ async function login(ev){
  try{
   const res=await fetch(SB+'/auth/v1/token?grant_type=password',{method:'POST',headers:{apikey:PUBLIC,'Content-Type':'application/json'},body:JSON.stringify({email:$('auto-email').value.trim(),password:$('auto-password').value})});
   session=await jsonResponse(res);sessionStorage.setItem(STORE,JSON.stringify(session));$('auto-password').value='';
-  await load();
- }catch(e){$('auto-login-message').textContent=e.message||'Não foi possível entrar.';session=null;sessionStorage.removeItem(STORE);authVisible(false)}
+  await load();loginExpanded=false;authVisible(true);
+ }catch(e){$('auto-login-message').textContent=e.message||'Não foi possível entrar.';session=null;sessionStorage.removeItem(STORE);showPreview();loginExpanded=true;authVisible(false)}
  finally{b.disabled=false}
 }
-function logout(){session=null;sessionStorage.removeItem(STORE);authVisible(false);$('auto-login-message').textContent='Sessão encerrada.'}
+function logout(){session=null;sessionStorage.removeItem(STORE);loginExpanded=false;showPreview();toast('Sessão encerrada. Você pode continuar explorando a Central sem senha.')}
+function showPreview(){
+ session=null;
+ formRows=[];currentFiles=[];ejs=[];reportRows=[];
+ weeklyData=null;demandSummary=null;
+ authVisible(false);
+ $('auto-google-state').textContent='Prévia';
+ $('auto-form-total').textContent='—';
+ $('auto-file-total').textContent='—';
+ $('auto-drive-result').textContent='Integração com Google Drive: conecte uma conta autorizada para salvar arquivos de verdade.';
+ $('auto-files').innerHTML='<p class="automation-muted">Nenhum arquivo real é exibido sem autenticação.</p>';
+ $('auto-weekly-status').textContent='Exibição demonstrativa. Faça login apenas quando precisar consultar os dados reais da Rede.';
+ $('auto-weekly-stats').innerHTML=[
+  ['Deliberações abertas','—'],
+  ['Prazos próximos','—'],
+  ['Justificativas a analisar','—'],
+  ['Demandas vencidas','—']
+ ].map(([title,value])=>'<article><span>'+title+'</span><strong>'+value+'</strong><small>Disponível ao entrar na gestão</small></article>').join('');
+ $('auto-weekly-items').innerHTML='<article class="automation-week-item"><div class="automation-week-top"><div><strong>Exemplo de acompanhamento de deliberação</strong><span>Rateios · Cenário 1 · Cenário 2</span></div><span class="tag">PRÉVIA</span></div><p class="automation-muted">Com login institucional, esta área identifica automaticamente EJs pendentes, respostas aguardando análise e prazos.</p><a class="btn" href="./whatsapp.html#biblioteca">Explorar biblioteca de mensagens →</a></article>';
+ $('auto-weekly-demand').innerHTML='<strong>Demandas da Rede:</strong> a PRESCON poderá analisar justificativas, aceitar ou recusar com comentário e acompanhar o histórico. <a href="./demandas.html">Conhecer as demandas →</a>';
+ $('auto-forms').innerHTML='<article class="automation-form-card"><div class="automation-form-card-head"><div><strong>Modelo demonstrativo · Planejamento Financeiro</strong><small>Rateios, C1 e C2 · exemplo visual, sem registro</small></div><span class="tag">PRÉVIA</span></div><p class="automation-muted">Use a aba “Criar em minutos” para montar um rascunho de exemplo, ou entre para criar e publicar formulários reais.</p><div class="automation-actions"><button type="button" class="btn red" id="auto-preview-create">Explorar criador →</button></div></article>';
+ $('auto-report-form').innerHTML='<option value="">Entre para consultar relatórios reais</option>';
+ $('auto-report-overview').innerHTML=[['Votos aceitos','—'],['Aguardando análise','—'],['Canais de resposta','2']].map(([name,v])=>'<article><span>'+name+'</span><strong>'+v+'</strong><small>Prévia ilustrativa</small></article>').join('');
+ $('auto-report-list').innerHTML='<p class="automation-muted">Os relatórios verdadeiros e dados das EJs só aparecem após login autorizado. As respostas do Portal e do Google Forms serão consolidadas nesta área quando a integração Google estiver habilitada.</p>';
+ $('auto-demands-root').innerHTML='<div class="demands-root"><header class="demands-head"><div><span class="eyebrow">PRÉVIA · SEM DADOS REAIS</span><h2>Sistema de Demandas</h2><p>Veja como a PRESCON administra justificativas de cada EJ, com classificação amarela, laranja e vermelha.</p></div></header><div class="demands-list"><article class="demands-card" data-severity="amarela"><div class="demands-card-head"><h4>Exemplo · Ausência em imersão</h4><span class="demands-chip">AMARELA</span></div><p>A EJ pode enviar o motivo e um comprovante. A PRESCON avalia e registra a decisão.</p><details><summary>Como a PRESCON decide?</summary><p class="demands-review-note"><strong>Aceitar ou recusar justificativa</strong> O sistema solicita uma explicação obrigatória, oferece textos-base editáveis e registra a decisão no histórico.</p></details></article><article class="demands-card" data-severity="laranja"><div class="demands-card-head"><h4>Exemplo · Atualização no Monday</h4><span class="demands-chip">LARANJA</span></div><p>O painel acompanha prazo, situação e justificativas. A EJ vê apenas suas demandas reais quando está autenticada.</p><details><summary>Como acompanhar?</summary><p>Um histórico registra quem criou, justificou ou decidiu cada demanda, com data e comentário.</p></details></article></div><p class="automation-muted">Para criar uma demanda, justificar ou decidir de verdade, é necessário entrar como usuário autorizado.</p></div>';
+ $('auto-preview-create')?.addEventListener('click',()=>tab('criacao'));
+}
+
 function statusNotice(root){
  if(!root.configured){$('auto-google-state').textContent='Configuração pendente';$('auto-drive-result').textContent='As demandas e os formulários do Portal funcionam pelo Supabase. Para usar Google Drive, é preciso ativar a integração Google separadamente.'}
  else{
@@ -114,6 +150,7 @@ function overviewText(){
  ].join('\n');
 }
 async function loadWeekly(){
+ if(!session){showPreview();return}
  $('auto-weekly-status').textContent='Consultando dados reais do Portal…';
  try{
   const w=await request('/forms?action=weekly');
@@ -136,6 +173,7 @@ async function loadWeekly(){
 }
 
 async function loadDemands(){
+ if(!session){showPreview();return}
  if(!demandUI&&window.NEJLON_DemandUI){
   demandUI=window.NEJLON_DemandUI.mount({containerId:'auto-demands-root',request});
  }
@@ -169,6 +207,14 @@ async function mutateForm(id,action){
 }
 async function createForm(ev){
  ev.preventDefault();
+ if(!session?.access_token){
+  const data=new FormData(ev.target);
+  const name=String(data.get('title')||'').trim();
+  const kind=String(data.get('kind')||'pf');
+  $('auto-create-result').innerHTML='<b>Prévia gerada (não salva)</b><p>'+esc(name||'Sem título')+'</p><p>Tipo: '+esc(kind==='pf'?'Planejamento Financeiro — Rateios, C1 e C2':kind==='survey'?'Pesquisa':kind==='event'?'Evento':'Formulário geral')+'</p><p>Para criar, publicar e receber respostas reais, use “Entrar para salvar alterações”. Nenhum documento foi enviado ao Google ou ao Supabase.</p>';
+  toast('Prévia criada localmente. Nenhum dado foi gravado.');
+  return;
+ }
  const form=$('auto-create-form'),btn=form.querySelector('button[type=submit]'),x=new FormData(form);
  const title=String(x.get('title')||'').trim(),kind=String(x.get('kind')||'pf'),createGoogle=x.has('google'),createFolder=x.has('folder');
  if(!title){toast('Informe o título do formulário.');return}
@@ -245,7 +291,16 @@ $('auto-weekly-items').addEventListener('click',async e=>{
 });
 document.querySelector('.automation-tabs').addEventListener('click',e=>{const button=e.target.closest('[data-tab]');if(button)tab(button.dataset.tab)});
 document.querySelectorAll('[data-go]').forEach(button=>button.addEventListener('click',()=>tab(button.dataset.go)));
-$('auto-login-form').addEventListener('submit',login);$('auto-logout').addEventListener('click',logout);
+$('auto-login-form').addEventListener('submit',login);
+$('auto-open-login').addEventListener('click',()=>{
+ loginExpanded=true;authVisible(false);
+ $('auto-login').scrollIntoView({behavior:'smooth',block:'center'});
+ $('auto-email').focus();
+});
+$('auto-close-login').addEventListener('click',()=>{
+ loginExpanded=false;authVisible(!!session);
+});
+$('auto-logout').addEventListener('click',logout);
 $('auto-create-form').addEventListener('submit',createForm);
 $('auto-upload-form').addEventListener('submit',submitUpload);
 $('auto-folder-form').addEventListener('submit',submitFolder);
@@ -293,6 +348,10 @@ $('auto-report-list').addEventListener('click',async e=>{
  catch(err){toast(err.message)}finally{b.disabled=false}
 });
 fetch(API+'/drive?action=health').then(r=>r.ok?r.json():Promise.reject()).then(x=>{$('auto-setup-status').textContent=x.configured?'Backend Supabase disponível. Faça login para continuar. As integrações Google são independentes.':'O backend do Portal está configurado, mas a integração Google ainda precisa de autorização.'}).catch(()=>{$('auto-setup-status').textContent='Não foi possível confirmar o backend Supabase. Confira sua conexão e as funções do projeto.'});
-if(session)load().catch(e=>{authVisible(false);$('auto-login-message').textContent=e.message||'Não foi possível validar a sessão. Verifique o servidor.'});
-else authVisible(false);
+if(session)load().catch(e=>{
+ session=null;sessionStorage.removeItem(STORE);
+ showPreview();
+ toast('Não foi possível validar sua sessão. O modo de exploração continua disponível.');
+});
+else showPreview();
 })();
