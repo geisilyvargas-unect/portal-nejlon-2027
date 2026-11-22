@@ -215,7 +215,7 @@ function render(){
  $('ej-picker-wrap').hidden=!['counselor','ej_direx'].includes(s.role);
  $('ej-picker').innerHTML=D.ejs.map(e=>'<option value="'+esc(e.slug)+'" '+(e.slug===s.ej?'selected':'')+'>'+esc(e.name)+'</option>').join('');
  const councilAccess=$('council-test-access');if(councilAccess){councilAccess.hidden=s.role!=='counselor';const email=$('council-test-email');if(email)email.textContent='conselho'+s.ej+'@nejlondrina.com';}
- const navButton=([key,icon,name])=>key==='demandas'?'<a class="nav-button" href="./pages/demandas.html"><span class="nav-icon" aria-hidden="true">'+icon+'</span>'+esc(name)+'</a>':'<button type="button" class="nav-button '+(key===s.section?'active':'')+'" data-nav="'+key+'" aria-current="'+(key===s.section?'page':'false')+'"><span class="nav-icon" aria-hidden="true">'+icon+'</span>'+esc(name)+'</button>';
+ const navButton=([key,icon,name])=>key==='calendario'?'<a class="nav-button" href="./pages/calendar-live.html"><span class="nav-icon" aria-hidden="true">'+icon+'</span>'+esc(name)+'</a>':key==='demandas'?'<a class="nav-button" href="./pages/demandas.html"><span class="nav-icon" aria-hidden="true">'+icon+'</span>'+esc(name)+'</a>':'<button type="button" class="nav-button '+(key===s.section?'active':'')+'" data-nav="'+key+'" aria-current="'+(key===s.section?'page':'false')+'"><span class="nav-icon" aria-hidden="true">'+icon+'</span>'+esc(name)+'</button>';
  const publicKeys=['painel','calendario','deliberacoes','demandas','engajamento','rede','jornada'];
  const allowed=nav.filter(n=>role().nav.includes(n[0]));
  const common=allowed.filter(n=>publicKeys.includes(n[0]));
@@ -223,7 +223,7 @@ function render(){
   ['Automações',[['Criar formulários e PF','./pages/central-automacoes.html#pf'],['Formulários gerais','./pages/central-automacoes.html#criacao'],['Relatórios e resultados','./pages/central-automacoes.html#relatorios']]],
   ['Gestão de demandas',[['Analisar justificativas','./pages/demandas.html'],['Acompanhar demandas','./pages/central-automacoes.html#demandas']]],
   ['Gestão de deliberações',[['Criar deliberação','./pages/prescon-criar-deliberacao.html'],['Publicar e acompanhar','./pages/central-automacoes.html#formularios'],['Relatórios','./pages/relatorio.html']]],
-  ['Gestão do Conselho',[['Conselheiros e formação','./pages/gestao-conselho.html'],['Fiscalização','./pages/fiscalizacao.html']]],
+  ['Gestão do Conselho',[['Conselheiros e formação','./pages/gestao-conselho.html'],['Calendário oficial','./pages/calendar-live.html'],['Fiscalização','./pages/fiscalizacao.html']]],
  ];
  const admin=s.role==='prescon'?'<div class="portal-admin-heading">ADMINISTRAÇÃO · PRESCON</div>'+adminLinks.map(([label,links])=>'<details class="portal-admin-group"><summary>'+esc(label)+'</summary>'+links.map(([name,url])=>'<a href="'+url+'">'+esc(name)+'</a>').join('')+'</details>').join(''):'';
  const supplemental=s.role==='nucleus_direx'?'<a class="nav-button" href="./pages/fiscalizacao.html">◉ Fiscalização</a>':'';
