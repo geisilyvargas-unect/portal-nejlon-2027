@@ -16,7 +16,7 @@ const persist=()=>{try{sessionStorage.setItem(STORAGE,JSON.stringify(data));retu
 const state={role:'prescon',ej:'unect',tab:'overview'};
 const tabs=[['overview','Visão geral'],['calendar','Agenda e reuniões'],['learning','Jornada'],['engagement','Engajamento'],['checkins','Acompanhamento'],['resources','Biblioteca'],['actions','Encaminhamentos']];
 const isAdmin=()=>state.role==='prescon',isCouncil=()=>state.role==='counselor'||isAdmin();
-const own=()=>data.members.find(m=>m.ej===state.ej)||data.members[0];
+const own=()=>data.members.find(m=>m.ej===state.ej)||null;
 const visibleTabs=()=>tabs.filter(([id])=>isCouncil()||['overview','calendar','resources'].includes(id));
 const date=d=>{if(!d)return 'Sem prazo';const parts=d.split('-');return parts.length===3?parts.reverse().join('/'):d};
 const card=(title,body)=>'<article class="card"><h3>'+esc(title)+'</h3>'+body+'</article>';
@@ -32,14 +32,14 @@ return '<div class="grid">'+[
 }
 function overview(){
 const upcoming=data.events.filter(e=>e.visibility==='public'||isCouncil()).slice(0,3);
-return '<div class="grid">'+card('Próximos compromissos','<div class="stat">'+upcoming.length+'</div><p>Eventos demonstrativos disponíveis</p>')+card('Materiais de formação','<div class="stat">'+(isCouncil()?data.steps.length:'—')+'</div><p>Etapas da Jornada</p>')+card('Encaminhamentos','<div class="stat">'+(isCouncil()?data.actions.filter(a=>a.status==='pending').length:'—')+'</div><p>Ações demonstrativas pendentes</p>')+'</div><h2>Comunicados</h2><div class="stack">'+data.announcements.filter(a=>isCouncil()||a.audience==='public').map(a=>card(a.title,'<p>'+esc(a.body)+'</p>')).join('')+'</div><h2>Próximas atividades</h2><div class="grid">'+upcoming.map(e=>card(e.title,'<p>'+esc(date(e.date))+' · '+esc(e.time)+'</p><span class="tag">'+esc(e.type)+'</span>')).join('')+'</div>'+note();
+return '<div class="grid">'+card('Próximos compromissos','<div class="stat">'+upcoming.length+'</div><p>Eventos demonstrativos disponíveis</p>')+card('Materiais de formação','<div class="stat">'+(isCouncil()?data.steps.length:'—')+'</div><p>Etapas da Jornada</p>')+card('Encaminhamentos','<div class="stat">'+(isCouncil()?data.actions.filter(a=>a.status==='pending'&&(isAdmin()||(own()&&a.owner===own().id))).length:'—')+'</div><p>Ações demonstrativas pendentes</p>')+'</div><h2>Comunicados</h2><div class="stack">'+data.announcements.filter(a=>isCouncil()||a.audience==='public').map(a=>card(a.title,'<p>'+esc(a.body)+'</p>')).join('')+'</div><h2>Próximas atividades</h2><div class="grid">'+upcoming.map(e=>card(e.title,'<p>'+esc(date(e.date))+' · '+esc(e.time)+'</p><span class="tag">'+esc(e.type)+'</span>')).join('')+'</div>'+note();
 }
 function calendar(){
 const events=data.events.filter(e=>isCouncil()||e.visibility==='public').sort((a,b)=>(a.date+a.time).localeCompare(b.date+b.time));
 return '<h2>Agenda institucional</h2><div class="stack">'+events.map(e=>card(e.title,'<p><strong>'+esc(date(e.date))+' · '+esc(e.time)+'</strong> · '+esc(e.type)+'</p><p>Pauta: '+esc(e.agenda)+'</p>'+ (isAdmin()?btn('removeEvent','Excluir evento fictício',e.id):''))).join('')+'</div>'+(isAdmin()?'<h2>Cadastrar reunião fictícia</h2><form class="card form" id="event-form"><label>Título<input name="title" maxlength="120" required></label><label>Data<input type="date" name="date" required></label><label>Horário<input type="time" name="time" required></label><label>Tipo<select name="type"><option>Reunião</option><option>Formação</option><option>Institucional</option></select></label><label>Pauta<textarea name="agenda" maxlength="600" required></textarea></label><label>Visibilidade<select name="visibility"><option value="council">Conselho</option><option value="public">Institucional</option></select></label><button class="primary">Adicionar à simulação</button></form>':'')+note();
 }
 function learning(){
-const m=own(),done=data.progress[m.id]||[],pct=Math.round(100*done.length/data.steps.length);
+const m=own();if(!m)return '<h2>Jornada do Conselheiro</h2><p class="notice">Não há conselheiro fictício cadastrado para esta EJ. Selecione UNECT, BÓSON ou LEX para testar o progresso da jornada.</p>'+note();const done=data.progress[m.id]||[],pct=Math.round(100*done.length/data.steps.length);
 return '<h2>Jornada do Conselheiro</h2><p class="muted">Acompanhamento demonstrativo de '+esc(m.name)+' · '+esc(m.ej.toUpperCase())+'</p><div class="card"><div class="line"><strong>Progresso</strong><strong>'+pct+'%</strong></div><div class="progress" role="progressbar" aria-valuenow="'+pct+'" aria-valuemin="0" aria-valuemax="100" aria-label="Progresso na trilha"><div style="width:'+pct+'%"></div></div></div><div class="stack">'+data.steps.map((step,i)=>card('Etapa '+(i+1)+' — '+esc(step.title),'<p>'+esc(step.description)+'</p><span class="tag">'+(step.required?'Obrigatória':'Opcional')+'</span> <span class="tag">'+(done.includes(step.id)?'Concluída':'A iniciar')+'</span><p>'+btn('step',done.includes(step.id)?'Desmarcar conclusão':'Marcar concluída',step.id)+'</p>')).join('')+'</div>'+note();
 }
 function engagement(){
@@ -51,7 +51,7 @@ if(!isAdmin())return '<div class="empty">Acompanhamento individual é exclusivo 
 return '<h2>Acompanhamento individual · simulação</h2><p class="muted">Registros de conversas e próximos contatos fictícios, visíveis apenas nesta visão demonstrativa.</p><form class="card form" id="checkin-form"><label>Conselheiro<select name="member">'+data.members.map(m=>'<option value="'+esc(m.id)+'">'+esc(m.name)+'</option>').join('')+'</select></label><label>Data<input type="date" name="date" required></label><label>Resumo do encaminhamento<textarea name="summary" maxlength="500" required placeholder="Sem informações pessoais sensíveis"></textarea></label><label>Próximo contato<input type="date" name="next"></label><button class="primary">Registrar acompanhamento fictício</button></form><h3>Histórico de simulação</h3><div class="stack">'+(data.checkins.length?data.checkins.map(c=>card(data.members.find(m=>m.id===c.member)?.name||'Conselheiro','<p>'+esc(date(c.date))+' · '+esc(c.summary)+'</p><p>Próximo contato: '+esc(date(c.next))+'</p>'+btn('removeCheckin','Excluir registro',c.id))).join(''):'<p class="empty">Nenhum acompanhamento simulado.</p>')+'</div>'+note();
 }
 function actions(){
-const allowed=data.actions.filter(a=>isAdmin()||a.owner===own().id);
+const m=own();const allowed=data.actions.filter(a=>isAdmin()||(m&&a.owner===m.id));
 return '<h2>Encaminhamentos</h2><div class="stack">'+allowed.map(a=>card(a.title,'<p>Responsável: '+esc(data.members.find(m=>m.id===a.owner)?.name||'—')+'</p><p>Prazo: '+esc(date(a.due))+' · <strong>'+(a.status==='done'?'Concluído':'Pendente')+'</strong></p>'+btn('toggleAction',a.status==='done'?'Reabrir':'Concluir',a.id))).join('')+'</div>'+(isAdmin()?'<h2>Novo encaminhamento fictício</h2><form class="card form" id="action-form"><label>Descrição<input name="title" maxlength="140" required></label><label>Responsável<select name="owner">'+data.members.map(m=>'<option value="'+esc(m.id)+'">'+esc(m.name)+'</option>').join('')+'</select></label><label>Prazo<input name="due" type="date" required></label><button class="primary">Criar encaminhamento</button></form>':'')+note();
 }
 const screens={overview,calendar,learning,engagement,checkins,resources,actions};
@@ -69,8 +69,8 @@ $('tabs').addEventListener('click',e=>{const b=e.target.closest('[data-tab]');if
 $('screen').addEventListener('click',e=>{
 const b=e.target.closest('[data-action]');if(!b)return;
 const id=b.dataset.id,action=b.dataset.action;
-if(action==='step'&&isCouncil()){const m=own(),set=new Set(data.progress[m.id]||[]),n=Number(id);set.has(n)?set.delete(n):set.add(n);data.progress[m.id]=[...set]}
-else if(action==='toggleAction'&&isCouncil()){const a=data.actions.find(x=>String(x.id)===id);if(!a||(!isAdmin()&&a.owner!==own().id))return;a.status=a.status==='done'?'pending':'done'}
+if(action==='step'&&isCouncil()){const m=own();if(!m)return;const set=new Set(data.progress[m.id]||[]),n=Number(id);set.has(n)?set.delete(n):set.add(n);data.progress[m.id]=[...set]}
+else if(action==='toggleAction'&&isCouncil()){const a=data.actions.find(x=>String(x.id)===id);if(!a||(!isAdmin()&&(!own()||a.owner!==own().id)))return;a.status=a.status==='done'?'pending':'done'}
 else if(action==='removeEvent'&&isAdmin())data.events=data.events.filter(x=>String(x.id)!==id);
 else if(action==='removeCheckin'&&isAdmin())data.checkins=data.checkins.filter(x=>String(x.id)!==id);
 else return;
