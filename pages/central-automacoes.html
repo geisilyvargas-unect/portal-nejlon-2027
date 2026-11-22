@@ -9,7 +9,7 @@
 <nav class="automation-top"><a href="../index.html">← Voltar ao Portal</a><span>NEJLON 2027 · GESTÃO PRESCON</span></nav>
 <main class="automation-shell" id="conteudo">
 <header class="automation-hero"><span class="eyebrow">PRESCON · GESTÃO SIMPLIFICADA</span><h1>CENTRAL DE <em>AUTOMAÇÕES</em></h1><p>Uma única área para criar formulários, organizar documentos no Drive, acompanhar as respostas e preparar comunicados para o grupo do Conselho.</p></header>
-<div class="automation-note"><strong>Ambiente de gestão:</strong> esta página exige autenticação da PRESCON. As integrações Google só funcionam depois da conexão autorizada e configuração do servidor. O painel demonstrativo do portal permanece separado.</div>
+<div class="automation-note"><strong>Ambiente de gestão:</strong> esta página usa autenticação da PRESCON no Supabase e também funciona pelo GitHub Pages. Drive e Google Forms exigem autorização Google separada. O painel demonstrativo do portal permanece separado.</div>
 <section class="automation-panel" id="auto-login">
 <h2><span>01</span> Entrar como PRESCON</h2>
 <p>Use sua conta institucional cadastrada no sistema. O acesso é verificado no banco, não pelo seletor de perfis da demonstração.</p>
@@ -57,7 +57,7 @@
 <label>Tipo de formulário<select name="kind"><option value="pf">Planejamento financeiro (Rateios, C1, C2)</option><option value="generic">Formulário geral</option><option value="survey">Pesquisa de satisfação</option><option value="event">Inscrição / evento</option></select></label>
 <label>Descrição ou instruções<textarea name="description" rows="3" placeholder="Resumo que os conselheiros precisam conhecer"></textarea></label>
 <label>Data e hora final (para o comunicado)<input name="due" type="datetime-local"></label>
-<div class="automation-switches"><label><input type="checkbox" name="google" checked> Criar também no Google Forms (requer conexão)</label><label><input type="checkbox" name="folder" checked> Criar pasta organizada no Drive</label></div>
+<div class="automation-switches"><label><input type="checkbox" name="google"> Criar também no Google Forms (requer ativar a integração Google; deixe desmarcado para criar agora)</label><label><input type="checkbox" name="folder" checked> Criar pasta organizada no Drive</label></div>
 <p>Quando escolher formulário geral, você poderá usar perguntas padrão de exemplo. Modelos avançados ficam para a evolução do construtor.</p>
 <button type="submit" class="btn red">Criar rascunho e preparar recursos</button>
 </form><div id="auto-create-result" class="automation-result" role="status"></div></div>
