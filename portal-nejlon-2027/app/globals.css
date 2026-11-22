@@ -251,3 +251,33 @@ html[data-theme='light'] .access-guide-account{background:#edf5f6;color:#00515a}
 html[data-theme='light'] .login-demo-note{background:#fff8eb;color:#57391b;border-color:#c8aa70}
 html[data-theme='light'] .login-demo-note code{color:#7b351a}
 html[data-theme='light'] .access-email-preview{background:#f1f5f7}
+
+
+/* Botão flutuante de contato oficial da PRESCON via WhatsApp */
+.contact-prescon{
+ position:fixed;
+ z-index:120;
+ right:max(18px,env(safe-area-inset-right));
+ bottom:max(18px,env(safe-area-inset-bottom));
+ display:inline-flex;
+ align-items:center;
+ justify-content:center;
+ gap:9px;
+ background:#168b50;
+ border:1px solid #107c45;
+ border-radius:999px;
+ box-shadow:0 8px 26px #0005;
+ color:white;
+ font-size:.86rem;
+ font-weight:800;
+ text-decoration:none;
+ padding:13px 19px;
+ transition:background .2s,transform .2s;
+}
+.contact-prescon:hover{background:#0f7140;transform:translateY(-2px);color:#fff}
+.contact-prescon:focus-visible{outline:3px solid #fff;outline-offset:3px}
+@media(max-width:760px){
+ .contact-prescon{right:12px;bottom:12px;padding:12px 14px;font-size:.76rem;gap:7px}
+ .contact-prescon svg{width:20px;height:20px}
+}
+@media print{.contact-prescon{display:none!important}}
