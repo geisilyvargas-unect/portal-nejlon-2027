@@ -1,20 +1,17 @@
 'use client';
 import {useEffect,useState} from 'react';
-import {Moon,Sun} from 'lucide-react';
+import {Moon,Sun,Heart} from 'lucide-react';
+type Theme='dark'|'light'|'red';
+const options:{value:Theme;label:string}[]=[{value:'dark',label:'Preto'},{value:'red',label:'Vermelho'},{value:'light',label:'Branco'}];
 export function ThemeToggle(){
- const [theme,setTheme]=useState<'dark'|'light'>('dark');
- useEffect(()=>{
-   setTheme(document.documentElement.dataset.theme==='light'?'light':'dark');
- },[]);
- function toggle(){
-  const next=theme==='dark'?'light':'dark';
-  document.documentElement.dataset.theme=next;
-  localStorage.setItem('nejlon-theme',next);
-  setTheme(next);
- }
- return <button type="button" className="theme-toggle outline" onClick={toggle}
-  aria-label={'Ativar modo '+(theme==='dark'?'claro':'escuro')} title={'Mudar para modo '+(theme==='dark'?'claro':'escuro')}>
-  {theme==='dark'?<Sun size={16} aria-hidden/>:<Moon size={16} aria-hidden/>}
-  <span>Modo {theme==='dark'?'claro':'escuro'}</span>
- </button>;
+ const [theme,setTheme]=useState<Theme>('dark');
+ useEffect(()=>{const saved=document.documentElement.dataset.theme;setTheme(saved==='light'||saved==='red'?saved:'dark');
+ const sync=(event:StorageEvent)=>{if(event.key==='nejlon-theme'){const choice=event.newValue;setTheme(choice==='light'||choice==='red'?choice:'dark');}};
+ window.addEventListener('storage',sync);return()=>window.removeEventListener('storage',sync);},[]);
+ function choose(next:Theme){document.documentElement.dataset.theme=next;localStorage.setItem('nejlon-theme',next);setTheme(next);}
+ return <div className="theme-select" role="group" aria-label="Aparência do portal">
+  {options.map(({value,label})=><button type="button" key={value} className={'theme-option'+(theme===value?' selected':'')} onClick={()=>choose(value)} aria-pressed={theme===value} title={'Tema '+label}>
+   {value==='dark'?<Moon size={15} aria-hidden/>:value==='light'?<Sun size={15} aria-hidden/>:<Heart size={15} aria-hidden/>}<span>{label}</span>
+  </button>)}
+ </div>;
 }
