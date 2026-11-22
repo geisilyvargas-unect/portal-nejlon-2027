@@ -1,6 +1,35 @@
 (() => {
 'use strict';
 const D=window.NEJLON_DEMO;
+const DIRECTORY=window.NEJLON_EJ_DIRECTORY||[];
+const directoryBySlug=new Map(DIRECTORY.map(e=>[e.slug,e]));
+const profile=slug=>directoryBySlug.get(slug)||null;
+const logo=(slug,cls='ej-logo')=>{
+ const e=profile(slug);
+ if(!e)return '<span class="ej-logo ej-logo-fallback">EJ</span>';
+ const c=e.logoIndex%5,r=Math.floor(e.logoIndex/5);
+ const ejName=D.ejs.find(v=>v.slug===slug)?.name||slug;
+ return '<span class="'+cls+'" role="img" aria-label="Logo da '+esc(ejName)+
+ '" style="background-image:url(./pages/logo-sprite.webp);background-size:500% 600%;background-position:'+
+ (c*25)+'% '+(r*20)+'%"></span>';
+};
+const igUrl=e=>e?.instagram?'https://www.instagram.com/'+encodeURIComponent(e.instagram)+'/':null;
+const waShare=name=>'https://api.whatsapp.com/send?text='+encodeURIComponent('Conheça a '+name+' no Portal NEJLON 2027.');
+const waDirect=(entry,name)=>{
+ const phone=(entry?.whatsapp||'').replace(/\D/g,'');
+ return /^55\d{10,11}$/.test(phone)
+  ?'https://wa.me/'+phone+'?text='+encodeURIComponent('Olá! Gostaria de falar com a '+name+'.'):null;
+};
+const contactButtons=entry=>{
+ if(!entry)return '<p class="note">Contato não informado.</p>';
+ const name=D.ejs.find(x=>x.slug===entry.slug)?.name||entry.slug;
+ const ig=igUrl(entry),wa=waDirect(entry,name);
+ return '<div class="ej-contact-actions">'+
+ (ig?'<a class="btn" href="'+ig+'" target="_blank" rel="noopener noreferrer">✦ Instagram</a>':'')+
+ (wa?'<a class="btn wa" href="'+wa+'" target="_blank" rel="noopener noreferrer">✆ Mandar mensagem no WhatsApp</a>':
+ '<a class="btn outline" href="'+waShare(name)+'" target="_blank" rel="noopener noreferrer">↗ Compartilhar no WhatsApp</a>')+
+ '</div>'+(wa?'':'<p class="note">Sem número confirmado neste portfólio. Compartilhar não envia mensagem à EJ diretamente.</p>');
+};
 if(!D){document.getElementById('view').textContent='Dados demonstrativos indisponíveis.';return;}
 const nav=[
  ['painel','◫','Visão geral'],['engajamento','▦','Engajamento'],['deliberacoes','☷','Deliberações'],
