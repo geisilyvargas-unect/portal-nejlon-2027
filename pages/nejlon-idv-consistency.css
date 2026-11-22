@@ -2,9 +2,9 @@
    CY Grotesk V3 Key só será renderizada quando o usuário tiver a fonte
    instalada ou quando um arquivo licenciado for disponibilizado. */
 :root {--nejlon-title-font:"CY Grotesk V3 Key","CY Grotesk V3","Arial Black",Impact,sans-serif;--nejlon-red:#ff0000}
-html[data-theme="light"]{--ux-bg:#fff;--ux-side:#fff;--ux-surface:#fff;--ux-raised:#f4f4f4;--ux-text:#101010;--ux-muted:#323232;--ux-subtle:#454545;--ux-red:#e00000;--ux-petrol:#e00000;--ux-lime:#9bc900;--modern-line:#d0d0d0;--modern-accent:#e00000;--modern-accent-soft:#fff0f0;--modern-glass:rgba(255,255,255,.96)}
-html[data-theme="dark"]{--ux-bg:#000;--ux-side:#050505;--ux-surface:#111;--ux-raised:#1d1d1d;--ux-text:#fff;--ux-muted:#e2e2e2;--ux-subtle:#c7c7c7;--ux-red:#ff0000;--ux-petrol:#ff0000;--ux-lime:#9bc900;--modern-line:#444;--modern-accent:#ff0000;--modern-accent-soft:#291010;--modern-glass:rgba(0,0,0,.96)}
-html[data-theme="red"]{color-scheme:dark;--ux-bg:#ff0000;--ux-side:#050505;--ux-surface:#101010;--ux-raised:#202020;--ux-text:#fff;--ux-muted:#eaeaea;--ux-subtle:#ccc;--ux-border:#565656;--ux-red:#ff0000;--ux-petrol:#ff0000;--ux-lime:#9bc900;--modern-line:#4a4a4a;--modern-accent:#ff0000;--modern-accent-soft:#2b1111;--modern-glass:rgba(8,8,8,.97)}
+html[data-theme="light"]{--ux-bg:#fff;--ux-side:#fff;--ux-surface:#fff;--ux-raised:#f4f4f4;--ux-text:#101010;--ux-muted:#323232;--ux-subtle:#454545;--ux-red:#e00000;--ux-petrol:#005663;--ux-lime:#9bc900;--modern-line:#d0d0d0;--modern-accent:#e00000;--modern-accent-soft:#fff0f0;--modern-glass:rgba(255,255,255,.96)}
+html[data-theme="dark"]{--ux-bg:#000;--ux-side:#050505;--ux-surface:#111;--ux-raised:#1d1d1d;--ux-text:#fff;--ux-muted:#e2e2e2;--ux-subtle:#c7c7c7;--ux-red:#ff0000;--ux-petrol:#00616d;--ux-lime:#9bc900;--modern-line:#444;--modern-accent:#ff0000;--modern-accent-soft:#291010;--modern-glass:rgba(0,0,0,.96)}
+html[data-theme="red"]{color-scheme:dark;--ux-bg:#ff0000;--ux-side:#050505;--ux-surface:#101010;--ux-raised:#202020;--ux-text:#fff;--ux-muted:#eaeaea;--ux-subtle:#ccc;--ux-border:#565656;--ux-red:#ff0000;--ux-petrol:#00616d;--ux-lime:#9bc900;--modern-line:#4a4a4a;--modern-accent:#ff0000;--modern-accent-soft:#2b1111;--modern-glass:rgba(8,8,8,.97)}
 :is(.intro h1,.workhead h2,.panel h3,.ej-directory-card h3,.i-hero h1,.i-section h2,.idealize-banner h1,.idealize-manual-art h3,.wa-hero h1,.wa-panel h2,.idealize-shell h2){font-family:var(--nejlon-title-font)!important;font-weight:900!important}
 :is(.intro h1,.i-hero h1,.idealize-banner h1,.wa-hero h1){text-transform:uppercase;letter-spacing:.012em!important;line-height:1.16!important;overflow-wrap:anywhere}
 html[data-theme="red"] :is(body,.main){background:#ff0000!important}
@@ -95,3 +95,9 @@ html:is([data-theme="light"],[data-theme="dark"]) .nejlon-layer-title::before{co
 html:is([data-theme="light"],[data-theme="dark"]) :is(.intro h1,.i-hero h1,.idealize-banner h1,.wa-hero h1){text-shadow:3px 5px 0 var(--nejlon-title-shadow),4px 6px 0 var(--nejlon-title-edge)!important}
 @media(max-width:600px){html:is([data-theme="light"],[data-theme="dark"]) :is(.intro h1,.i-hero h1,.idealize-banner h1,.wa-hero h1){-webkit-text-stroke:.7px var(--nejlon-title-edge)!important;text-shadow:2px 3px 0 var(--nejlon-title-shadow)!important}}
 @media print{html:is([data-theme="light"],[data-theme="dark"]) :is(h1,h2,h3){text-shadow:none!important;-webkit-text-stroke:0!important}}
+
+/* Azul-petróleo oficial já presente na IDV: apoio nos dois temas. */
+html[data-theme="light"]{--nejlon-petrol:#005663;--ux-petrol:#005663;--ux-petrol-hover:#00434d}
+html[data-theme="dark"]{--nejlon-petrol:#00616d;--ux-petrol:#00616d;--ux-petrol-hover:#087b88}
+html:is([data-theme="light"],[data-theme="dark"]) :is(.stat-card,.comparison-insight)[data-accent="petrol"]{border-left:4px solid var(--nejlon-petrol)!important}
+html:is([data-theme="light"],[data-theme="dark"]) :is(.eyebrow,.mini-heading,.stat-icon)[data-accent="petrol"]{color:var(--nejlon-petrol)!important}
