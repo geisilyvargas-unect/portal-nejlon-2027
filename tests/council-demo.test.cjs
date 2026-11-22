@@ -12,7 +12,8 @@ function boot(){
   return elements.get(id);
  }
  const storage=new Map();
- const catalogContext={window:{}};vm.runInNewContext(fs.readFileSync(path.join(__dirname,'../pages/demo-data.js'),'utf8'),catalogContext);\n const context={window:catalogContext.window,document:{getElementById:element},sessionStorage:{getItem:k=>storage.get(k)||null,setItem:(k,v)=>storage.set(k,v),removeItem:k=>storage.delete(k)},setTimeout:()=>0,Date,FormData,console};
+ const catalogContext={window:{}};vm.runInNewContext(fs.readFileSync(path.join(__dirname,'../pages/demo-data.js'),'utf8'),catalogContext);
+ const context={window:catalogContext.window,document:{getElementById:element},sessionStorage:{getItem:k=>storage.get(k)||null,setItem:(k,v)=>storage.set(k,v),removeItem:k=>storage.delete(k)},setTimeout:()=>0,Date,FormData,console};
  vm.runInNewContext(source,context,{filename:'gestao-conselho.js'});
  const change=(id,value)=>{const el=element(id);el.value=value;el.listeners.change({target:el})};
  return {element,change};
