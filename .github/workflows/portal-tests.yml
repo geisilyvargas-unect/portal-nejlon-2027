@@ -1,0 +1,32 @@
+name: Testes do Portal NEJLON
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: portal-tests-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  council-demo:
+    name: Testes de perfis demonstrativos
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Baixar repositório
+        uses: actions/checkout@v4
+      - name: Preparar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Verificar sintaxe JavaScript da demonstração
+        run: node --check pages/gestao-conselho.js
+      - name: Executar testes de visibilidade dos perfis
+        run: node --test tests/council-demo.test.cjs
