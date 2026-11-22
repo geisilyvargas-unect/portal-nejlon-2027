@@ -384,6 +384,8 @@ $('auto-vote-changes').addEventListener('click',async event=>{
   await loadVoteChangeRequests();
  }catch(error){toast(error.message)}finally{button.disabled=false}
 });
+const initialTab=location.hash.slice(1);
+if(['inicio','criacao','pf','drive','formularios','demandas','relatorios'].includes(initialTab))tab(initialTab);
 fetch(API+'/drive?action=health').then(r=>r.ok?r.json():Promise.reject()).then(x=>{$('auto-setup-status').textContent=x.configured?'Backend Supabase disponível. Faça login para continuar. As integrações Google são independentes.':'O backend do Portal está configurado, mas a integração Google ainda precisa de autorização.'}).catch(()=>{$('auto-setup-status').textContent='Não foi possível confirmar o backend Supabase. Confira sua conexão e as funções do projeto.'});
 if(session)load().catch(e=>{
  session=null;sessionStorage.removeItem(STORE);
