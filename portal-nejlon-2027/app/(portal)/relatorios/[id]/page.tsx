@@ -8,7 +8,7 @@ import {POSITIONS,formatDate,type Deliberation,type Position,type ResponseRow,ty
 import {answersOf,scenariosOf} from '@/lib/deliberation-form';
 import {ReportActions} from '@/components/clipboard';
 import {CsvExport} from '@/components/csv-export';
-import {saveReportNotes,saveResponseReview} from '@/app/actions';
+import {saveReportNotes,saveResponseReview,publishDeliberationReport} from '@/app/actions';
 import {HistoricalReport} from '@/components/historical-deliberation';
 import {summarizeManualVotes,effectivePosition} from '@/lib/vote-rules';
 
@@ -159,6 +159,7 @@ export default async function ReportDetail({params}:{params:Promise<{id:string}>
       <p className="muted">Documento de acompanhamento e transparência das respostas do Conselho Deliberativo.</p>
       <div className="action-row small muted"><span>Prazo: {formatDate(d.due_at)}</span><span>·</span><span>Gerado em: {formatDate(new Date().toISOString())}</span></div>
     </header>
+    <section className="panel no-print"><h2>Publicação para o Conselho</h2><p className="muted">Cria uma versão permanente somente com totais agregados, sem nomes das EJs, comentários individuais ou identidade dos votantes. A versão publicada não muda quando novos votos chegam; publique outra versão para atualizar.</p><form action={publishDeliberationReport}><input type="hidden" name="deliberation_id" value={id}/><button type="submit" className="primary">Publicar versão anonimizada</button></form></section>
     <CsvExport rows={csvRows} filename={'deliberacao-'+d.id+'-respostas.csv'}/>
       <ReportActions content={exportText} filename={'relatorio-nejlon-'+id.slice(0,8)+'.txt'}/>
     <section className="panel">
