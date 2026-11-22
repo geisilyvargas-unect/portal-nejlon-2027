@@ -4,7 +4,7 @@ import Link from 'next/link';
 import {
   BookOpen,Building2,CalendarDays,CheckCircle2,ChevronRight,
   ClipboardList,FileText,LayoutDashboard,ListTodo,LockKeyhole,
-  MessageCircle,ShieldCheck,Users
+  ShieldCheck,Users
 } from 'lucide-react';
 import {EJS_DEMO,DEMO_ROLES,expectedEmail,type DemoRole} from '@/lib/demo-ejs';
 import {ThemeToggle} from '@/components/theme-toggle';
@@ -86,11 +86,14 @@ export function DemoTour(){
      <p>Escolha uma visão e conheça as funcionalidades previstas para cada perfil. É uma <strong>simulação com informações fictícias</strong>: nada aqui registra votos, cria contas ou altera dados do NEJLON.</p>
     </div>
     <div className="demo-selector">
-     <label>Qual visão você quer conhecer?
-      <select value={role} onChange={e=>changeRole(e.target.value as DemoRole)}>
-       {DEMO_ROLES.map(x=><option value={x.value} key={x.value}>{x.name}</option>)}
-      </select>
-     </label>
+     <div className="demo-role-picker" role="group" aria-label="Escolha a visão que deseja conhecer">
+      {DEMO_ROLES.map(x=><button key={x.value} type="button"
+        className={'demo-role-button '+(role===x.value?'active':'')}
+        aria-pressed={role===x.value}
+        onClick={()=>changeRole(x.value)}>
+        {x.name}
+      </button>)}
+     </div>
      {(isCouncil||isDirex)&&<label>Empresa júnior de exemplo
        <select value={ejSlug} onChange={e=>changeEj(e.target.value)}>
         {EJS_DEMO.map(x=><option value={x.slug} key={x.slug}>{x.name}</option>)}
