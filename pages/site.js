@@ -129,12 +129,18 @@ function exportReport(format){
  if(s.role!=='prescon')return;
  const html=reportDocument();
  if(format==='pdf'||format==='view'){
-  const w=window.open('','_blank');
-  if(!w){alert('Permita pop-ups para visualizar o relatório em outra aba.');return}
-  const toolbar='<div class="report-preview-toolbar"><strong>Pré-visualização do relatório · dados demonstrativos</strong><div><button type="button" onclick="window.print()">Imprimir / Salvar como PDF</button><button type="button" onclick="window.close()">Fechar</button></div></div>';
-  const previewStyles='<style>@media screen{body{padding-top:90px!important}.report-preview-toolbar{position:fixed;z-index:9999;top:0;left:0;right:0;min-height:62px;background:#18272a;color:#fff;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 24px;font:14px system-ui;box-shadow:0 2px 10px #0002}.report-preview-toolbar div{display:flex;gap:8px}.report-preview-toolbar button{border:1px solid #9cb3b6;border-radius:8px;background:#fff;color:#173034;padding:9px 12px;cursor:pointer;font:600 12px system-ui}}@media(max-width:650px){.report-preview-toolbar{flex-direction:column;align-items:stretch}.report-preview-toolbar div{flex-wrap:wrap}}@media print{.report-preview-toolbar{display:none!important}}</style>';
-  const preview=html.replace('</head>',previewStyles+'</head>').replace('<body>','<body>'+toolbar);
-  w.document.open();w.document.write(preview);w.document.close();
+  // Store only the already anonymized report HTML in the current browser session.
+  // Never put votes, comments or EJ identities in the URL.
+  const parsed=new DOMParser().parseFromString(html,'text/html');
+  const main=parsed.querySelector('main');
+  if(!main){alert('Não foi possível preparar a visualização.');return}
+  const snapshot={title:parsed.title,html:main.innerHTML,createdAt:Date.now(),demo:true};
+  const key='nejlon-report-'+Date.now()+'-'+Math.random().toString(36).slice(2);
+  try{sessionStorage.setItem(key,JSON.stringify(snapshot));}catch(e){alert('O navegador não permitiu preparar o relatório.');return}
+  const url=new URL('./pages/relatorio.html',document.baseURI);
+  url.searchParams.set('ref',key);
+  const w=window.open(url.href,'_blank');
+  if(!w){sessionStorage.removeItem(key);alert('Permita pop-ups para visualizar o relatório em outra aba.')}
   return;
  }
  if(format==='doc'){
