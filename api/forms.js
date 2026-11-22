@@ -145,6 +145,22 @@ async function handler(req,res){
    if(!form)fail(404,'Formulário não disponível para este perfil.');
    return json(res,200,{form});
   }
+  if(action==='my_vote_status'){
+   if(user.role!=='counselor'||!user.ej_id)fail(403,'Disponível somente para o conselheiro da EJ.');
+   const formId=String(req.query.id||'');if(!uuid(formId))fail(400,'Formulário inválido.');
+   const forms=await db('portal_forms',{query:'select=id,status,due_at&id=eq.'+formId+'&limit=1'});
+   if(!forms.length)fail(404,'Formulário não encontrado.');
+   const existing=await db('portal_form_submissions',{query:'select=id,submitted_at&form_id=eq.'+formId+'&ej_id=eq.'+user.ej_id+'&state=eq.accepted&limit=1'});
+   const vote=existing[0];
+   if(!vote)return json(res,200,{registered:false,can_request:false,request:null});
+   const auth=await db('portal_vote_change_authorizations',{query:'select=id,status,reason,decision_note,created_at,decided_at&source=eq.form&vote_id=eq.'+vote.id+'&requester_id=eq.'+user.userId+'&order=created_at.desc&limit=1'});
+   return json(res,200,{registered:true,can_request:forms[0].status==='open'&&(!forms[0].due_at||Date.parse(forms[0].due_at)>Date.now()),request:auth[0]||null,submitted_at:vote.submitted_at});
+  }
+  if(action==='vote_change_queue'){
+   if(user.role!=='prescon')fail(403,'Só a PRESCON vê solicitações de alteração.');
+   const requests=await db('portal_vote_change_authorizations',{query:'select=id,source,form_id,ej_id,requester_id,reason,status,decision_note,created_at,decided_at&order=created_at.desc&limit=200'});
+   return json(res,200,{requests});
+  }
   if(action==='report'){
    if(user.role!=='prescon')fail(403,'Relatórios individuais são exclusivos da PRESCON.');
    const formId=String(req.query.id||'');if(!uuid(formId))fail(400,'Formulário inválido.');
@@ -173,6 +189,41 @@ async function handler(req,res){
   if(conflict.length)fail(409,'Esta EJ já registrou uma resposta válida. Procure a PRESCON para revisão.');
   await db('portal_form_submissions',{method:'POST',prefer:'return=minimal',data:{form_id:formId,ej_id:user.ej_id,user_id:user.userId,respondent_email:user.email,channel:'portal',state:'accepted',answers:answerMap}});
   return json(res,201,{ok:true,message:'Sua resposta foi registrada no Portal NEJLON.'});
+ }
+ if(action==='request_vote_change'){
+  if(user.role!=='counselor'||!user.ej_id)fail(403,'Somente o conselheiro pode solicitar alteração do próprio voto.');
+  const formId=String(data.formId||''),reason=String(data.reason||'').trim().slice(0,2000);
+  if(!uuid(formId)||reason.length<10)fail(400,'Selecione um formulário e explique a solicitação.');
+  const [form]=await db('portal_forms',{query:'select=id,status,due_at&id=eq.'+formId+'&limit=1'});
+  if(!form||form.status!=='open'||form.due_at&&Date.parse(form.due_at)<=Date.now())fail(409,'Prazo encerrado. A solicitação deve ser feita enquanto o formulário está aberto.');
+  const vote=(await db('portal_form_submissions',{query:'select=id&form_id=eq.'+formId+'&ej_id=eq.'+user.ej_id+'&state=eq.accepted&limit=1'}))[0];
+  if(!vote)fail(404,'Não há voto validado desta EJ para alterar.');
+  const outstanding=await db('portal_vote_change_authorizations',{query:'select=id&source=eq.form&vote_id=eq.'+vote.id+'&status=in.(requested,approved)&limit=1'});
+  if(outstanding.length)fail(409,'Já existe solicitação pendente ou autorização concedida.');
+  const rows=await db('portal_vote_change_authorizations',{method:'POST',prefer:'return=representation',data:{
+   source:'form',vote_id:vote.id,form_id:formId,ej_id:user.ej_id,requester_id:user.userId,reason,status:'requested'
+  }});
+  return json(res,201,{ok:true,request:{id:rows[0].id,status:'requested'},message:'Solicitação enviada à PRESCON. Seu voto não foi alterado.'});
+ }
+ if(action==='apply_vote_change'){
+  if(user.role!=='counselor'||!user.ej_id)fail(403,'Somente o conselheiro pode aplicar uma alteração autorizada.');
+  const authorizationId=String(data.authorizationId||'');
+  if(!uuid(authorizationId))fail(400,'Autorização inválida.');
+  const answers=data.answers;
+  if(!answers||typeof answers!=='object'||Array.isArray(answers))fail(400,'Informe novas respostas.');
+  const result=await db('rpc/portal_apply_approved_vote_change',{method:'POST',data:{
+   p_authorization_id:authorizationId,p_editor_id:user.userId,p_new_vote:answers
+  }});
+  return json(res,200,{ok:true,result,message:'Voto substituído conforme autorização da PRESCON. Alteração registrada no histórico.'});
+ }
+ if(action==='review_vote_change'){
+  if(user.role!=='prescon')fail(403,'Somente a PRESCON pode autorizar alterações de voto.');
+  const id=String(data.id||''),decision=String(data.decision||''),note=String(data.note||'').trim().slice(0,2500);
+  if(!uuid(id)||!['approved','denied'].includes(decision)||note.length<8)fail(400,'Informe a decisão e uma justificativa com pelo menos 8 caracteres.');
+  const result=await db('rpc/portal_review_vote_edit_request',{method:'POST',data:{
+   p_authorization_id:id,p_prescon_id:user.userId,p_decision:decision,p_note:note
+  }});
+  return json(res,200,{ok:true,result,message:decision==='approved'?'Alteração autorizada; o conselheiro pode enviar um novo voto uma única vez.':'Solicitação recusada e justificativa registrada.'});
  }
  if(user.role!=='prescon')fail(403,'Somente a PRESCON pode gerenciar formulários.');
  if(action==='create'){
