@@ -24,7 +24,7 @@ for(const file of pages){
  const uxIndex=localStyles.findIndex(x=>x.includes('ux-system.css'));
  if(uxIndex<0)fail(file+' missing UX baseline CSS');
  // Camadas de identidade posteriores são intencionais e devem ficar acima da base UX.
- const identityLayers=['brand-red-typography.css','red-black-layered.css','nejlon-idv-consistency.css','modern-idv.css'];
+ const identityLayers=['brand-red-typography.css','red-black-layered.css','nejlon-idv-consistency.css','modern-idv.css','title-single-layer.css','nejlon-type-system.css'];
  if(localStyles.slice(uxIndex+1).some(x=>!identityLayers.some(layer=>x.includes(layer))&&!['dashboard-intro.css'].some(layer=>x.includes(layer))))fail(file+' unexpected stylesheet after UX baseline');
 }
 for(const file of scripts){
