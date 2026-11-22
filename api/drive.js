@@ -4,16 +4,25 @@ const {json,fail,body,protect,prescon,db,ready,envCheck,accessToken,google,googl
 const formulaSafe=value=>{const s=String(value??'');return /^\s*[=+\-@]/.test(s)?"'"+s:s};
 const csv=rows=>'\ufeff'+rows.map(row=>row.map(cell=>'"'+formulaSafe(cell).replace(/"/g,'""')+'"').join(';')).join('\r\n');
 async function makeReport(userId,token,formId,asSheet){
- const query='select=id,title,status,kind&'+(formId?'id=eq.'+encodeURIComponent(formId)+'&':'')+'order=created_at.desc&limit=50';
- const forms=await db('portal_forms',{query});
+ const forms=[];
+ for(let offset=0;offset<200;offset+=50){
+  const query='select=id,title,status,kind&'+(formId?'id=eq.'+encodeURIComponent(formId)+'&':'')+'order=created_at.desc,id.desc&limit=50&offset='+offset;
+  const batch=await db('portal_forms',{query});forms.push(...batch);
+  if(batch.length<50||formId)break;
+ }
+ if(!formId&&forms.length===200)fail(413,'Há mais de 200 formulários. Exporte um formulário por vez para evitar relatórios incompletos.');
  if(formId&&!forms.length)fail(404,'Formulário não encontrado.');
  const rows=[['Formulário','EJ / identificador','Canal','Situação','Data','Respostas em JSON']];
  let accepted=0,pending=0,total=0;
  for(const f of forms){
-  const submissions=await db('portal_form_submissions',{query:'select=ej_id,respondent_name,channel,state,submitted_at,answers&form_id=eq.'+f.id+'&order=submitted_at.asc&limit=1000'});
-  for(const sub of submissions){
-   total++;accepted+=Number(sub.state==='accepted');pending+=Number(sub.state==='pending_review');
-   rows.push([f.title,sub.respondent_name||sub.ej_id||'Identificação pendente',sub.channel,sub.state,sub.submitted_at,JSON.stringify(sub.answers)]);
+  for(let offset=0;offset<20000;offset+=500){
+   const submissions=await db('portal_form_submissions',{query:'select=ej_id,respondent_name,channel,state,submitted_at,answers&form_id=eq.'+f.id+'&order=submitted_at.asc,id.asc&limit=500&offset='+offset});
+   for(const sub of submissions){
+    total++;accepted+=Number(sub.state==='accepted');pending+=Number(sub.state==='pending_review');
+    rows.push([f.title,sub.respondent_name||sub.ej_id||'Identificação pendente',sub.channel,sub.state,sub.submitted_at,JSON.stringify(sub.answers)]);
+   }
+   if(submissions.length<500)break;
+   if(offset===19500)fail(413,'O relatório excede 20 mil respostas por formulário. Divida a exportação.');
   }
  }
  const root=await ensureRoot(userId,token);
