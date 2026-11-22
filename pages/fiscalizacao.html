@@ -1,0 +1,15 @@
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Fiscalização do Núcleo · NEJLON</title>
+<link rel="stylesheet" href="./site.css"><link rel="stylesheet" href="./visual-identity.css"><link rel="stylesheet" href="./automation.css"><link rel="stylesheet" href="./demandas.css"><link rel="stylesheet" href="./ux-system.css">
+<script defer src="./ux-theme.js"></script><script defer src="./fiscalizacao.js"></script></head>
+<body class="automation-page"><nav class="automation-top"><a href="../index.html">← Voltar ao Portal</a><span>DIREX DO NÚCLEO · CONSULTA</span></nav>
+<main class="automation-shell" id="conteudo">
+<header class="automation-hero"><span class="eyebrow">TRANSPARÊNCIA · ACOMPANHAMENTO</span><h1>PAINEL DE <em>FISCALIZAÇÃO</em></h1><p>Acompanhe demandas, deliberações e formulários sem editar nenhum registro ou visualizar votos individuais durante a votação.</p></header>
+<div class="automation-note"><strong>Somente consulta:</strong> esta área não permite criar ou editar demandas, responder ou alterar votos, publicar formulários nem aceitar justificativas. As especificações das demandas são exclusivas da PRESCON.</div>
+<section id="oversight-login" class="automation-panel"><h2>Identificação institucional</h2><p>Entre com a conta da DIREX do Núcleo. O servidor valida as permissões.</p>
+<form id="oversight-login-form" class="automation-form"><label>E-mail<input id="oversight-email" type="email" autocomplete="username" required></label><label>Senha<input id="oversight-password" type="password" autocomplete="current-password" required></label><button class="btn red" type="submit">Consultar painel</button></form><p id="oversight-message" role="status" class="automation-message"></p></section>
+<section id="oversight-app" hidden><div class="automation-user-bar"><div><span>FISCALIZAÇÃO · SOMENTE LEITURA</span><strong id="oversight-user"></strong></div><button class="btn" id="oversight-logout" type="button">Sair</button></div>
+<div id="oversight-metrics" class="automation-stat-grid"></div>
+<div class="automation-grid"><section class="automation-panel"><h2>Deliberações</h2><div id="oversight-deliberations" class="automation-forms"></div></section><section class="automation-panel"><h2>Formulários</h2><div id="oversight-forms" class="automation-forms"></div></section></div>
+<section class="automation-panel"><h2>Demandas de todas as EJs</h2><p>Visão resumida por EJ: identificação, classificação, prazo e situação. Justificativas e detalhes completos não são compartilhados.</p><a class="btn red" href="./demandas.html">Abrir panorama das demandas →</a></section>
+</section><footer class="automation-footer">NEJLON 2027 · A fiscalização acompanha a atuação da gestão sem interferir nas deliberações do Conselho.</footer>
+</main></body></html>
