@@ -1,99 +1,55 @@
 <!doctype html>
-<html lang="pt-BR">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="theme-color" content="#0b1118">
-  <meta name="description" content="Portal de Deliberações NEJLON 2027: formulários, planejamento financeiro, avaliação PRESCON e relatórios oficiais.">
-  <title>Portal de Deliberações · NEJLON 2027</title>
-  <link rel="stylesheet" href="./pages/site.css?v=20261122-rede-uniform-11"><link rel="stylesheet" href="./pages/index-dashboard-redesign.css?v=20261122-3">
-  <link rel="stylesheet" href="./pages/visual-identity.css">
-  <link rel="stylesheet" href="./pages/visual-analytics.css">
-  <script defer src="./pages/demo-data.js?v=20261122-delib-lifecycle-14"></script>
-  <script defer src="./pages/idealize-responses.js"></script>
-  <script defer src="./pages/site.js?v=20261122-demo-no-login-23"></script>
-<link rel="stylesheet" href="./pages/ux-system.css?v=contrast-20261122-2">
-<script defer src="./pages/ux-theme.js?v=two-themes-20261122"></script>
-<link rel="stylesheet" href="./pages/dashboard-intro.css?v=20261122-1">
-<style>.prescon-create-cta{display:flex!important;align-items:center;justify-content:center;gap:8px;width:100%;background:#c82333!important;color:#fff!important;border:2px solid #c82333!important;border-radius:12px!important;font-weight:800!important;box-shadow:0 6px 18px rgba(200,35,51,.24);margin:12px 0!important;padding:13px 12px!important;text-align:center!important;cursor:pointer}.prescon-create-cta:hover,.prescon-create-cta:focus-visible{background:#a71928!important;border-color:#a71928!important;outline:2px solid #fff;outline-offset:2px}.prescon-create-cta::before{content:'＋';font-size:19px;line-height:1}</style><link rel="stylesheet" href="./pages/modern-idv.css?v=contrast-20261122-2"><link rel="stylesheet" href="./pages/brand-red-typography.css?v=20261122-pure-red-1"><link rel="stylesheet" href="./pages/red-black-layered.css?v=20261122-1"><link rel="stylesheet" href="./pages/nejlon-idv-consistency.css?v=portfolio-20261122-v4"><script defer src="./pages/layered-titles.js?v=portfolio-20261122-v4"></script><link rel="stylesheet" href="./pages/title-single-layer.css?v=20261122-all"><link rel="stylesheet" href="./pages/nejlon-type-system.css?v=editorial-cards-20261122"><style id="nejlon-reference-editorial-v2">
-/* Aplicação direta da referência: cartões dentro do painel POR ONDE COMEÇAR. */
-html body .quick-actions{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:24px!important;margin:22px 8px 14px 0!important;align-items:stretch!important}
-html body .quick-actions > .quick-action{position:relative!important;box-sizing:border-box!important;display:flex!important;flex-direction:column!important;align-items:flex-start!important;justify-content:flex-end!important;gap:12px!important;min-height:310px!important;min-width:0!important;padding:28px!important;background:#ff3030!important;color:#fff!important;border:3px solid #000!important;border-radius:0!important;box-shadow:9px 9px 0 #000!important;transform:none!important;text-align:left!important;text-decoration:none!important;transition:transform .15s ease,box-shadow .15s ease!important}
-html body .quick-actions > .quick-action:nth-child(2){background:#fffdf7!important;color:#080808!important}
-html body .quick-actions > .quick-action:nth-child(3){background:#ff0000!important;color:#fff!important}
-html body .quick-actions > .quick-action:nth-child(4){background:#fffdf7!important;color:#080808!important}
-html body .quick-actions > .quick-action :is(b,span,strong){color:inherit!important;-webkit-text-stroke:0!important;-webkit-text-fill-color:currentColor!important;text-shadow:none!important;letter-spacing:normal!important}
-html body .quick-actions > .quick-action b{font-family:'CY Grotesk V3 Key','Archivo Black',Impact,'Arial Black',sans-serif!important;font-weight:900!important;font-stretch:condensed!important;text-transform:uppercase!important;font-size:clamp(24px,2.2vw,38px)!important;line-height:1.03!important;letter-spacing:-.04em!important;overflow-wrap:anywhere!important;margin:0!important}
-html body .quick-actions > .quick-action span{font-family:'Poppins',Arial,sans-serif!important;font-size:14px!important;line-height:1.55!important;font-weight:500!important;max-width:32ch!important}
-html body .quick-actions > .quick-action strong{font-family:'Poppins',Arial,sans-serif!important;font-size:13px!important;font-weight:900!important;line-height:1.3!important;text-transform:uppercase!important;margin-top:6px!important;padding:12px 15px!important;background:#000!important;color:#fff!important;border:2px solid #fff!important;box-shadow:5px 5px 0 #a6d923!important;display:inline-block!important;text-decoration:none!important}
-html body .quick-actions > .quick-action:nth-child(2) strong,html body .quick-actions > .quick-action:nth-child(4) strong{background:#ff0000!important;color:#fff!important;border-color:#000!important}
-html body .quick-actions > .quick-action:hover{transform:translate(-3px,-3px)!important;box-shadow:12px 12px 0 #000!important}
-html body .quick-actions > .quick-action:focus-visible{outline:3px solid #ff0000!important;outline-offset:13px!important}
-html[data-theme="light"] body :is(.intro h1,.workhead h2,.panel h2,.panel h3){color:#090909!important;-webkit-text-fill-color:#090909!important;-webkit-text-stroke:0!important;text-shadow:none!important}
-html[data-theme="light"] body :is(.intro h1,.workhead h2,.panel h2,.panel h3) :is(span,strong,em){color:#090909!important;-webkit-text-fill-color:#090909!important;-webkit-text-stroke:0!important;text-shadow:none!important}
-html[data-theme="light"] body .quick-actions > .quick-action:nth-child(1) b,html[data-theme="light"] body .quick-actions > .quick-action:nth-child(3) b{color:#fff!important;-webkit-text-fill-color:#fff!important}
-html[data-theme="light"] body .quick-actions > .quick-action:nth-child(2) b,html[data-theme="light"] body .quick-actions > .quick-action:nth-child(4) b{color:#080808!important;-webkit-text-fill-color:#080808!important}
-html[data-theme="light"] body .quick-actions > .quick-action:nth-child(1) span,html[data-theme="light"] body .quick-actions > .quick-action:nth-child(3) span{color:#fff!important;-webkit-text-fill-color:#fff!important}
-html[data-theme="light"] body .quick-actions > .quick-action:nth-child(2) span,html[data-theme="light"] body .quick-actions > .quick-action:nth-child(4) span{color:#080808!important;-webkit-text-fill-color:#080808!important}
-html[data-theme="red"] body .quick-actions > .quick-action,html[data-theme="dark"] body .quick-actions > .quick-action{border-color:#000!important}
-html body .quick-actions > .quick-action strong{color:#fff!important;-webkit-text-fill-color:#fff!important}
-@media(max-width:1050px){html body .quick-actions{grid-template-columns:repeat(2,minmax(0,1fr))!important}}
-@media(max-width:650px){html body .quick-actions{grid-template-columns:1fr!important;gap:20px!important}html body .quick-actions > .quick-action{min-height:245px!important;padding:22px!important}html body .quick-actions > .quick-action b{font-size:32px!important}}
-@media(prefers-reduced-motion:reduce){html body .quick-actions > .quick-action{transition:none!important}}
-</style><link rel="stylesheet" href="./pages/nejlon-editorial-v3.css?v=figma-idv-20261122-2"><style id="deliberations-hero-title-fix">
-.intro .intro-copy{min-width:0!important;flex:1 1 auto!important;max-width:100%!important}
-.intro .delib-hero-title{display:block!important;max-width:100%!important;width:100%!important;margin:12px 0 20px!important;padding:0 0 12px!important;line-height:1.12!important;font-size:clamp(27px,4vw,57px)!important;font-weight:900!important;letter-spacing:-.035em!important;overflow:visible!important;word-break:normal!important;hyphens:none!important}
-.intro .delib-hero-word{display:inline-block!important;position:relative!important;isolation:isolate!important;white-space:nowrap!important;color:#fff!important;font:inherit!important;line-height:inherit!important;letter-spacing:inherit!important;text-transform:uppercase!important;text-shadow:0 4px 0 #ff0000,0 7px 0 #000!important;-webkit-text-stroke:0!important;overflow:visible!important}
-.intro .delib-hero-word::before{content:attr(data-text);position:absolute;z-index:-1;top:5px;left:0;color:#ff0000;-webkit-text-stroke:1px #000;text-shadow:0 2px 0 #000;white-space:nowrap;pointer-events:none}
-@media(max-width:760px){.intro .delib-hero-title{font-size:clamp(19px,5vw,35px)!important}}
-@media(max-width:390px){.intro .delib-hero-title{font-size:clamp(17px,4.8vw,21px)!important}}
-</style></head>
-<body>
-  <div class="layout">
-    <aside class="side">
-      <a class="brand" href="./" aria-label="Portal NEJLON 2027">
-        <span class="brand-mark">N<span>.</span></span>
-        <span><strong>NEJLON</strong><small>PORTAL 2027</small></span>
-      </a>
-      <div class="side-section">DELIBERAÇÕES</div>
-      
-      <nav id="desktop-nav" aria-label="Navegação principal"></nav>
-      <div class="side-foot">
-        <span class="simulation-dot"></span>
-        <div><strong>Modo demonstração</strong><small>Sem login e sem dados reais</small></div>
-      </div>
-    </aside>
-    <main class="main" id="conteudo">
-      <header class="topbar">
-        <div class="top-label"><span class="top-sparkle">✦</span> PORTAL DE DELIBERAÇÕES <span class="top-year">/ 2027</span></div>
-        <div class="top-actions">
-          <span class="pill pill-outline"><span class="simulation-dot"></span> AMBIENTE DE TESTE</span>
-          <a class="contact" href="https://wa.me/5547920011377" target="_blank" rel="noopener noreferrer">Contato PRESCON <span aria-hidden="true">↗</span></a>
-        </div>
-      </header>
-      <div class="content">
-        <section class="intro">
-          <div class="intro-copy"><span class="eyebrow">NEJLON · GESTÃO 2027</span>
-            <h1 class="delib-hero-title"><span class="delib-hero-word" data-text="DELIBERAÇÕES">DELIBERAÇÕES</span></h1>
-            <p>Formulários de votação, planejamentos financeiros, avaliação da PRESCON e relatórios publicados em um único ambiente.</p>
-          </div>
-          <div class="intro-symbol" aria-hidden="true"><span>29</span><small>EJs CONECTADAS</small></div>
-        </section>
-        <div class="demo-alert"><span class="alert-icon" aria-hidden="true">ⓘ</span><p><strong>Apresentação interativa.</strong> <strong>Dados simulados:</strong> votos, prazos, comentários, indicadores e resultados das deliberações. <strong>Referência histórica:</strong> nomes das 29 EJs e conteúdo institucional baseados em material de 2026, sujeitos a atualização. Nenhuma ação é um registro oficial ou altera o Supabase.</p></div>
-        <section class="role-card">
-          <div><span class="mini-heading">EXPLORE UMA VISÃO</span><p>Selecione a visão de acesso às deliberações.</p></div>
-          <div class="role-options" id="roles" role="group" aria-label="Selecione o perfil"></div>
-          <label class="ej-select" id="ej-picker-wrap" hidden>Empresa júnior da simulação<select id="ej-picker"></select></label>
-          <div id="council-test-access" class="demo-alert" hidden style="margin-top:12px;padding:12px;border:2px solid #000"><strong>ACESSO DE TESTE — CONSELHO</strong><p style="margin:8px 0">E-mail: <code id="council-test-email">conselhounect@nejlondrina.com</code> · Senha prevista: <code>1234</code></p><small>Este ambiente é uma demonstração sem autenticação. Escolha o perfil Conselho e a EJ para visualizar o painel.</small></div>
-        </section>
-        
-        <div class="mobile-nav" id="mobile-nav" aria-label="Navegação no celular"></div>
-        <div class="workhead"><div><span class="eyebrow" id="section-eyebrow">VISÃO PRESCON</span><h2 id="section-title">Deliberações</h2><p id="section-subtitle"></p></div><div id="current-date" class="date-chip"></div></div>
-        <div id="view" aria-live="polite"></div>
-        <footer class="footer"><span>NEJLON 2027 · DEMONSTRAÇÃO</span><span>Acesso institucional sujeito a autenticação e permissões</span></footer>
-      </div>
-    </main>
-  </div>
-  <div class="toast" id="toast" role="status" aria-live="polite"></div>
-<svg class="portal-heart-sticker" viewBox="0 0 160 150" aria-hidden="true"><path class="heart-shadow" d="M88 139C62 117 11 90 13 52 14 18 50 13 72 39 89 4 137 9 148 42 159 76 120 115 88 139Z"/><path class="heart-green" d="M76 135C49 112 8 89 12 52 16 18 49 13 71 39 86 5 126 10 138 43 150 77 107 119 76 135Z"/><path class="heart-front" d="M67 128C41 108 6 84 10 50 14 19 47 14 69 40 83 5 120 11 131 44 141 76 96 111 67 128Z"/><path d="M110 32C121 50 110 74 86 102" fill="none" stroke="#000" stroke-width="5" stroke-linecap="round"/></svg></body>
-</html>
+<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#090909"><title>Portal de Deliberações · Template</title>
+<style>
+:root{color-scheme:dark;font-family:Arial,Helvetica,sans-serif;background:#080808;color:#fff}*{box-sizing:border-box}body{margin:0}button,input,textarea,select{font:inherit}button{cursor:pointer}button:disabled{cursor:not-allowed;opacity:.48}a{color:inherit}aside{position:fixed;inset:0 auto 0 0;width:235px;background:#050505;border-right:1px solid #303030;padding:24px 17px}.brand{font-size:20px;font-weight:900;letter-spacing:.03em}.brand b{display:inline-grid;place-items:center;background:#ed1c24;border-radius:9px;width:36px;height:36px;margin-right:10px}.brand small{display:block;font-size:10px;letter-spacing:.14em;margin:5px 0 0 50px;color:#bbb}.side-label{color:#ff3036;font-size:11px;letter-spacing:.16em;font-weight:900;margin:45px 0 14px}.nav{display:block;background:#f00;border:0;color:#fff;width:100%;text-align:left;padding:14px;font-size:13px;font-weight:900}.side-foot{position:absolute;bottom:25px;left:17px;right:17px;padding:14px;border:1px solid #444;border-radius:9px;color:#ddd;font-size:12px}main{margin-left:235px;min-height:100vh}.topbar{border-bottom:1px solid #292929;padding:22px 35px;font-size:11px;font-weight:900;letter-spacing:.12em}.topbar strong,.eyebrow{color:#ff3036}.wrap{max-width:1200px;margin:auto;padding:28px 38px}.hero,.panel{border:1px solid #353535;border-radius:16px;background:#111;padding:28px;margin-bottom:18px}.eyebrow{font-size:11px;font-weight:900;letter-spacing:.17em}.hero h1{font-size:clamp(31px,5vw,62px);line-height:1.1;letter-spacing:-.04em;margin:18px 0 22px;font-weight:1000}.hero h1 span{position:relative;display:inline-block;white-space:nowrap;text-shadow:0 4px 0 #f00,0 7px 0 #000}.hero p,.muted{color:#bcbcbc;font-size:14px;line-height:1.6}.rolebar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:18px}.rolebar button,.btn{border:1px solid #555;background:#242424;color:white;padding:12px 16px;border-radius:8px;font-size:13px;font-weight:800}.rolebar button.active,.btn.red{background:#f00;border-color:#f00}.panel h2{margin:0 0 6px;font-size:20px}.row{display:flex;gap:18px;align-items:center;justify-content:space-between;padding:18px 0;border-bottom:1px solid #333;flex-wrap:wrap}.row:last-child{border-bottom:0}.row strong{display:block;margin-bottom:6px}.actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.badge{padding:7px 10px;border-radius:30px;border:1px solid #555;font-size:11px;font-weight:800}.notice{background:#1d292c;border:1px solid #405257;border-radius:8px;padding:14px;margin-bottom:18px;color:#dce9eb;font-size:13px}.field{display:block;margin:14px 0;font-size:13px;font-weight:700}.field input,.field textarea,.field select{display:block;width:100%;background:#090909;color:#fff;border:1px solid #555;border-radius:7px;padding:12px;margin-top:7px}.field textarea{min-height:100px}.empty{padding:25px;color:#bbb;text-align:center;border:1px dashed #555;border-radius:9px}.hidden{display:none!important}.footer{color:#aaa;font-size:12px;padding:20px 0}.danger{color:#ff7e7e}.hint{font-size:12px;color:#bbb}.smallbtn{padding:7px 10px}.stack{display:flex;gap:10px;flex-wrap:wrap}@media(max-width:700px){aside{position:static;width:auto;padding:15px}.side-label,.side-foot{display:none}.nav{margin-top:12px}main{margin:0}.topbar{padding:15px}.wrap{padding:18px}.hero,.panel{padding:18px}.hero h1{font-size:clamp(24px,7.5vw,43px)}}
+</style></head><body>
+<aside><div class="brand"><b>N</b> PORTAL<small>DE DELIBERAÇÕES</small></div><div class="side-label">NAVEGAÇÃO</div><button class="nav" type="button">▤ &nbsp; DELIBERAÇÕES</button><div class="side-foot">● TEMPLATE DE TESTE<br><span class="muted">Sem login e sem dados reais</span></div></aside>
+<main><header class="topbar">✦ &nbsp; PORTAL DE DELIBERAÇÕES <strong>/ TEMPLATE</strong></header><div class="wrap">
+<section class="hero"><div class="eyebrow">MODELO EDITÁVEL · DEMONSTRAÇÃO</div><h1><span>DELIBERAÇÕES</span></h1><p>Um modelo para testar criação, votação, avaliação e publicação de relatórios, sem informações institucionais reais.</p></section>
+<div class="notice"><strong>Ambiente 100% demonstrativo.</strong> Todos os registros são exemplos fictícios criados neste navegador. Nenhum formulário envia dados a servidores, e nenhuma votação ou relatório tem valor oficial.</div>
+<div class="rolebar"><strong>VISUALIZAR COMO:</strong><button id="role-prescon" class="active" type="button">PRESCON</button><button id="role-conselho" type="button">Conselho</button></div>
+<section class="panel" id="create-panel"><h2>Criar deliberação</h2><p class="muted">Preencha um exemplo fictício para visualizar o fluxo completo.</p><form id="create-form"><label class="field">Título da deliberação<input name="title" required maxlength="120" placeholder="Ex.: Planejamento Financeiro — Evento Exemplo"></label><label class="field">Descrição<textarea name="description" placeholder="Descreva o objetivo da votação (dados fictícios)"></textarea></label><button class="btn red" type="submit">Criar formulário de teste</button></form></section>
+<section class="panel"><h2>Deliberações</h2><p class="muted">A lista é atualizada automaticamente neste navegador conforme as etapas forem alteradas.</p><div id="entries"></div></section>
+<div class="stack"><button class="btn smallbtn" id="reset" type="button">Limpar dados do template</button></div><div class="footer">PORTAL DE DELIBERAÇÕES · TEMPLATE FICTÍCIO · SEM AUTENTICAÇÃO OU INTEGRAÇÃO COM BANCO DE DADOS</div>
+</div></main>
+<script>
+(()=>{'use strict';
+const key='portal-deliberacoes-template-v1',defaults=[
+{id:'exemplo-1',title:'Planejamento Financeiro — Exemplo',description:'Simulação de votação sobre um planejamento financeiro fictício.',status:'open',votes:[],report:''},
+{id:'exemplo-2',title:'Deliberação Institucional — Exemplo',description:'Simulação de deliberação aguardando avaliação.',status:'review',votes:[],report:''},
+{id:'exemplo-3',title:'Relatório Demonstrativo — Exemplo',description:'Simulação de relatório já publicado.',status:'published',votes:[],report:'Este é um relatório inteiramente fictício. Nenhuma decisão institucional foi registrada.'}
+];let role='prescon';const $=id=>document.getElementById(id),escape=x=>String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;','\'':'&#39;'}[c]));
+let entries;try{const saved=JSON.parse(localStorage.getItem(key));entries=Array.isArray(saved)?saved:defaults}catch{entries=defaults}
+const save=()=>{localStorage.setItem(key,JSON.stringify(entries));render()};
+function render(){
+$('role-prescon').classList.toggle('active',role==='prescon');$('role-conselho').classList.toggle('active',role==='conselho');$('create-panel').classList.toggle('hidden',role!=='prescon');
+$('entries').innerHTML=entries.length?entries.map(d=>{
+const open=d.status==='open',review=d.status==='review',published=d.status==='published',closed=d.status==='closed';
+const status=open?'Aberta':review?'Aguardando avaliação':published?'Relatório publicado':'Encerrada';
+const votes=Array.isArray(d.votes)?d.votes:[];
+let buttons='';
+if(role==='prescon'){
+if(open)buttons='<button class="btn smallbtn" data-action="review" data-id="'+escape(d.id)+'">Encerrar votação</button>';
+if(review)buttons='<button class="btn smallbtn" data-action="close" data-id="'+escape(d.id)+'">Concluir avaliação</button>';
+if(closed)buttons='<button class="btn smallbtn" data-action="publish" data-id="'+escape(d.id)+'">Publicar relatório</button>';
+}else if(open)buttons='<button class="btn red smallbtn" data-action="vote" data-id="'+escape(d.id)+'">Responder formulário</button>';
+if(published)buttons+='<button class="btn red smallbtn" data-action="report" data-id="'+escape(d.id)+'">Ver relatório</button>';
+const detail=role==='prescon'&&closed?'<div class="field"><label>Relatório fictício<textarea data-report="'+escape(d.id)+'" placeholder="Registre o parecer de teste...">'+escape(d.report||'')+'</textarea></label></div>':'';
+return '<div class="row"><div><strong>'+escape(d.title)+'</strong><div class="muted">'+escape(d.description||'Sem descrição')+'</div><p class="hint">'+votes.length+' resposta(s) fictícia(s)</p>'+detail+'</div><div class="actions"><span class="badge">'+status+'</span>'+buttons+'</div></div>';
+}).join(''):'<div class="empty">Nenhuma deliberação. Crie uma na visão PRESCON.</div>';
+}
+$('role-prescon').onclick=()=>{role='prescon';render()};$('role-conselho').onclick=()=>{role='conselho';render()};
+$('create-form').onsubmit=e=>{e.preventDefault();const fd=new FormData(e.target),title=String(fd.get('title')||'').trim();if(!title)return;entries.unshift({id:'ex-'+Date.now(),title,description:String(fd.get('description')||''),status:'open',votes:[],report:''});e.target.reset();save()};
+$('entries').addEventListener('input',e=>{if(e.target.dataset.report){const d=entries.find(x=>x.id===e.target.dataset.report);if(d){d.report=e.target.value;localStorage.setItem(key,JSON.stringify(entries))}}});
+$('entries').addEventListener('click',e=>{const b=e.target.closest('[data-action]');if(!b)return;const d=entries.find(x=>x.id===b.dataset.id);if(!d)return;const action=b.dataset.action;
+if(action==='vote'&&role==='conselho'&&d.status==='open'){const response=prompt('Resposta fictícia: favorável, contrária ou abstenção','favorável');if(response!==null&&response.trim()){d.votes.push({answer:response.trim(),date:new Date().toISOString()});save()}return}
+if(action==='report'&&d.status==='published'){alert('RELATÓRIO DEMONSTRATIVO — '+d.title+'\n\n'+(d.report||'Nenhum texto informado.')+'\n\nRespostas fictícias: '+d.votes.length);return}
+if(role!=='prescon')return;
+if(action==='review'&&d.status==='open')d.status='review';
+else if(action==='close'&&d.status==='review')d.status='closed';
+else if(action==='publish'&&d.status==='closed'){if(!String(d.report||'').trim()){alert('Preencha o texto do relatório antes de publicar.');return}d.status='published'}else return;save()
+});
+$('reset').onclick=()=>{if(confirm('Apagar os dados de teste deste navegador e restaurar os exemplos fictícios?')){entries=JSON.parse(JSON.stringify(defaults));save()}};
+render();
+})();
+</script></body></html>
