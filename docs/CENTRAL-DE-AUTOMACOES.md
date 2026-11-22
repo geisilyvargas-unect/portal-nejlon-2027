@@ -99,3 +99,24 @@ O agendamento pode ter atraso de até um dia. Não é sincronização em tempo r
 ## Demandas integradas (novembro de 2026)
 
 A Central recebeu uma aba **Demandas**, com criação em lote por EJ, modelos reutilizáveis, classificações Amarela/Laranja/Vermelha, justificativas e histórico. Conselho e DIREX acessam a página autenticada `pages/demandas.html` e podem justificar suas próprias demandas. **Somente a PRESCON decide se aceita ou recusa**, sempre deixando um comentário. A seção semanal destaca demandas vencidas e justificativas aguardando análise. Para regras e limites, leia [Sistema de Demandas](./SISTEMA-DE-DEMANDAS.md).
+
+
+## Atualização: funcionamento no GitHub Pages (22/11/2026)
+
+**Backend nativo no Supabase Edge Functions.** As páginas publicadas pelo GitHub Pages foram alteradas para chamar diretamente:
+
+- `https://imsisbixzkqphooxyfhr.supabase.co/functions/v1/drive` — autenticação da Central, status e listagem de formulários/arquivos.
+- `https://imsisbixzkqphooxyfhr.supabase.co/functions/v1/forms` — formulários do Portal, respostas, relatórios e panorama semanal.
+- `https://imsisbixzkqphooxyfhr.supabase.co/functions/v1/demands` — cadastro de demandas, justificativas, decisão da PRESCON e histórico.
+
+Essas três funções foram implantadas no projeto Supabase, com autenticação de usuário validada a cada chamada via Supabase Auth, checagem de perfil ativo e CORS restrito à origem do Portal. **A chave de administrador do banco fica exclusivamente no ambiente da Edge Function e não é enviada ao GitHub Pages.**
+
+O código da função está versionado em `supabase/functions/portal-api/index.ts`. Ele é implantado nas três rotas (`forms`, `demands`, `drive`), com despacho pelo nome da rota. O Vercel passa a ser opcional para os fluxos internos da Central, de demandas e de votação pelo Portal.
+
+**Importante:** as ações externas do Google Drive, criação/sincronização do Google Forms e exportação para Google Sheets **ainda não estão disponíveis no backend do Pages**. Essas ações retornam uma mensagem explícita de integração ainda não ativada. As caixas de seleção Google foram deixadas desmarcadas por padrão para permitir criar formulários internos imediatamente.
+
+A conta de teste institucional `presconteste@nejlondrina.com` foi confirmada no Supabase. Não registrar senhas de teste em arquivos públicos. A senha simples de teste deve ser trocada antes do uso institucional.
+
+O Pages precisa estar configurado para publicar `main` + `/(root)` (ou um workflow equivalente), e o navegador pode exigir atualização forçada (Ctrl+Shift+R) após o novo push.
+
+**Validação restante:** testar no navegador a sessão, a visualização de formulários e demandas, a criação de um registro de teste, a justificativa por perfil da EJ e a análise pela PRESCON; a publicação do Pages não foi confirmada por testes de rede desta sessão.
