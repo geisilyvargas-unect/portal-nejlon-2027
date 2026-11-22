@@ -27,3 +27,33 @@ html[data-theme="dark"] body :is(.hero,.intro,.i-hero,.wa-hero,.idealize-banner)
 html body :is(button,.btn,.create-primary){font-weight:800!important}
 html body :is(button,.btn,.create-primary):focus-visible,html body :is(a,input,textarea,select):focus-visible{outline:3px solid #ff0000!important;outline-offset:3px}
 @media(max-width:600px){html body :is(h1,h2,h3,h4,h5,h6){overflow-wrap:anywhere}html body :is(.intro h1,.hero h1,.i-hero h1){font-size:clamp(1.8rem,8vw,3.5rem)}}
+
+/* Correção baseada na captura real: não usar letras vazadas nos títulos pequenos. */
+html body :is(h1,h2,h3,h4,h5,h6,.page-title,.section-title,.nejlon-layer-title),
+html body :is(h1,h2,h3,h4,h5,h6,.page-title,.section-title,.nejlon-layer-title) :is(span,em,strong),
+html body .nejlon-title-front,
+html body .nejlon-title-front :is(span,em,strong){
+ -webkit-text-stroke:0!important;
+ text-shadow:none!important;
+ -webkit-text-fill-color:currentColor!important;
+ paint-order:normal!important;
+}
+html body .nejlon-title-back{display:none!important}
+html body .nejlon-layer-title::before{content:none!important;display:none!important}
+html[data-theme="light"] body :is(.main h1,.main h2,.main h3,.main h4,.main h5,.main h6,.workhead h2,.panel h2,.panel h3,.section-title,.page-title){color:#101010!important}
+html[data-theme="light"] body :is(.main h1,.main h2,.main h3,.main h4,.main h5,.main h6,.workhead h2,.panel h2,.panel h3,.section-title,.page-title) :is(span,em,strong){color:inherit!important}
+html[data-theme="dark"] body :is(.main h1,.main h2,.main h3,.workhead h2,.panel h2,.panel h3,.section-title,.page-title),
+html[data-theme="red"] body :is(.main h1,.main h2,.main h3,.workhead h2,.panel h2,.panel h3,.section-title,.page-title){color:#fff!important}
+html[data-theme="light"] body .intro :is(h1,h2,h3){color:#111!important}
+html[data-theme="light"] body .intro :is(h1,h2,h3) :is(span,em,strong){color:inherit!important}
+html[data-theme="dark"] body .intro :is(h1,h2,h3),html[data-theme="red"] body .intro :is(h1,h2,h3){color:#fff!important}
+html body .main :is(h2,h3){line-height:1.22!important}
+html body :is(.main,.paper,.panel,.card) :is(p,li,label,td,th){font-size:max(13px,1em);line-height:1.55}
+html body :is(.main,.paper,.panel,.card) :is(h3,h4){font-size:clamp(16px,1.5vw,23px)}
+html body :is(.main,.paper,.panel,.card) :is(h2){font-size:clamp(21px,2.2vw,34px)}
+html body .intro h1{font-size:clamp(31px,3.4vw,54px)!important;line-height:1.09!important;max-width:850px!important}
+html body .intro{min-height:260px!important}
+html body .intro p{font-size:clamp(14px,1vw,17px)!important;line-height:1.55!important}
+html body .intro .eyebrow{font-size:12px!important}
+html body .intro .intro-symbol small{font-size:12px!important}
+@media(max-width:760px){html body .intro h1{font-size:clamp(28px,7vw,40px)!important}html body .intro{min-height:0!important}}
