@@ -128,11 +128,14 @@ header{border-bottom-color:#c52d35}
 function exportReport(format){
  if(s.role!=='prescon')return;
  const html=reportDocument();
- if(format==='pdf'){
+ if(format==='pdf'||format==='view'){
   const w=window.open('','_blank');
-  if(!w){alert('Permita pop-ups para abrir a versão de impressão do relatório.');return}
-  w.document.open();w.document.write(html);w.document.close();
-  const images=Array.from(w.document.images);Promise.all(images.map(img=>img.complete?Promise.resolve():new Promise(resolve=>{img.onload=resolve;img.onerror=resolve}))).then(()=>{w.focus();w.print()});return;
+  if(!w){alert('Permita pop-ups para visualizar o relatório em outra aba.');return}
+  const toolbar='<div class="report-preview-toolbar"><strong>Pré-visualização do relatório · dados demonstrativos</strong><div><button type="button" onclick="window.print()">Imprimir / Salvar como PDF</button><button type="button" onclick="window.close()">Fechar</button></div></div>';
+  const previewStyles='<style>@media screen{body{padding-top:90px!important}.report-preview-toolbar{position:fixed;z-index:9999;top:0;left:0;right:0;min-height:62px;background:#18272a;color:#fff;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 24px;font:14px system-ui;box-shadow:0 2px 10px #0002}.report-preview-toolbar div{display:flex;gap:8px}.report-preview-toolbar button{border:1px solid #9cb3b6;border-radius:8px;background:#fff;color:#173034;padding:9px 12px;cursor:pointer;font:600 12px system-ui}}@media(max-width:650px){.report-preview-toolbar{flex-direction:column;align-items:stretch}.report-preview-toolbar div{flex-wrap:wrap}}@media print{.report-preview-toolbar{display:none!important}}</style>';
+  const preview=html.replace('</head>',previewStyles+'</head>').replace('<body>','<body>'+toolbar);
+  w.document.open();w.document.write(preview);w.document.close();
+  return;
  }
  if(format==='doc'){
   const blob=new Blob(['\\ufeff',html],{type:'application/msword;charset=utf-8'});
@@ -146,8 +149,8 @@ function reports(){
  const count=v.length;
  const warning=id==='idealize'?'<div class="notice">IDEALIZE: os indicadores deste painel resumem apenas C1 (UEL) dos exemplos fictícios. Para comparar C1/C2, rateios e seus dados financeiros, abra o <a href="./pages/idealize.html">painel do Idealize</a>. Não existem votos simulados de rateio.</div>':'';
  const decisions='<div class="prescon-focus"><div class="prescon-focus-card"><span>EJs sem resposta</span><strong>'+sum.pending+'</strong><button class="btn" type="button" data-nav="pendencias">Ver pendentes →</button></div><div class="prescon-focus-card"><span>Ressalvas para análise humana</span><strong>'+caveats+'</strong><p>Não são aceitas nem rejeitadas automaticamente.</p></div><div class="prescon-focus-card"><span>Sugestões registradas</span><strong>'+suggestions+'</strong><p>Comentários demonstrativos disponíveis abaixo.</p></div></div>';
- return '<div class="view-grid">'+warning+panel('Deliberação analisada','Escolha o conjunto de exemplos para consultar.',titleOptions()+'<div class="toolrow" style="margin-top:18px;display:flex;flex-wrap:wrap;gap:10px"><button class="btn red" type="button" data-export-report="pdf">📄 Exportar relatório em PDF</button><button class="btn" type="button" data-export-report="doc">📝 Exportar para Google Docs (.doc)</button></div><p class="note">O PDF abre para impressão; escolha Salvar como PDF. O .doc pode ser aberto no Google Docs.</p>')+
- panel('Exportar relatório','PDF pelo navegador ou arquivo compatível com Word e importação no Google Docs. Dados exclusivamente fictícios.','<div class="toolrow"><button class="btn red" type="button" data-export-report="pdf">Exportar PDF</button><button class="btn" type="button" data-export-report="doc">Exportar para Docs (.doc)</button></div><p class="note">Para PDF, selecione Salvar como PDF na janela de impressão. O arquivo .doc pode ser aberto no Word ou enviado ao Google Drive e aberto no Google Docs.</p>')+panel('Prioridades da PRESCON','Pendências e opiniões fictícias, sem providências institucionais reais.',decisions)+
+ return '<div class="view-grid">'+warning+panel('Deliberação analisada','Escolha o conjunto de exemplos para consultar.',titleOptions()+'<div class="toolrow" style="margin-top:18px;display:flex;flex-wrap:wrap;gap:10px"><button class="btn red" type="button" data-export-report="view">👁️ Visualizar relatório em nova aba</button><button class="btn" type="button" data-export-report="doc">📝 Exportar para Google Docs (.doc)</button></div><p class="note">O relatório abre em nova aba, com opção de imprimir ou salvar em PDF; escolha Salvar como PDF. O .doc pode ser aberto no Google Docs.</p>')+
+ panel('Exportar relatório','PDF pelo navegador ou arquivo compatível com Word e importação no Google Docs. Dados exclusivamente fictícios.','<div class="toolrow"><button class="btn red" type="button" data-export-report="view">Visualizar relatório</button><button class="btn" type="button" data-export-report="doc">Exportar para Docs (.doc)</button></div><p class="note">Na nova aba, clique em Imprimir / Salvar como PDF e selecione Salvar como PDF. O arquivo .doc pode ser aberto no Word ou enviado ao Google Drive e aberto no Google Docs.</p>')+panel('Prioridades da PRESCON','Pendências e opiniões fictícias, sem providências institucionais reais.',decisions)+
  stats([metric('EJs votantes',sum.votes,'De 29 EJs','◉'),metric('Aprovação direta',count?Math.round(approval*100/count)+'%':'—','Aprova + aprova com sugestões','✓'),metric('Ressalvas',caveats,'Aguardam decisão humana','◷'),metric('Sugestões',suggestions,'Para avaliação humana','✧')])+
  panel('Distribuição dos posicionamentos','Clique em uma barra para filtrar os comentários. Contagem e percentuais fictícios.',responseCharts(id))+
  panel('Pareceres para avaliação','Filtrados pela barra selecionada; não há decisão automática da PRESCON.',recordList(id,false))+'</div>';
