@@ -57,3 +57,37 @@ html body .intro p{font-size:clamp(14px,1vw,17px)!important;line-height:1.55!imp
 html body .intro .eyebrow{font-size:12px!important}
 html body .intro .intro-symbol small{font-size:12px!important}
 @media(max-width:760px){html body .intro h1{font-size:clamp(28px,7vw,40px)!important}html body .intro{min-height:0!important}}
+
+/* Refinamento UX baseado nas capturas dos temas preto e vermelho (22/11). */
+/* Leitura: substituir a escala minúscula em áreas de navegação e ação. */
+html body .side .nav-button{font-size:13px!important;line-height:1.4!important;min-height:46px!important}
+html body .side .side-section{font-size:11px!important;line-height:1.5!important}
+html body .side .brand small{font-size:10px!important}
+html body .side .side-foot :is(strong,small){font-size:11px!important;line-height:1.4!important}
+html body .topbar :is(.top-label,.pill,.contact){font-size:11px!important;line-height:1.45!important}
+html body .role-card :is(p,.role-option){font-size:12px!important;line-height:1.45!important}
+html body :is(.quick-action,.prescon-focus-card) :is(p,span,small){font-size:13px!important;line-height:1.55!important}
+html body :is(.quick-action,.prescon-focus-card) :is(b,strong){font-size:15px!important;line-height:1.4!important}
+html body .demo-alert :is(p,span,strong){font-size:12px!important;line-height:1.6!important}
+html body .workhead p,html body .panel .sub{font-size:13px!important;line-height:1.55!important}
+html body .date-chip{font-size:12px!important}
+html body .content{max-width:1420px}
+html body .workhead{margin-top:26px!important}
+html body :is(.panel,.role-card,.stat-card,.quick-action){border-radius:8px!important}
+html body .quick-action{min-height:120px!important;padding:18px!important}
+html body .quick-action:hover{transform:translateY(-2px)}
+/* Paleta institucional em ações; cores analíticas (semáforos e indicadores) permanecem sem alteração. */
+html body .side .prescon-create-cta{background:#ff0000!important;border-color:#ff0000!important;color:#fff!important;box-shadow:4px 4px 0 rgba(0,0,0,.6)!important}
+html body .side .prescon-create-cta:hover{background:#d40000!important;border-color:#d40000!important}
+html[data-theme="dark"] body .contact{background:#ff0000!important;color:#fff!important;border-color:#ff0000!important}
+html[data-theme="red"] body .contact{background:#ff0000!important;color:#fff!important;border-color:#ff0000!important}
+html[data-theme="light"] body .contact{background:#111!important;color:#fff!important;border-color:#111!important}
+html body .contact{font-weight:800!important}
+html body .main :is(h3,h4){text-shadow:none!important;-webkit-text-stroke:0!important}
+html body .main :is(h3,h4) :is(span,em,strong){text-shadow:none!important;-webkit-text-stroke:0!important}
+@media(max-width:760px){
+ html body .content{padding:18px 14px!important}
+ html body .topbar :is(.top-label,.pill,.contact){font-size:11px!important}
+ html body .quick-action{min-height:0!important}
+ html body .role-card{gap:14px!important}
+}
