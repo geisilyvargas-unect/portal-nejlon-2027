@@ -1,0 +1,71 @@
+/* NEJLON 2027 — identidade visual inspirada na apresentação institucional.
+   Camada aditiva: não altera lógica, conteúdo ou dados da demonstração. */
+:root {
+ --bg:#1c1a1a; --side:#161616; --panel:#242222; --panel2:#302d2d;
+ --border:#494040; --text:#ffffff; --muted:#d0c8c8;
+ --red:#ce2d32; --lime:#f5f5f5; --green:#3fbd86; --yellow:#f1bc54;
+ --petrol:#005762; --red-dark:#9e2028;
+}
+body {background:var(--bg);color:var(--text);}
+.side{background:#151515;border-right:1px solid #3c3636;}
+.brand-mark{background:var(--red);border:2px solid #0e0e0e;box-shadow:4px 4px 0 #781b20;border-radius:12px;color:white}
+.brand-mark span{color:white}
+.side-section,.mini-heading,.eyebrow,.intro .eyebrow{color:#f2b5b8}
+.nav-button{color:#eee}
+.nav-button:hover{background:#383030}
+.nav-button.active{background:#ce2d32;color:#fff;border-color:#e95a60}
+.nav-button.active .nav-icon{color:#fff}
+.side-foot{background:#242222;border-color:#494040}
+.topbar{background:#1c1a1a;border-bottom:3px solid var(--red)}
+.top-sparkle,.top-year{color:#e64d52}
+.pill-outline{background:#263e41;color:#fff;border-color:#005762}
+.contact{background:#ce2d32;color:#fff}
+.content{position:relative}
+.intro{position:relative;isolation:isolate;overflow:hidden;background:#1c1a1a;border:1px solid #463838;border-radius:22px;min-height:245px}
+.intro::before{content:'';position:absolute;z-index:-1;width:350px;height:350px;right:-125px;top:-210px;border:32px solid var(--red);border-radius:43% 57% 58% 42%;transform:rotate(24deg);opacity:.93}
+.intro::after{content:'';position:absolute;z-index:-1;width:240px;height:185px;left:-115px;bottom:-120px;background:var(--red);border-radius:54% 46% 44% 56%;transform:rotate(-18deg);opacity:.95}
+.intro h1{font-family:Impact,'Arial Black','Space Grotesk',sans-serif;font-weight:900;text-transform:uppercase;letter-spacing:-.035em;color:#fff;text-shadow:2px 2px 0 #0b0b0b,5px 5px 0 var(--red)}
+.intro h1 em{color:#fff}
+.intro p{color:#eee;max-width:630px;font-size:13px}
+.intro-symbol,.intro .intro-symbol{background:#005762;border:3px solid #ffffff;box-shadow:7px 7px 0 #ce2d32}
+.intro-symbol span,.intro-symbol small{color:#fff}
+.demo-alert{background:#223134;border:1px solid #005762;color:#f0f0f0}
+.demo-alert .alert-icon{color:white}
+.role-card,.panel,.stat-card{background:#242222;border-color:#494040}
+.role-card::before{opacity:.08}
+.role-option,.filter{background:#302d2d;border-color:#565050;color:#fff}
+.role-option.active,.filter.active{background:#ce2d32;border-color:#ce2d32;color:#fff}
+.workhead h2,.panel h3,.ej-directory-card h3{font-family:Impact,'Arial Black','Space Grotesk',sans-serif;text-transform:uppercase;letter-spacing:-.015em}
+.workhead::after{opacity:.07}
+.date-chip{background:#302d2d;border-color:#555}
+.stat-card{border-top:5px solid #005762;box-shadow:0 4px 0 #151313}
+.stat-card:nth-child(2),.stat-card:nth-child(4){border-top-color:#ce2d32}
+.stat-card:nth-child(3){border-top-color:#005762}
+.stat-icon{color:#fff}
+.stat-card strong{color:#fff}
+.panel{box-shadow:0 3px 0 #161313}
+.panel h3{color:#fff}
+.btn{background:#005762;border-color:#006c78;color:#fff}
+.btn.red{background:#ce2d32;border-color:#ce2d32;color:#fff}
+.btn:hover,.role-option:hover,.contact:hover{filter:brightness(1.12)}
+.btn:focus-visible,.nav-button:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,a:focus-visible{outline:3px solid #ef888b;outline-offset:3px}
+.ej-select select,.select,.search{background:#211f1f;border-color:#656060;color:#fff}
+.record{background:#292626;border-color:#504848}
+.record summary{color:#fff}
+.tag{background:#005762;color:#fff}
+.notice{background:#243335;border-color:#005762;color:#fff}
+.note,.stat-label,.stat-footer,.workhead p{color:#d0c8c8}
+.progress{background:#483d3d}
+.fill{background:linear-gradient(90deg,#005762,#ce2d32)}
+.bar{background:linear-gradient(0deg,#9e2028,#ce2d32)}
+.barplot{background:#383333}
+.donut:before{background:#242222}
+.heat.active{outline-color:#fff}
+.footer{border-top:6px solid #ce2d32;border-image:none;color:#ded3d3}
+@media(max-width:760px){
+ .intro{min-height:230px}
+ .intro::before{width:210px;height:210px;right:-120px;top:-105px}
+ .intro::after{width:175px;height:130px;left:-90px;bottom:-85px}
+ .intro h1{font-size:clamp(26px,6vw,36px);text-shadow:2px 2px 0 #0c0c0c,4px 4px 0 #ce2d32}
+}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;transition:none!important}}
