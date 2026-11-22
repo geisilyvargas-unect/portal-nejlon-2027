@@ -1,7 +1,7 @@
 'use client';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { LayoutDashboard, ClipboardList, BellRing, FileBarChart2, Users, ListTodo, CalendarDays, FolderOpen, GraduationCap, Building2 } from 'lucide-react';
+import { LayoutDashboard, ClipboardList, BellRing, FileBarChart2, Users, ListTodo, CalendarDays, FolderOpen, Building2 } from 'lucide-react';
 import type {Role} from '@/lib/constants';
 const links=[
   {href:'/painel',label:'Visão geral',icon:LayoutDashboard},
@@ -13,7 +13,6 @@ const links=[
   {href:'/rede',label:'Rede de EJs',icon:Building2},
   {href:'/calendario',label:'Calendário',icon:CalendarDays},
   {href:'/biblioteca',label:'Biblioteca',icon:FolderOpen},
-  {href:'/jornada',label:'Jornada do Conselho',icon:GraduationCap},
 ];
 export function SideNav({role, mobile=false}:{role:Role;mobile?:boolean}){
   const pathname=usePathname();
