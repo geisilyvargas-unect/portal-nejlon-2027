@@ -1,88 +1,34 @@
 (()=>{
 'use strict';
 const $=id=>document.getElementById(id);
-const esc=x=>String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-let people=[];
-const defaultTemplate="Olá, {nome}! ❤️🖤\n\nTudo bem? Passando para compartilhar com a *{ej}* o formulário *{formulario}* do Conselho do NEJ Londrina.\n\n📅 *Prazo:* {prazo}\n\nVocê pode escolher como prefere responder:\n🔴 *Pelo Portal NEJLON:* {link_portal}\n🟢 *Pelo Google Forms:* {link_google}\n\nÉ necessário preencher apenas uma vez. Guarde o comprovante da resposta, se houver.\n\nQualquer dúvida, estou à disposição!\n\n*Juntos pela excelência!*";
-$('wa-template').value=defaultTemplate;
-const toast=msg=>{$('wa-toast').textContent=msg};
-const normalizePhone=input=>{
- const clean=String(input??'').replace(/[^\d]/g,'');
- if(clean.length===10||clean.length===11)return '55'+clean;
- if((clean.length===12||clean.length===13)&&clean.startsWith('55'))return clean;
- return '';
-};
-function makeMessage(person){
- const raw=$('wa-template').value;
- const name=person.nome||'conselheiro(a)';
- const google=$('wa-google-link').value.trim();
- const vars={nome:name,ej:person.ej,formulario:$('wa-form-title').value.trim(),prazo:$('wa-deadline').value.trim()||'a confirmar',link_portal:$('wa-portal-link').value.trim(),link_google:google||'(link Google Forms ainda não disponibilizado)'};
- let result=raw.replace(/\{(nome|ej|formulario|prazo|link_portal|link_google)\}/g,(_,key)=>vars[key]);
- if(!google)result=result.replace(/^\s*🟢\s*\*Pelo Google Forms:\*.*\n?/gm,'');
- return result.replace(/\n{3,}/g,'\n\n').trim();
+const template="Falaaaa, Conselho! ❤️🖤\n\nEstá disponível a *{formulario}* para deliberação da nossa Rede Pé Vermelho!\n\n📅 *Prazo para responder:* {prazo}\n\nVocês podem escolher a forma mais prática para responder:\n\n🔴 *Pelo Portal NEJLON:*\n{link_portal}\n\n🟢 *Pelo Google Forms:*\n{link_google}\n\n⚠️ É necessário responder *apenas uma vez*, por um dos dois canais. Os posicionamentos serão consolidados no acompanhamento do Conselho.\n\nConto com a participação de vocês! Qualquer dúvida, podem me chamar aqui.\n\n*Juntos pela excelência!* ❤️";
+$('wa-template').value=template;
+function values(){
+ return {formulario:$('wa-form-title').value.trim()||'Deliberação do Conselho',prazo:$('wa-deadline').value.trim()||'a confirmar',link_portal:$('wa-portal-link').value.trim()||'[INSIRA O LINK DO PORTAL]',link_google:$('wa-google-link').value.trim()||'[INSIRA O LINK DO GOOGLE FORMS]'};
 }
-function parseRows(content){
- const lines=content.replace(/^\uFEFF/,'').split(/\r?\n/).filter(line=>line.trim());
- const rows=[];
- for(const line of lines){
-  const separator=line.includes(';')?';':line.includes('\t')?'\t':',';
-  const cells=line.split(separator).map(x=>x.trim().replace(/^["']|["']$/g,''));
-  if(cells[0]&&/^(ej|empresa j[uú]nior)$/i.test(cells[0]))continue;
-  if(cells.length<3)continue;
-  rows.push({ej:cells[0],nome:cells[1],telefone:cells.slice(2).join('')});
- }
- return rows;
-}
-function addPeople(rows){
- let added=0;
- for(const p of rows){
-  const phone=normalizePhone(p.telefone);
-  if(!p.ej||!phone)continue;
-  const id=p.ej.toLowerCase()+'|'+phone;
-  if(people.some(x=>x.id===id))continue;
-  people.push({id,ej:p.ej,nome:p.nome,telefone:phone,opened:false});
-  added++;
- }
- render();
- toast(added+' contato(s) adicionado(s); confira as mensagens antes de enviar.');
+function message(){const v=values();return $('wa-template').value.replace(/\{(formulario|prazo|link_portal|link_google)\}/g,(_,key)=>v[key]).trim()}
+function validLinks(){
+ const v=values();return /^https:\/\//i.test(v.link_portal)&&/^https:\/\//i.test(v.link_google);
 }
 function render(){
- const query=$('wa-filter').value.trim().toLowerCase();
- const filtered=people.filter(p=>(p.ej+' '+p.nome).toLowerCase().includes(query));
- $('wa-count').textContent=people.length+' contato(s) válido(s) · '+people.filter(p=>p.opened).length+' conversa(s) aberta(s) (não confirmadas como enviadas)';
- $('wa-list').innerHTML=filtered.length?filtered.map(p=>{
- const index=people.indexOf(p);
- return '<article class="wa-recipient"><div class="wa-recipient-top"><div><strong>'+esc(p.ej)+'</strong><span>'+esc(p.nome||'Sem nome')+' · +'+esc(p.telefone)+'</span></div><span class="wa-status">'+(p.opened?'Conversa aberta — envio não confirmado':'Pronto para preparar')+'</span></div><details><summary>Pré-visualizar mensagem personalizada</summary><pre>'+esc(makeMessage(p))+'</pre></details><div class="wa-actions"><button type="button" data-copy="'+index+'" class="btn">Copiar mensagem</button><button type="button" data-open="'+index+'" class="btn red">Abrir no WhatsApp ↗</button></div></article>';
- }).join(''):'<p class="wa-empty">Nenhum contato válido nesta lista. Adicione uma EJ, nome e telefone com DDD.</p>';
+ $('wa-preview').textContent=message();
+ const w=$('wa-warning');w.textContent=validLinks()?'Mensagem pronta para compartilhar após conferência.':'Preencha os dois links HTTPS antes de compartilhar no grupo.';
+ $('wa-share').disabled=!validLinks();
 }
-$('wa-load').addEventListener('click',()=>addPeople(parseRows($('wa-import').value)));
-$('wa-csv').addEventListener('change',async e=>{
- const file=e.target.files?.[0];if(!file)return;
- if(file.size>1024*1024){toast('Arquivo CSV muito grande. Limite de 1 MB.');return;}
- addPeople(parseRows(await file.text()));
+function toast(text){$('wa-toast').textContent=text;}
+$('wa-copy').addEventListener('click',async()=>{
+ try{await navigator.clipboard.writeText(message());toast('Mensagem copiada! Abra o grupo do Conselho e cole na conversa.');}
+ catch{toast('Não foi possível copiar automaticamente. Selecione o texto na prévia.');}
 });
-$('wa-clear').addEventListener('click',()=>{people=[];$('wa-import').value='';$('wa-csv').value='';render();toast('Contatos limpos desta sessão.')});
-$('wa-filter').addEventListener('input',render);
-for(const key of ['wa-form-title','wa-deadline','wa-portal-link','wa-google-link','wa-template'])$(key).addEventListener('input',render);
-$('wa-list').addEventListener('click',async e=>{
- const button=e.target.closest('button');if(!button)return;
- if(button.dataset.copy!==undefined){
-  const p=people[Number(button.dataset.copy)];if(!p)return;
-  try{await navigator.clipboard.writeText(makeMessage(p));toast('Mensagem de '+p.ej+' copiada.')}catch{toast('Não foi possível copiar automaticamente; selecione o texto na prévia.')}
- }
- if(button.dataset.open!==undefined){
-  const p=people[Number(button.dataset.open)];if(!p)return;
-  const portal=$('wa-portal-link').value.trim(),google=$('wa-google-link').value.trim();
-  if(!/^https:\/\//i.test(portal)||!/^https:\/\//i.test(google)){toast('Informe os dois links HTTPS do formulário (Portal e Google Forms) antes de preparar o convite.');return;}
-  const url='https://wa.me/'+p.telefone+'?text='+encodeURIComponent(makeMessage(p));
-  const opened=window.open(url,'_blank','noopener,noreferrer');
-  if(!opened){toast('O navegador bloqueou a nova aba; permita pop-ups para abrir o WhatsApp.');return;}
-  p.opened=true;render();toast('Conversa aberta. Confirme o envio no WhatsApp; o sistema não verifica a entrega.');
- }
+$('wa-share').addEventListener('click',()=>{
+ if(!validLinks()){toast('Insira os dois links válidos primeiro.');return}
+ const url='https://api.whatsapp.com/send?text='+encodeURIComponent(message());
+ const win=window.open(url,'_blank','noopener,noreferrer');
+ if(!win)toast('O navegador bloqueou a nova aba. Copie a mensagem e cole no grupo do Conselho.');
+ else toast('Escolha o grupo do Conselho no WhatsApp e confirme o envio. O portal não verifica a entrega.');
 });
-const q=new URLSearchParams(location.search);
-if(q.get('formulario'))$('wa-form-title').value=q.get('formulario').slice(0,180);
-if(q.get('prazo'))$('wa-deadline').value=q.get('prazo').slice(0,100);
-for(const [key,id] of [['portal','wa-portal-link'],['google','wa-google-link']]){const v=q.get(key);if(v&&/^https:\/\//i.test(v))$(id).value=v;}
+for(const id of ['wa-form-title','wa-deadline','wa-portal-link','wa-google-link','wa-template'])$(id).addEventListener('input',render);
+const query=new URLSearchParams(location.search);
+for(const [key,id,max] of [['formulario','wa-form-title',180],['prazo','wa-deadline',100],['portal','wa-portal-link',2000],['google','wa-google-link',2000]]){const v=query.get(key);if(v&&(key==='formulario'||key==='prazo'||/^https:\/\//i.test(v)))$(id).value=v.slice(0,max)}
 render();
 })();
