@@ -12,7 +12,7 @@ const seed=()=>({
  announcements:[{id:1,title:'Boas-vindas à Jornada do Conselho',body:'Materiais introdutórios disponíveis na trilha demonstrativa.',audience:'council'}]
 });
 let data;try{const saved=JSON.parse(sessionStorage.getItem(STORAGE)||'null');data=saved&&Array.isArray(saved.events)&&Array.isArray(saved.members)?saved:seed()}catch{data=seed()}
-const persist=()=>sessionStorage.setItem(STORAGE,JSON.stringify(data));
+const persist=()=>{try{sessionStorage.setItem(STORAGE,JSON.stringify(data));return true}catch{return false}};
 const state={role:'prescon',ej:'unect',tab:'overview'};
 const tabs=[['overview','Visão geral'],['calendar','Agenda e reuniões'],['learning','Jornada'],['engagement','Engajamento'],['checkins','Acompanhamento'],['resources','Biblioteca'],['actions','Encaminhamentos']];
 const isAdmin=()=>state.role==='prescon',isCouncil=()=>state.role==='counselor'||isAdmin();
@@ -64,7 +64,7 @@ $('ej').disabled=state.role==='nucleus_direx';
 function message(msg){$('status').textContent=msg;setTimeout(()=>{if($('status').textContent===msg)$('status').textContent=''},5000)}
 $('role').addEventListener('change',e=>{state.role=e.target.value;state.tab='overview';render()});
 $('ej').addEventListener('change',e=>{state.ej=e.target.value;render()});
-$('reset').addEventListener('click',()=>{data=seed();sessionStorage.removeItem(STORAGE);render();message('Simulação reiniciada.')});
+$('reset').addEventListener('click',()=>{data=seed();try{sessionStorage.removeItem(STORAGE)}catch{}render();message('Simulação reiniciada.')});
 $('tabs').addEventListener('click',e=>{const b=e.target.closest('[data-tab]');if(b){state.tab=b.dataset.tab;render()}});
 $('screen').addEventListener('click',e=>{
 const b=e.target.closest('[data-action]');if(!b)return;
@@ -74,7 +74,7 @@ else if(action==='toggleAction'&&isCouncil()){const a=data.actions.find(x=>Strin
 else if(action==='removeEvent'&&isAdmin())data.events=data.events.filter(x=>String(x.id)!==id);
 else if(action==='removeCheckin'&&isAdmin())data.checkins=data.checkins.filter(x=>String(x.id)!==id);
 else return;
-persist();render();message('Simulação atualizada nesta aba.');
+const saved=persist();render();message(saved?'Simulação atualizada nesta aba.':'Simulação atualizada, mas o navegador não permitiu salvá-la.');
 });
 $('screen').addEventListener('submit',e=>{
 const form=e.target.closest('form');if(!form)return;e.preventDefault();if(!isAdmin())return;
@@ -83,7 +83,7 @@ if(form.id==='event-form')data.events.push({id,title:String(v.get('title')).trim
 else if(form.id==='checkin-form')data.checkins.push({id,member:v.get('member'),date:v.get('date'),summary:String(v.get('summary')).trim(),next:v.get('next')});
 else if(form.id==='action-form')data.actions.push({id,title:String(v.get('title')).trim(),owner:v.get('owner'),due:v.get('due'),status:'pending'});
 else return;
-persist();render();message('Registro fictício criado nesta aba.');
+const saved=persist();render();message(saved?'Registro fictício criado nesta aba.':'Registro fictício criado, mas o navegador não permitiu salvá-lo.');
 });
 render();
 })();
