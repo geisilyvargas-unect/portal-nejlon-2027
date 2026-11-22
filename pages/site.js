@@ -11,15 +11,12 @@ if(D&&window.NEJLON_IDEALIZE_VOTES&&!D.delibs.some(x=>x.id==='idealize')){
 
 if(!D){document.getElementById('view').textContent='Dados demonstrativos indisponíveis.';return;}
 const nav=[
- ['painel','◫','Visão geral'],['engajamento','▦','Engajamento'],['deliberacoes','☷','Deliberações'],
- ['pendencias','◷','Pendências'],['relatorios','▤','Relatórios'],['demandas','☑','Demandas'],
- ['calendario','▦','Calendário'],['jornada','✧','Jornada'],['rede','⬡','Rede de EJs']
+ ['painel','◫','Início'],['deliberacoes','☷','Deliberações'],
+ ['pendencias','◷','Pendências'],['relatorios','▤','Relatórios']
 ];
 const roleMap={
  prescon:{name:'PRESCON',nav:nav.map(x=>x[0])},
- counselor:{name:'Conselho',nav:['painel','deliberacoes','demandas','calendario','jornada','rede']},
- ej_direx:{name:'DIREX da EJ',nav:['painel','demandas']},
- nucleus_direx:{name:'DIREX do Núcleo',nav:['painel','deliberacoes','demandas']}
+ counselor:{name:'Conselho',nav:['painel','deliberacoes','pendencias']}
 };
 const s={role:'prescon',section:'painel',ej:'unect',selected:'unect',filter:'all',search:'',delib:'financeiro',vote:'favorable',positionFilter:'all'};
 const $=id=>document.getElementById(id);
@@ -172,8 +169,8 @@ function deliberations(){
 }
 function overview(){
  const p=summary('financeiro');
- const actions='<div class="quick-actions"><a class="quick-action" href="./pages/central-automacoes.html"><b>Central de Automações</b><span>Crie deliberações, envie documentos ao Drive e acompanhe tudo num único lugar.</span><strong>Gerenciar →</strong></a><button type="button" class="quick-action" data-nav="deliberacoes"><b>01 · Deliberações</b><span>Consultar propostas, votos e o exemplo do Idealize.</span><strong>Abrir →</strong></button><button type="button" class="quick-action" data-nav="pendencias"><b>02 · Pendências</b><span>Descobrir quais EJs ainda não responderam.</span><strong>Ver pendências →</strong></button><button type="button" class="quick-action" data-nav="relatorios"><b>03 · Análise PRESCON</b><span>Conferir posicionamentos, sugestões e ressalvas.</span><strong>Analisar →</strong></button></div>';
- return '<div class="view-grid">'+panel('Por onde começar','Acesse primeiro as atividades que exigem atenção.',actions)+stats([metric('Respostas recebidas',p.votes,'Planejamento financeiro fictício','✓'),metric('EJs pendentes',p.pending,'Exemplo demonstrativo','◷'),metric('Participação',p.pct+'%','Respostas da simulação','◉')])+panel('Quer explorar os dados?','Análises detalhadas estão organizadas nas áreas específicas.','<div class="toolrow"><button class="btn" type="button" data-nav="engajamento">Ver engajamento →</button><button class="btn" type="button" data-nav="rede">Consultar Rede de EJs →</button><a class="btn" href="./pages/institucional.html">Conheça o NEJLON →</a><a class="btn red" href="./pages/whatsapp.html">Biblioteca de mensagens →</a></div>')+'</div>';
+ const actions='<div class="quick-actions"><button type="button" class="quick-action" data-nav="deliberacoes"><b>01 · Deliberações</b><span>Consulte os planejamentos financeiros e seus cenários. Preserve o XLSX original.</span><strong>Abrir →</strong></button><button type="button" class="quick-action" data-nav="pendencias"><b>02 · Pendências</b><span>Veja quais EJs ainda precisam responder.</span><strong>Ver pendências →</strong></button><button type="button" class="quick-action" data-nav="relatorios"><b>03 · Relatórios</b><span>Confira votos, sugestões e ressalvas.</span><strong>Consultar →</strong></button></div>';
+ return '<div class="view-grid">'+panel('Por onde começar','Acesse primeiro as atividades que exigem atenção.',actions)+stats([metric('Respostas recebidas',p.votes,'Planejamento financeiro fictício','✓'),metric('EJs pendentes',p.pending,'Exemplo demonstrativo','◷'),metric('Participação',p.pct+'%','Respostas da simulação','◉')])+'</div>';
 }
 function listPanel(title,sub,items){
  return panel(title,sub,items.map(x=>'<div class="list-item"><div><strong>'+esc(x[0])+'</strong><p>'+esc(x[1])+'</p></div>'+tag(x[2]||'Exemplo')+'</div>').join(''));
