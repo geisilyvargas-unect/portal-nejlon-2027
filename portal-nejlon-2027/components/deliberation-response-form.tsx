@@ -89,9 +89,10 @@ export function DeliberationResponseForm({deliberationId,scenarios,previous}:{de
           </select>
         </label>
       </div>
-      <label>Como podemos melhorar? (opcional)
-        <textarea name="improvements" maxLength={2000} defaultValue={feedback.improvements||''} placeholder="Sua sugestão de melhoria, se houver."/>
+      <label>Como podemos melhorar? *
+        <textarea name="improvements" required maxLength={2000} defaultValue={feedback.improvements||''} placeholder="Escreva uma sugestão ou informe 'Sem sugestões'."/>
       </label>
+      <p className="muted small">Se não houver sugestões adicionais, escreva “Sem sugestões”.</p>
     </section>
     <button type="submit" className="primary">{previous?'Atualizar minha resposta':'Enviar deliberação completa'}</button>
     <p className="muted small">Só há uma resposta vigente por EJ. Se atualizar dentro do prazo, a resposta anterior será substituída e a PRESCON precisará rever eventuais ressalvas.</p>
