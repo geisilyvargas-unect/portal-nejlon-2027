@@ -52,3 +52,16 @@ html[data-theme="light"],html[data-theme="dark"],html[data-theme="red"]{--lime:v
 html[data-theme="light"] .hero::before{background:#111}
 @media(max-width:600px){.hero::after{width:108px;height:108px;border-width:17px;right:-50px;bottom:-50px;opacity:.5}}
 @media print{.hero::before,.hero::after{display:none}}
+
+
+/* Títulos, curvas e estrela não desaparecem ao trocar a cor do tema. */
+html:is([data-theme="light"],[data-theme="dark"],[data-theme="red"]){--nejlon-graphic-lime:#9bc900;--nejlon-graphic-red:#ff0000}
+html[data-theme="light"]{--nejlon-poster-front:#111;--nejlon-poster-outline:#fff;--nejlon-star:#111}
+html[data-theme="dark"],html[data-theme="red"]{--nejlon-poster-front:#fff;--nejlon-poster-outline:#000;--nejlon-star:#fff}
+html:is([data-theme="light"],[data-theme="dark"],[data-theme="red"]) .hero::after{border-color:var(--nejlon-graphic-lime);visibility:visible}
+html:is([data-theme="light"],[data-theme="dark"],[data-theme="red"]) .hero::before{background:var(--nejlon-star);visibility:visible}
+html:is([data-theme="light"],[data-theme="dark"],[data-theme="red"]) .hero h1{
+ color:var(--nejlon-poster-front);
+ -webkit-text-stroke:1px var(--nejlon-poster-outline);
+ text-shadow:3px 4px 0 var(--nejlon-graphic-red),4px 5px 0 var(--nejlon-poster-outline);
+}
