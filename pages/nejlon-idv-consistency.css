@@ -215,3 +215,35 @@ html:is([data-theme="light"],[data-theme="dark"],[data-theme="red"]) .nejlon-lay
  }
 }
 @media print{html:is([data-theme="light"],[data-theme="dark"],[data-theme="red"]) .nejlon-layer-title[data-title-layer]::before{content:none!important;display:none!important}}
+
+
+/* Composição tipográfica fiel à capa do Portfólio: clone HTML da frente, não attr(). */
+:root{--nejlon-title-font:"CY Grotesk V3 Key","CY Grotesk V3","Arial Black",Impact,sans-serif}
+body :is(h1,h2,h3).nejlon-layer-title{
+ position:relative!important;isolation:isolate!important;
+ font-family:var(--nejlon-title-font)!important;font-weight:900!important;
+ font-style:normal!important;text-transform:uppercase!important;
+ color:#fff!important;-webkit-text-stroke:2px #000!important;
+ paint-order:stroke fill!important;text-shadow:none!important;
+ letter-spacing:.01em!important;overflow:visible!important;
+}
+body :is(h1,h2,h3).nejlon-layer-title::before{content:none!important;display:none!important}
+body :is(h1,h2,h3).nejlon-layer-title > .nejlon-title-back{
+ position:absolute!important;inset:0!important;display:block!important;
+ transform:translate(2px,3px)!important;z-index:-1!important;
+ font:inherit!important;line-height:inherit!important;letter-spacing:inherit!important;
+ color:#ff0000!important;-webkit-text-stroke:2px #000!important;
+ paint-order:stroke fill!important;text-shadow:none!important;
+ text-transform:uppercase!important;pointer-events:none!important;
+ white-space:inherit!important;overflow-wrap:inherit!important;
+}
+body :is(h1,h2,h3).nejlon-layer-title > .nejlon-title-back :is(em,span,strong){
+ color:inherit!important;-webkit-text-stroke:inherit!important;
+}
+@media(max-width:600px){
+ body :is(h1,h2,h3).nejlon-layer-title{-webkit-text-stroke:1.5px #000!important}
+ body :is(h1,h2,h3).nejlon-layer-title > .nejlon-title-back{
+ transform:translate(1px,2px)!important;-webkit-text-stroke:1.5px #000!important;
+ }
+}
+@media print{body :is(h1,h2,h3).nejlon-layer-title > .nejlon-title-back{display:none!important}}
