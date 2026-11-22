@@ -45,3 +45,26 @@ html[data-theme="dark"],html[data-theme="red"]{--ux-lime:var(--nejlon-lime)}
 html[data-theme="light"] :is(.intro,.i-hero,.idealize-banner)::before{background:#111}
 @media(max-width:600px){:is(.intro,.i-hero,.idealize-banner)::after{width:108px;height:108px;border-width:17px;right:-50px;bottom:-48px;opacity:.5}}
 @media print{:is(.intro,.i-hero,.idealize-banner)::before,:is(.intro,.i-hero,.idealize-banner)::after{display:none}}
+
+
+/* A identidade gráfica permanece ativa em TODAS as escolhas de aparência. */
+html:is([data-theme="light"],[data-theme="dark"],[data-theme="red"]){
+ --nejlon-graphic-lime:#9bc900;
+ --nejlon-graphic-red:#ff0000;
+}
+html[data-theme="light"]{--nejlon-poster-front:#111;--nejlon-poster-outline:#fff;--nejlon-star:#111}
+html[data-theme="dark"],html[data-theme="red"]{--nejlon-poster-front:#fff;--nejlon-poster-outline:#000;--nejlon-star:#fff}
+html:is([data-theme="light"],[data-theme="dark"],[data-theme="red"]) :is(.intro,.i-hero,.idealize-banner)::after{
+ border-color:var(--nejlon-graphic-lime)!important;opacity:.88!important;visibility:visible;
+}
+html:is([data-theme="light"],[data-theme="dark"],[data-theme="red"]) :is(.intro,.i-hero,.idealize-banner)::before{
+ background:var(--nejlon-star)!important;opacity:.9!important;visibility:visible;
+}
+html:is([data-theme="light"],[data-theme="dark"],[data-theme="red"]) :is(.intro h1,.i-hero h1,.idealize-banner h1){
+ color:var(--nejlon-poster-front)!important;
+ -webkit-text-stroke:1px var(--nejlon-poster-outline);
+ text-shadow:3px 4px 0 var(--nejlon-graphic-red),4px 5px 0 var(--nejlon-poster-outline);
+}
+@media(max-width:600px){
+ html:is([data-theme="light"],[data-theme="dark"],[data-theme="red"]) :is(.intro,.i-hero,.idealize-banner)::after{opacity:.5!important}
+}
