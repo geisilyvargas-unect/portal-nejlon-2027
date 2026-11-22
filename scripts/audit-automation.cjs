@@ -6,6 +6,8 @@ for(const p of ['api/cron-sync.js','api/forms.js','api/drive.js','api/demands.js
  new vm.Script(source,{filename:p});
 }
 const cron=read('api/cron-sync.js'),forms=read('api/forms.js'),drive=read('api/drive.js'),ui=read('pages/automation.js'),html=read('pages/central-automacoes.html');
+const pfHtml=read('pages/prescon-criar-deliberacao.html'),pfJs=read('pages/prescon-criar-deliberacao.js');
+new vm.Script(pfJs,{filename:'pages/prescon-criar-deliberacao.js'});
 assert.match(cron,/MAX_FORMS=200/);
 assert.match(cron,/MAX_PAGES_PER_FORM=30/);
 assert.match(cron,/pending_review/);
@@ -20,7 +22,14 @@ assert.match(drive,/offset<20000/);
 assert.match(drive,/evitar relatórios incompletos/);
 assert.match(ui,/scenarioCount/);
 assert.match(ui,/pfQuestions/);
-assert.match(html,/name="scenarios"/);
+// A criação de PF foi transferida para uma página própria. Auditar o fluxo real,
+// em vez de exigir um campo legado inexistente na Central de Automações.
+assert.ok(html.includes('prescon-criar-deliberacao.html'));
+assert.match(pfHtml,/id="pf-file"/);
+assert.match(pfHtml,/id="create-form"/);
+assert.match(pfHtml,/id="scenarios"/);
+assert.ok(pfJs.includes('getElementById(id)'));
+assert.match(pfJs,/uploadedSheets/);
 const cfg=JSON.parse(read('vercel.json'));
 assert.equal(cfg.framework,null);
 assert.deepEqual(cfg.crons,[{path:'/api/cron-sync',schedule:'0 12 * * *'}]);
