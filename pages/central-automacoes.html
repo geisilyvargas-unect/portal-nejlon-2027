@@ -29,6 +29,14 @@
 <button type="button" data-tab="relatorios">Resultados</button>
 </nav>
 <section class="auto-tab" data-panel="inicio">
+<section class="automation-panel" id="auto-weekly-panel">
+<div class="automation-panel-title"><div><span class="eyebrow">PANORAMA SEMANAL · DADOS DO PORTAL</span><h2>Sua semana na PRESCON</h2><p class="automation-muted">Deliberações abertas, prazos, EJs que ainda não responderam e respostas aguardando conferência.</p></div></div>
+<div class="automation-actions"><button type="button" class="btn red" id="auto-weekly-refresh">Atualizar prioridades</button><button type="button" class="btn" id="auto-weekly-copy">Copiar panorama</button><button type="button" class="btn" id="auto-weekly-whatsapp">Preparar lembrete ao Conselho</button></div>
+<div id="auto-weekly-status" class="automation-muted" role="status" aria-live="polite">Carregando prioridades…</div>
+<div class="automation-stat-grid" id="auto-weekly-stats"></div>
+<div id="auto-weekly-items" class="automation-week-list"></div>
+<p class="automation-muted">Resumo limitado a formulários reais criados na Central. Demandas e calendário ainda não entram nesse cálculo. Lembretes de WhatsApp não são enviados automaticamente.</p>
+</section>
 <div class="automation-stat-grid">
 <article><span>CONEXÃO GOOGLE</span><strong id="auto-google-state">Verificando</strong><small>Drive, Forms e Sheets</small></article>
 <article><span>FORMULÁRIOS</span><strong id="auto-form-total">—</strong><small>Disponíveis para gestão</small></article>
