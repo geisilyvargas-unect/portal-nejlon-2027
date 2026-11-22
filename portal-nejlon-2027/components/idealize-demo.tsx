@@ -3,6 +3,7 @@ import {useMemo,useState} from 'react';
 import Link from 'next/link';
 import {CalendarDays,ChevronDown,Download,FileSpreadsheet,Info,MessageSquareText,Send} from 'lucide-react';
 import {EJS_DEMO} from '@/lib/demo-ejs';
+import {VotingManual} from '@/components/voting-manual';
 import {financialMeasure,money,PROJECTION_KEYS,PROJECTION_LABELS,type ProjectionKey,type FinancialAlternative} from '@/lib/financial-plan';
 import idealizeRaw from '@/lib/idealize-data.json';
 import votesRaw from '@/lib/idealize-responses.json';
@@ -122,9 +123,7 @@ export function IdealizeDemo(){
    <div className="toolbar"><div><div className="eyebrow">MODELO DE FORMULÁRIO 2026</div><h2>Deliberação do IDEALIZE</h2>
     <p className="muted small">Falaaaa, conselheiro pé vermelho! 👣❤️ Este formulário simula o modelo oficial de deliberação, com as cinco opções de voto.</p>
    </div><span className="badge blue"><CalendarDays size={14}/> ABERTA PARA SIMULAÇÃO</span></div>
-   <details className="idealize-instructions" open><summary>Conheça as cinco possibilidades de votação</summary>
-    <div className="idealize-guide">{choices.map(c=><div key={c.value}><strong>{c.label.toUpperCase()}</strong><p>{c.desc}</p></div>)}</div>
-   </details>
+   <VotingManual compact/>
    <form onSubmit={e=>{
     e.preventDefault();
     if(!plan.alternatives.every(a=>Boolean(answers[a.scenarioKey]?.position)))return;
@@ -156,7 +155,7 @@ export function IdealizeDemo(){
       <label>O quanto você sentiu dificuldade na deliberação *
        <select required value={difficulty} onChange={e=>setDifficulty(e.target.value)}><option value="">Selecione</option>{[0,1,2,3,4,5].map(n=><option key={n} value={n}>{n}{n===0?' — Sem dificuldade':n===5?' — Muita dificuldade':''}</option>)}</select></label>
      </div>
-     <label>Como podemos melhorar? (opcional)<textarea value={improvements} onChange={e=>setImprovements(e.target.value)} rows={3} maxLength={2000}/></label>
+     <label>Como podemos melhorar? *<textarea required value={improvements} onChange={e=>setImprovements(e.target.value)} rows={3} maxLength={2000} placeholder="Pode escrever 'Sem sugestões' se não houver melhorias adicionais."/></label>
     </section>
     <div className="idealize-submit">
      <button type="submit" className="button primary"><Send size={16}/> Enviar voto de demonstração</button>
