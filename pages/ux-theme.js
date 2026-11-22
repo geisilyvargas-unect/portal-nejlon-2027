@@ -29,7 +29,7 @@ function mount(){
  control.type='button';control.className='ux-theme-switch';
  control.addEventListener('click',toggle);
  const top=document.querySelector('.top-actions');
- const utility=document.querySelector('.i-top,.wa-nav,.idealize-top');
+ const utility=document.querySelector('.i-top,.wa-nav,.idealize-top,.automation-top');
  if(top){top.prepend(control)}
  else if(utility){utility.append(control)}
  else{document.body.prepend(control)}
