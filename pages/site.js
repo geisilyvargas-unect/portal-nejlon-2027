@@ -139,6 +139,7 @@ function exportReport(format){
   try{sessionStorage.setItem(key,JSON.stringify(snapshot));}catch(e){alert('O navegador não permitiu preparar o relatório.');return}
   const url=new URL('./pages/relatorio.html',document.baseURI);
   url.searchParams.set('ref',key);
+  url.searchParams.set('v','20261122-web-report-fix');
   const w=window.open(url.href,'_blank');
   if(!w){sessionStorage.removeItem(key);alert('Permita pop-ups para visualizar o relatório em outra aba.')}
   return;
