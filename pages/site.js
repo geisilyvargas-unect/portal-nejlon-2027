@@ -126,7 +126,9 @@ function render(){
  const mainNav=allowed.filter(n=>primary.includes(n[0]));
  const secondaryNav=allowed.filter(n=>!primary.includes(n[0]));
  const menu=mainNav.map(navButton).join('')+(secondaryNav.length?'<details class="nav-more" '+(secondaryNav.some(n=>n[0]===s.section)?'open':'')+'><summary>Outras áreas <span aria-hidden="true">⌄</span></summary>'+secondaryNav.map(navButton).join('')+'</details>':'');
- $('desktop-nav').innerHTML=menu;$('mobile-nav').innerHTML=menu;
+ $('desktop-nav').innerHTML=menu;
+ // Em telas pequenas, navegação linear: evita opções ocultas em <details> dentro do carrossel.
+ $('mobile-nav').innerHTML=allowed.map(navButton).join('');
  heading();
  if(s.role==='prescon')$('view').innerHTML=s.section==='painel'?overview():s.section==='engajamento'?'<div class="view-grid">'+heatmap()+trend()+'</div>':s.section==='deliberacoes'?deliberations():s.section==='pendencias'?pending():s.section==='relatorios'?reports():extras();
  else $('view').innerHTML=s.section==='painel'?'<div class="view-grid">'+panel('Acesso rápido','Escolha sua próxima atividade nesta demonstração.','<div class="quick-actions"><button type="button" class="quick-action" data-nav="deliberacoes"><b>Deliberações</b><span>Consulte os documentos e o andamento dos votos.</span><strong>Abrir →</strong></button>'+(role().nav.includes('demandas')?'<button type="button" class="quick-action" data-nav="demandas"><b>Demandas</b><span>Acompanhe tarefas e prazos da simulação.</span><strong>Consultar →</strong></button>':'')+'<a class="quick-action" href="./pages/institucional.html"><b>Conheça o NEJLON</b><span>História, valores e as EJs da Rede.</span><strong>Explorar →</strong></a></div>')+panel('Deliberações disponíveis','Informações fictícias, sem efeito institucional.',D.delibs.filter(d=>s.role!=='ej_direx'||d.visibility!=='Conselho').map(d=>'<div class="list-item"><div><strong>'+esc(d.name)+'</strong><p>'+esc(d.status)+'</p></div><button class="btn" data-open-delib="'+d.id+'">Ver →</button></div>').join(''))+'</div>':s.section==='deliberacoes'?deliberations():extras();
