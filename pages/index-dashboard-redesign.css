@@ -35,3 +35,10 @@
 .portal-calendar-form input,.portal-calendar-form select{width:100%;min-width:0;padding:10px;background:var(--panel,#fff);border:1px solid var(--border,#888);color:var(--text,#111);font:inherit}
 .portal-calendar-form button{grid-column:1/-1;justify-self:start}
 @media(max-width:760px){.portal-calendar-form{grid-template-columns:1fr}.portal-calendar-event{font-size:9px;padding:3px}.portal-calendar-entry{align-items:flex-start}}
+
+/* Coração adesivo: interpretação vetorial do elemento enviado, sem alterar o arquivo original */
+.portal-heart-sticker{position:absolute;right:clamp(12px,4vw,60px);top:32px;width:clamp(72px,11vw,140px);height:auto;transform:rotate(9deg);pointer-events:none;filter:drop-shadow(3px 5px 0 #000)}
+.portal-heart-sticker .heart-shadow{fill:#000;stroke:#000;stroke-width:7}
+.portal-heart-sticker .heart-green{fill:#a9d400;stroke:#000;stroke-width:6}
+.portal-heart-sticker .heart-front{fill:#cc2c30;stroke:#000;stroke-width:6}
+@media(max-width:640px){.portal-heart-sticker{top:16px;width:67px;right:10px;opacity:.88}}
