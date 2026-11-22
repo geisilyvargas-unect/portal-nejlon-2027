@@ -201,7 +201,7 @@ function liveDeliberations(){
 function demoEntries(){
  const base=D.delibs.map(d=>({id:d.id,name:d.name,status:d.status,visibility:d.visibility}));
  let extras=[];try{extras=JSON.parse(localStorage.getItem('nejlon.deliberations.demo.v2')||'[]')}catch{}
- return base.concat(Array.isArray(extras)?extras:[]);
+ const overrides=Array.isArray(extras)?extras:[];return base.map(d=>overrides.find(x=>x.id===d.id)||d).concat(overrides.filter(x=>!base.some(d=>d.id===x.id)));
 }
 function deliberations(){
  const cards=demoEntries();
@@ -272,7 +272,7 @@ function openDemoDeliberationReport(id){
  const d=D.delibs.find(x=>x.id===id);
  if(!d){const extra=demoEntries().find(x=>x.id===id);if(!extra||!/encerrad|fechad|concluíd|concluid|finalizad/i.test(String(extra.status)))return;}else if(!/encerrad|fechad|concluíd|concluid|finalizad/i.test(String(d.status)))return;
  const vv=d?votes(id):[], counts=Object.entries(D.positions).map(([key,p])=>'<tr><td>'+esc(p.label)+'</td><td>'+vv.filter(v=>v.position===key).length+'</td></tr>').join('');
- const html='<h1>'+esc(d.name)+'</h1><p><strong>RELATÓRIO DEMONSTRATIVO — DELIBERAÇÃO ENCERRADA</strong></p><p>Dados fictícios do protótipo. Não representam votos oficiais nem deliberação institucional.</p><p>Total de respostas fictícias: '+vv.length+'</p><table><thead><tr><th>Posicionamento</th><th>Respostas fictícias</th></tr></thead><tbody>'+counts+'</tbody></table><p>Qualquer parecer, sugestão ou ressalva exige análise humana da PRESCON.</p>';
+ const html='<h1>'+esc(d?.name||demoEntries().find(x=>x.id===id)?.name||'Deliberação')+'</h1><p><strong>RELATÓRIO DEMONSTRATIVO — DELIBERAÇÃO ENCERRADA</strong></p><p>Dados fictícios do protótipo. Não representam votos oficiais nem deliberação institucional.</p><p>Total de respostas fictícias: '+vv.length+'</p><table><thead><tr><th>Posicionamento</th><th>Respostas fictícias</th></tr></thead><tbody>'+counts+'</tbody></table><p>Qualquer parecer, sugestão ou ressalva exige análise humana da PRESCON.</p>';
  const ref='nejlon-demo-report-'+id+'-'+Date.now();
  try{sessionStorage.setItem(ref,JSON.stringify({demo:true,title:d?.name||demoEntries().find(x=>x.id===id)?.name||'Deliberação',createdAt:Date.now(),html}));window.location.href='./pages/relatorio.html?ref='+encodeURIComponent(ref)}catch{alert('Não foi possível abrir o relatório demonstrativo neste navegador.')}
 }
