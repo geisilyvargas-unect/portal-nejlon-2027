@@ -6,7 +6,7 @@ import {answersOf,VOTE_DESCRIPTIONS} from '@/lib/deliberation-form';
 
 type Field='position'|'justification'|'caveats'|'suggestions';
 export function DeliberationResponseForm({deliberationId,scenarios,previous}:{deliberationId:string;scenarios:DeliberationScenario[];previous?:ResponseRow}){
-  const [answers,setAnswers]=useState<ScenarioAnswer[]>(()=>answersOf(previous,scenarios));
+  const [answers,setAnswers]=useState<ScenarioAnswer[]>(()=>answersOf(previous,scenarios).map(a=>previous?a:{...a,position:'' as ScenarioAnswer['position']}));
   const change=(key:string,field:Field,value:string)=>setAnswers(old=>old.map(a=>a.scenario_key===key?{...a,[field]:value}:a));
   const feedback=previous?.final_feedback||{};
   return <form action={submitResponse} className="fieldset">
@@ -27,12 +27,17 @@ export function DeliberationResponseForm({deliberationId,scenarios,previous}:{de
         <h3>{scenario.title}</h3>
         {scenario.description&&<p className="muted whitespace">{scenario.description}</p>}
         {scenario.material_url&&<p><a href={scenario.material_url} target="_blank" rel="noopener noreferrer" className="link">Consultar material para deliberação ↗</a></p>}
-        <label>Sobre este cenário, você... *
-          <select required value={answer.position} onChange={e=>change(scenario.key,'position',e.target.value)}>
-            {(Object.keys(POSITIONS) as Position[]).map(k=><option key={k} value={k}>{POSITIONS[k]}</option>)}
-          </select>
-        </label>
-        <p className="small muted" style={{margin:0}}>{VOTE_DESCRIPTIONS[answer.position]}</p>
+        <fieldset className="vote-position-group">
+          <legend>Sobre o [C{index+1}] CENÁRIO {index+1}, você... *</legend>
+          <div className="vote-position-options">
+            {(Object.keys(POSITIONS) as Position[]).map(key=><label key={key} className={answer.position===key?'active':''}>
+              <input type="radio" name={'position-'+scenario.key} value={key} required
+                checked={answer.position===key} onChange={()=>change(scenario.key,'position',key)}/>
+              <span>{POSITIONS[key]}</span>
+            </label>)}
+          </div>
+        </fieldset>
+        <p className="small muted" style={{margin:0}}>{answer.position?VOTE_DESCRIPTIONS[answer.position]: 'Escolha uma das cinco possibilidades de votação.'}</p>
         {answer.position!=='abstention'&&<label>Justifique sua decisão {answer.position==='against'?'*':'(opcional)'}
           <textarea required={answer.position==='against'} value={answer.justification} onChange={e=>change(scenario.key,'justification',e.target.value)} placeholder="Quais são os pontos que fundamentam seu posicionamento?"/>
         </label>}
@@ -48,21 +53,21 @@ export function DeliberationResponseForm({deliberationId,scenarios,previous}:{de
       <div className="eyebrow">Seção final</div>
       <h3>Considerações finais</h3>
       <div className="form-grid">
-        <label>O quão claras ficaram as opções de votação? *
+        <label>O quão claro ficou as opções e as formas de votação? *
           <select name="clarity" required defaultValue={feedback.clarity===undefined?'':String(feedback.clarity)}>
             <option value="" disabled>Selecione</option>
             {[0,1,2,3,4,5].map(n=><option key={n} value={n}>{n}{n===0?' — Nada claro':n===5?' — Muito claro':''}</option>)}
           </select>
         </label>
-        <label>Quanto você sentiu dificuldade na deliberação? *
+        <label>O quanto você sentiu dificuldade na deliberação *
           <select name="difficulty" required defaultValue={feedback.difficulty===undefined?'':String(feedback.difficulty)}>
             <option value="" disabled>Selecione</option>
             {[0,1,2,3,4,5].map(n=><option key={n} value={n}>{n}{n===0?' — Sem dificuldade':n===5?' — Muita dificuldade':''}</option>)}
           </select>
         </label>
       </div>
-      <label>Como podemos melhorar? *
-        <textarea name="improvements" required maxLength={2000} defaultValue={feedback.improvements||''} placeholder="Compartilhe uma melhoria ou escreva 'Sem sugestões'."/>
+      <label>Como podemos melhorar? (opcional)
+        <textarea name="improvements" maxLength={2000} defaultValue={feedback.improvements||''} placeholder="Sua sugestão de melhoria, se houver."/>
       </label>
     </section>
     <button type="submit" className="primary">{previous?'Atualizar minha resposta':'Enviar deliberação completa'}</button>
