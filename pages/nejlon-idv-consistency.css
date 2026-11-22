@@ -1,0 +1,47 @@
+/* NEJLON 2027 — camada de consistência visual; não altera fluxos ou dados.
+   CY Grotesk V3 Key só será renderizada quando o usuário tiver a fonte
+   instalada ou quando um arquivo licenciado for disponibilizado. */
+:root {--nejlon-title-font:"CY Grotesk V3 Key","CY Grotesk V3","Arial Black",Impact,sans-serif;--nejlon-red:#ff0000}
+html[data-theme="light"]{--ux-bg:#fff;--ux-side:#fff;--ux-surface:#fff;--ux-raised:#f4f4f4;--ux-text:#101010;--ux-muted:#323232;--ux-subtle:#454545;--ux-red:#e00000;--ux-petrol:#e00000;--ux-lime:#9bc900;--modern-line:#d0d0d0;--modern-accent:#e00000;--modern-accent-soft:#fff0f0;--modern-glass:rgba(255,255,255,.96)}
+html[data-theme="dark"]{--ux-bg:#000;--ux-side:#050505;--ux-surface:#111;--ux-raised:#1d1d1d;--ux-text:#fff;--ux-muted:#e2e2e2;--ux-subtle:#c7c7c7;--ux-red:#ff0000;--ux-petrol:#ff0000;--ux-lime:#9bc900;--modern-line:#444;--modern-accent:#ff0000;--modern-accent-soft:#291010;--modern-glass:rgba(0,0,0,.96)}
+html[data-theme="red"]{color-scheme:dark;--ux-bg:#ff0000;--ux-side:#050505;--ux-surface:#101010;--ux-raised:#202020;--ux-text:#fff;--ux-muted:#eaeaea;--ux-subtle:#ccc;--ux-border:#565656;--ux-red:#ff0000;--ux-petrol:#ff0000;--ux-lime:#9bc900;--modern-line:#4a4a4a;--modern-accent:#ff0000;--modern-accent-soft:#2b1111;--modern-glass:rgba(8,8,8,.97)}
+:is(.intro h1,.workhead h2,.panel h3,.ej-directory-card h3,.i-hero h1,.i-section h2,.idealize-banner h1,.idealize-manual-art h3,.wa-hero h1,.wa-panel h2,.idealize-shell h2){font-family:var(--nejlon-title-font)!important;font-weight:900!important}
+:is(.intro h1,.i-hero h1,.idealize-banner h1,.wa-hero h1){text-transform:uppercase;letter-spacing:.012em!important;line-height:1.16!important;overflow-wrap:anywhere}
+html[data-theme="red"] :is(body,.main){background:#ff0000!important}
+html[data-theme="red"] :is(.side,.topbar){background:#080808!important;color:#fff!important}
+html[data-theme="red"] :is(.intro,.panel,.role-card,.stat-card,.ej-directory-card,.comparison-card,.analytics-bar,.voting-graph,.prescon-focus-card,.quick-action,.record,.side-foot,.demo-alert,.notice,.wa-panel,.idealize-banner,.idealize-financial-card,.idealize-scenario,.idealize-result,.idealize-final,.idealize-manual-visual,.pf-sheet){background:#101010!important;color:#fff!important;border-color:#484848!important}
+html[data-theme="red"] :is(.intro,.role-card)::before{opacity:.16}
+html[data-theme="red"] :is(.intro,.role-card)::after{opacity:.22}
+html[data-theme="red"] :is(.side-section,.mini-heading,.eyebrow,.top-year,.stat-icon){color:#ff3838!important}
+html[data-theme="red"] :is(.nav-button.active,.role-option.active,.filter.active,.btn.red,.prescon-create-cta,.contact){background:#ff0000!important;color:#fff!important;border-color:#ff0000!important}
+html[data-theme="red"] :is(.panel,.stat-card,.role-card) :is(input,select,textarea){background:#202020;color:#fff;border-color:#666}
+html[data-theme="light"] :is(.intro,.panel,.role-card,.stat-card,.ej-directory-card){background:#fff!important;color:#101010!important;border-color:#cfcfcf!important}
+html[data-theme="light"] .intro :is(h1,p){color:#101010!important}
+html[data-theme="dark"] .intro{background:#111!important}
+html[data-theme="dark"] .intro :is(h1,p){color:#fff!important}
+html[data-theme="light"] :is(.nav-button.active,.role-option.active,.filter.active,.btn.red){background:#e00000!important;color:#fff!important;border-color:#e00000!important}
+html[data-theme="dark"] :is(.nav-button.active,.role-option.active,.filter.active,.btn.red){background:#ff0000!important;color:#fff!important;border-color:#ff0000!important}
+:where(button,a,input,select,textarea,summary):focus-visible{outline:3px solid #ff3838!important;outline-offset:3px}
+@media(max-width:760px){.intro{min-width:0}.intro-copy{min-width:0}.panel,.role-card,.stat-card{min-width:0}table{max-width:100%}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;transition:none!important}}
+
+/* Verde-limão do Portfólio Unificado NEJLON: acento gráfico, não substitui os temas. */
+:root{--nejlon-lime:#9bc900;--nejlon-lime-ink:#111}
+html[data-theme="light"]{--ux-lime:var(--nejlon-lime)}
+html[data-theme="dark"],html[data-theme="red"]{--ux-lime:var(--nejlon-lime)}
+:is(.intro,.i-hero,.idealize-banner){position:relative}
+:is(.intro,.i-hero,.idealize-banner)::selection{background:var(--nejlon-lime);color:var(--nejlon-lime-ink)}
+:is(.intro h1,.i-hero h1,.idealize-banner h1)::selection{background:var(--nejlon-lime);color:#111}
+:where(.stat-icon,.eyebrow,.top-year)[data-accent="lime"]{color:var(--nejlon-lime)!important}
+:where(.panel,.stat-card,.role-card,.ej-directory-card)[data-accent="lime"]{border-left:4px solid var(--nejlon-lime)!important}
+:where(.nav-button,.filter,.btn)[data-accent="lime"].active{background:var(--nejlon-lime)!important;color:#111!important;border-color:var(--nejlon-lime)!important}
+
+
+/* Recortes editoriais e ondas orgânicas do portfólio, sem imagens externas. */
+:is(.intro,.i-hero,.idealize-banner){isolation:isolate;overflow:hidden}
+:is(.intro,.i-hero,.idealize-banner)::after{content:"";position:absolute;right:-54px;bottom:-74px;width:170px;height:170px;border:27px solid var(--nejlon-lime);border-radius:45% 55% 52% 48%;transform:rotate(-28deg);pointer-events:none;opacity:.88;z-index:0}
+:is(.intro,.i-hero,.idealize-banner)>*{position:relative;z-index:1}
+:is(.intro,.i-hero,.idealize-banner)::before{content:"";position:absolute;top:14px;right:18px;width:20px;height:30px;background:#fff;clip-path:polygon(50% 0,65% 36%,100% 50%,65% 64%,50% 100%,35% 64%,0 50%,35% 36%);pointer-events:none;opacity:.9}
+html[data-theme="light"] :is(.intro,.i-hero,.idealize-banner)::before{background:#111}
+@media(max-width:600px){:is(.intro,.i-hero,.idealize-banner)::after{width:108px;height:108px;border-width:17px;right:-50px;bottom:-48px;opacity:.5}}
+@media print{:is(.intro,.i-hero,.idealize-banner)::before,:is(.intro,.i-hero,.idealize-banner)::after{display:none}}
