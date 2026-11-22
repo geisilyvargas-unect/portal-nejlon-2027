@@ -91,7 +91,8 @@ function deliberations(){
 }
 function overview(){
  const p=summary('financeiro');
- return '<div class="view-grid">'+stats([metric('EJs monitoradas','29','Todas da Rede','⬡'),metric('Respostas recebidas',p.votes,'Planejamento financeiro','✓'),metric('Aguardando resposta',p.pending,'Planejamento financeiro','◷'),metric('Participação',p.pct+'%','Planejamento financeiro','◉')])+heatmap()+trend()+panel('O que a plataforma já facilita','Uma visão única para identificar respostas, demandas e próximos passos.','<div class="twocol"><div class="notice">✓ Gráficos e pendências calculados sem planilha.</div><div class="notice">✓ Ficha de cada EJ aberta em um clique.</div></div>')+'</div>';
+ const actions='<div class="quick-actions"><button type="button" class="quick-action" data-nav="deliberacoes"><b>01 · Deliberações</b><span>Consultar propostas, votos e o exemplo do Idealize.</span><strong>Abrir →</strong></button><button type="button" class="quick-action" data-nav="pendencias"><b>02 · Pendências</b><span>Descobrir quais EJs ainda não responderam.</span><strong>Ver pendências →</strong></button><button type="button" class="quick-action" data-nav="relatorios"><b>03 · Análise PRESCON</b><span>Conferir posicionamentos, sugestões e ressalvas.</span><strong>Analisar →</strong></button></div>';
+ return '<div class="view-grid">'+panel('Por onde começar','Acesse primeiro as atividades que exigem atenção.',actions)+stats([metric('Respostas recebidas',p.votes,'Planejamento financeiro fictício','✓'),metric('EJs pendentes',p.pending,'Exemplo demonstrativo','◷'),metric('Participação',p.pct+'%','Respostas da simulação','◉')])+panel('Quer explorar os dados?','Análises detalhadas estão organizadas nas áreas específicas.','<div class="toolrow"><button class="btn" type="button" data-nav="engajamento">Ver engajamento →</button><button class="btn" type="button" data-nav="rede">Consultar Rede de EJs →</button><a class="btn" href="./pages/institucional.html">Conheça o NEJLON →</a></div>')+'</div>';
 }
 function listPanel(title,sub,items){
  return panel(title,sub,items.map(x=>'<div class="list-item"><div><strong>'+esc(x[0])+'</strong><p>'+esc(x[1])+'</p></div>'+tag(x[2]||'Exemplo')+'</div>').join(''));
@@ -108,11 +109,16 @@ function render(){
  $('roles').innerHTML=Object.entries(roleMap).map(([key,r])=>'<button class="role-option '+(key===s.role?'active':'')+'" type="button" data-role="'+key+'" aria-pressed="'+(key===s.role)+'">'+esc(r.name)+'</button>').join('');
  $('ej-picker-wrap').hidden=!['counselor','ej_direx'].includes(s.role);
  $('ej-picker').innerHTML=D.ejs.map(e=>'<option value="'+esc(e.slug)+'" '+(e.slug===s.ej?'selected':'')+'>'+esc(e.name)+'</option>').join('');
- const menu=nav.filter(n=>role().nav.includes(n[0])).map(([key,icon,name])=>'<button type="button" class="nav-button '+(key===s.section?'active':'')+'" data-nav="'+key+'" aria-current="'+(key===s.section?'page':'false')+'"><span class="nav-icon" aria-hidden="true">'+icon+'</span>'+esc(name)+'</button>').join('');
+ const primary=['painel','deliberacoes','pendencias','relatorios'];
+ const navButton=([key,icon,name])=>'<button type="button" class="nav-button '+(key===s.section?'active':'')+'" data-nav="'+key+'" aria-current="'+(key===s.section?'page':'false')+'"><span class="nav-icon" aria-hidden="true">'+icon+'</span>'+esc(name)+'</button>';
+ const allowed=nav.filter(n=>role().nav.includes(n[0]));
+ const mainNav=allowed.filter(n=>primary.includes(n[0]));
+ const secondaryNav=allowed.filter(n=>!primary.includes(n[0]));
+ const menu=mainNav.map(navButton).join('')+(secondaryNav.length?'<details class="nav-more" '+(secondaryNav.some(n=>n[0]===s.section)?'open':'')+'><summary>Outras áreas <span aria-hidden="true">⌄</span></summary>'+secondaryNav.map(navButton).join('')+'</details>':'');
  $('desktop-nav').innerHTML=menu;$('mobile-nav').innerHTML=menu;
  heading();
  if(s.role==='prescon')$('view').innerHTML=s.section==='painel'?overview():s.section==='engajamento'?'<div class="view-grid">'+heatmap()+trend()+'</div>':s.section==='deliberacoes'?deliberations():s.section==='pendencias'?pending():s.section==='relatorios'?reports():extras();
- else $('view').innerHTML=s.section==='painel'?'<div class="view-grid">'+stats([metric('EJs da Rede','29','Cadastradas','⬡'),metric('Deliberações','3','Exemplos','☷'),metric('Eventos','3','Compromissos simulados','▦'),metric('Acesso','Consulta','Sem login nesta demo','✓')])+panel('O que este perfil pode fazer','Conheça as permissões e o acompanhamento.', '<div class="notice">Você está na visão '+esc(role().name)+'. As informações são simuladas e não alteram dados oficiais.</div>')+listPanel('Deliberações recentes','Exemplos liberados para sua visão.',D.delibs.filter(d=>s.role!=='ej_direx'||d.visibility!=='Conselho').map(d=>[d.name,summary(d.id).votes+' votos fictícios',d.status]))+'</div>':s.section==='deliberacoes'?deliberations():extras();
+ else $('view').innerHTML=s.section==='painel'?'<div class="view-grid">'+panel('Acesso rápido','Escolha sua próxima atividade nesta demonstração.','<div class="quick-actions"><button type="button" class="quick-action" data-nav="deliberacoes"><b>Deliberações</b><span>Consulte os documentos e o andamento dos votos.</span><strong>Abrir →</strong></button>'+(role().nav.includes('demandas')?'<button type="button" class="quick-action" data-nav="demandas"><b>Demandas</b><span>Acompanhe tarefas e prazos da simulação.</span><strong>Consultar →</strong></button>':'')+'<a class="quick-action" href="./pages/institucional.html"><b>Conheça o NEJLON</b><span>História, valores e as EJs da Rede.</span><strong>Explorar →</strong></a></div>')+panel('Deliberações disponíveis','Informações fictícias, sem efeito institucional.',D.delibs.filter(d=>s.role!=='ej_direx'||d.visibility!=='Conselho').map(d=>'<div class="list-item"><div><strong>'+esc(d.name)+'</strong><p>'+esc(d.status)+'</p></div><button class="btn" data-open-delib="'+d.id+'">Ver →</button></div>').join(''))+'</div>':s.section==='deliberacoes'?deliberations():extras();
 }
 document.addEventListener('click',e=>{
  const target=e.target.closest('button');if(!target)return;
@@ -120,7 +126,7 @@ document.addEventListener('click',e=>{
  if(target.dataset.nav){s.section=target.dataset.nav;render();return;}
  if(target.dataset.ej){s.selected=target.dataset.ej;render();return;}
  if(target.dataset.filter){s.filter=target.dataset.filter;render();return;}
- if(target.dataset.openDelib){s.delib=target.dataset.openDelib;render();return;}
+ if(target.dataset.openDelib){s.delib=target.dataset.openDelib;s.section='deliberacoes';render();return;}
  if(target.dataset.selectRede){s.selected=target.dataset.selectRede;s.section='painel';s.role='prescon';render();return;}
  if(target.hasAttribute('data-simulate')){const toast=$('toast');toast.textContent='Voto simulado! Nenhuma resposta foi registrada.';toast.classList.add('show');setTimeout(()=>toast.classList.remove('show'),3500);}
 });
