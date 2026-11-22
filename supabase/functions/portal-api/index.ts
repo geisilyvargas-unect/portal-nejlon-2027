@@ -79,7 +79,7 @@ function buildResponse(req){
 const handler0=(()=>{
 const {json,fail,body,protect,db,userFromToken}=G;
 const uuid=x=>/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(String(x||''));
-const canExplain=role=>role==='counselor'||role==='ej_direx';
+const canExplain=role=>role==='counselor';
 const clean=(v,max=2000)=>String(v??'').trim().slice(0,max);
 const validDate=d=>typeof d==='string'&&/^\d{4}-\d{2}-\d{2}$/.test(d)&&!Number.isNaN(Date.parse(d+'T12:00:00Z'))?d:null;
 const https=x=>{if(!x)return null;try{const u=new URL(String(x));if(u.protocol!=='https:')fail(400,'O link do comprovante deve começar com https://.');return u.href.slice(0,1800)}catch{fail(400,'Informe um link HTTPS válido para o comprovante.')}};
@@ -93,29 +93,43 @@ async function event({demand,actor,action,note='',details={}}){
  return db('portal_demand_events',{method:'POST',prefer:'return=minimal',data:{demand_id:demand,actor_id:actor.userId,actor_role:actor.role,action,note,details}});
 }
 async function list(user){
- const globalReader=['prescon','nucleus_direx'].includes(user.role);
- if(!globalReader&&!canExplain(user.role))fail(403,'Perfil sem acesso às demandas.');
- if(!globalReader&&!user.ej_id)fail(403,'Seu cadastro ainda não está vinculado a uma EJ.');
- const q=globalReader?'':'&ej_id=eq.'+user.ej_id;
- const demands=await db('demands',{query:'select=id,ej_id,title,description,due_at,status,responsible,created_at,created_by,updated_at,completed_at,template_key,severity&order=created_at.desc&limit=1500'+q});
- const justifications=await db('portal_demand_justifications',{query:'select=id,demand_id,ej_id,submitted_by,reason_type,explanation,evidence_url,state,decision_note,decided_by,decided_at,created_at&order=created_at.desc&limit=3000'+q});
- let events=[];
- if(demands.length){
-  const ids=demands.map(d=>d.id);
-  for(let start=0;start<ids.length;start+=100){
-   const part=ids.slice(start,start+100);
-   const rows=await db('portal_demand_events',{query:'select=id,demand_id,actor_role,action,note,details,created_at&demand_id=in.('+part.join(',')+')&order=created_at.asc&limit=2500'});
-   events=events.concat(rows);
+ const role=user.role;
+ const isPrescon=role==='prescon';
+ const allEjs=isPrescon||role==='nucleus_direx'||role==='counselor';
+ if(!allEjs&&role!=='ej_direx')fail(403,'Perfil sem acesso às demandas.');
+ if(!allEjs&&!user.ej_id)fail(403,'Seu cadastro ainda não está vinculado a uma EJ.');
+ // Para os demais perfis, o banco é consultado somente por campos de visão geral.
+ // Descrição, responsável, comprovantes, notas e histórico são exclusivos da PRESCON.
+ const columns=isPrescon?
+   'id,ej_id,title,description,due_at,status,responsible,created_at,created_by,updated_at,completed_at,template_key,severity':
+   'id,ej_id,title,due_at,status,severity,created_at';
+ const filter=allEjs?'':'&ej_id=eq.'+user.ej_id;
+ const demands=await db('demands',{query:'select='+columns+'&order=created_at.desc&limit=1500'+filter});
+ let justifications=[],events=[];
+ if(isPrescon){
+  justifications=await db('portal_demand_justifications',{query:'select=id,demand_id,ej_id,submitted_by,reason_type,explanation,evidence_url,state,decision_note,decided_by,decided_at,created_at&order=created_at.desc&limit=3000'});
+  if(demands.length){
+   const ids=demands.map(d=>d.id);
+   for(let start=0;start<ids.length;start+=100){
+    const part=ids.slice(start,start+100);
+    events.push(...await db('portal_demand_events',{query:'select=id,demand_id,actor_role,action,note,details,created_at&demand_id=in.('+part.join(',')+')&order=created_at.asc&limit=2500'}));
+   }
   }
+ }else if(role==='counselor'&&user.ej_id){
+  // Apenas o estado do pedido de justificativa da própria EJ, nunca texto ou documento.
+  justifications=await db('portal_demand_justifications',{query:'select=demand_id,state,created_at&ej_id=eq.'+user.ej_id+'&order=created_at.desc&limit=3000'});
  }
- const ejs=globalReader?await ejIds():[];
- const summary={total:demands.length,
-  waiting:demands.filter(d=>d.status==='pendente'||d.status==='em_andamento').length,
+ const ejs=allEjs?await ejIds():[];
+ const summary={
+  total:demands.length,
+  waiting:demands.filter(d=>['pendente','em_andamento'].includes(d.status)).length,
   justified:demands.filter(d=>d.status==='justificada').length,
   completed:demands.filter(d=>d.status==='concluida').length,
-  pendingReview:justifications.filter(j=>j.state==='pending_review').length,
-  overdue:demands.filter(d=>['pendente','em_andamento'].includes(d.status)&&d.due_at&&d.due_at<new Date().toISOString().slice(0,10)).length};
- return {demands,justifications,events,ejs,summary,limited:demands.length===1500||justifications.length===3000};
+  pendingReview:isPrescon?justifications.filter(j=>j.state==='pending_review').length:0,
+  overdue:demands.filter(d=>['pendente','em_andamento'].includes(d.status)&&d.due_at&&d.due_at<new Date().toISOString().slice(0,10)).length
+ };
+ return {demands,justifications,events,ejs,summary,ownEjId:user.ej_id||null,
+  role,detailAccess:isPrescon,limited:demands.length===1500||(isPrescon&&justifications.length===3000)};
 }
 async function handler(req,res){
  const user=await userFromToken(req);
@@ -157,7 +171,7 @@ async function handler(req,res){
   return json(res,201,{ok:true,count:created.length,demands:created});
  }
  if(action==='justify'){
-  if(!canExplain(user.role)||!user.ej_id)fail(403,'Somente Conselho ou DIREX da própria EJ podem justificar.');
+  if(!canExplain(user.role)||!user.ej_id)fail(403,'Somente o conselheiro da própria EJ pode justificar.');
   const demand=await findDemand(data.demandId);
   if(demand.ej_id!==user.ej_id)fail(403,'Esta demanda pertence a outra EJ.');
   if(!['pendente','em_andamento'].includes(demand.status))fail(409,'Esta demanda já foi encerrada ou justificada.');
@@ -171,7 +185,7 @@ async function handler(req,res){
    demand_id:demand.id,ej_id:user.ej_id,submitted_by:user.userId,reason_type:reason,explanation,evidence_url:evidence,state:'pending_review'
   }});
   await event({demand:demand.id,actor:user,action:'justification_submitted',note:'A EJ enviou uma justificativa para análise.',details:{justification_id:created[0].id,reason_type:reason}});
-  return json(res,201,{ok:true,justification:created[0],message:'Justificativa registrada e enviada para a PRESCON.'});
+  return json(res,201,{ok:true,justification:{id:created[0].id,state:'pending_review'},message:'Justificativa registrada e enviada para a PRESCON.'});
  }
  if(user.role!=='prescon')fail(403,'Decisões e alterações de demandas são exclusivas da PRESCON.');
  if(action==='decide'){
@@ -201,6 +215,7 @@ async function handler(req,res){
 }
 return protect(handler);
 })();
+
 const handler1=(()=>{
 const {json,fail,body,protect,db,prescon,userFromToken,accessToken,google}=G;
 const uuid=x=>/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(String(x||''));
@@ -247,8 +262,12 @@ async function createGoogleForm(token,title,description,questions){
 }
 async function overview(user){
  const prescon=user.role==='prescon';
- const forms=await db('portal_forms',{query:'select=id,title,description,questions,kind,status,audience,google_form_id,google_responder_url,created_at,due_at&'+(prescon?'':'status=eq.open&')+'order=created_at.desc&limit=100'});
- return prescon?forms:forms.filter(f=>f.audience==='all_members'||user.role==='counselor');
+ const oversight=user.role==='nucleus_direx';
+ // DIREX de EJ não recebe formulários, manuais, arquivos nem links.
+ if(!prescon&&!oversight&&user.role!=='counselor')return [];
+ const fields=prescon?'id,title,description,questions,kind,status,audience,google_form_id,google_responder_url,created_at,updated_at,due_at':'id,title,description,questions,kind,status,audience,google_responder_url,created_at,updated_at,due_at';
+ const forms=await db('portal_forms',{query:'select='+fields+'&'+(prescon||oversight?'':'status=eq.open&')+'order=created_at.desc&limit=100'});
+ return prescon||oversight?forms:forms.filter(f=>f.audience==='all_members'||user.role==='counselor');
 }
 async function syncGoogle(user,formId){
  const [record]=await db('portal_forms',{query:'select=id,google_form_id,google_question_map,status&'+(formId?'id=eq.'+formId+'&':'google_form_id=not.is.null&')+'limit=1'});
@@ -288,6 +307,29 @@ async function handler(req,res){
  const user=await userFromToken(req);
  if(req.method==='GET'){
   if(action==='list')return json(res,200,{forms:await overview(user)});
+  if(action==='oversight'){
+   if(!['prescon','nucleus_direx'].includes(user.role))fail(403,'Apenas PRESCON ou fiscalização da DIREX do Núcleo.');
+   const forms=await overview(user);
+   const ejs=await db('ejs',{query:'select=id,name&limit=100'});
+   const totals=[];
+   for(const f of forms.slice(0,75)){
+    const submissions=await db('portal_form_submissions',{query:'select=ej_id,state,channel&form_id=eq.'+f.id+'&limit=2000'});
+    const validated=new Set(submissions.filter(x=>x.state==='accepted'&&x.ej_id).map(x=>x.ej_id));
+    totals.push({id:f.id,title:f.title,kind:f.kind,status:f.status,due_at:f.due_at,
+      updated_at:f.updated_at,created_at:f.created_at,question_count:f.questions?.length||0,
+      accepted_count:validated.size,pending_count:Math.max(0,ejs.length-validated.size),
+      pending_review_count:submissions.filter(x=>x.state==='pending_review').length,
+      // Não revelar a EJ que votou nem conteúdo de nenhum voto em aberto.
+      votes_hidden:true});
+   }
+   const decisions=await db('deliberations',{query:'select=id,title,status,due_at,created_at,updated_at&is_demo=eq.false&status=neq.draft&order=created_at.desc&limit=100'});
+   const demands=await db('demands',{query:'select=id,ej_id,title,due_at,status,severity&order=created_at.desc&limit=1500'});
+   const demandStats={total:demands.length,open:demands.filter(d=>['pendente','em_andamento'].includes(d.status)).length,
+       justified:demands.filter(d=>d.status==='justificada').length,
+       overdue:demands.filter(d=>['pendente','em_andamento'].includes(d.status)&&d.due_at&&d.due_at<new Date().toISOString().slice(0,10)).length};
+   return json(res,200,{role:user.role,forms:totals,deliberations:decisions,
+      demands:demandStats,scope:'Acompanhamento institucional somente leitura. Votos individuais, especificações e justificativas não são exibidos.'});
+  }
   if(action==='weekly'){
    if(user.role!=='prescon')fail(403,'Somente a PRESCON pode consultar a situação da Rede.');
    const forms=(await overview(user)).filter(f=>f.status==='open');
@@ -320,6 +362,22 @@ async function handler(req,res){
    if(!form)fail(404,'Formulário não disponível para este perfil.');
    return json(res,200,{form});
   }
+  if(action==='my_vote_status'){
+   if(user.role!=='counselor'||!user.ej_id)fail(403,'Disponível somente para o conselheiro da EJ.');
+   const formId=String(req.query.id||'');if(!uuid(formId))fail(400,'Formulário inválido.');
+   const forms=await db('portal_forms',{query:'select=id,status,due_at&id=eq.'+formId+'&limit=1'});
+   if(!forms.length)fail(404,'Formulário não encontrado.');
+   const existing=await db('portal_form_submissions',{query:'select=id,submitted_at&form_id=eq.'+formId+'&ej_id=eq.'+user.ej_id+'&state=eq.accepted&limit=1'});
+   const vote=existing[0];
+   if(!vote)return json(res,200,{registered:false,can_request:false,request:null});
+   const auth=await db('portal_vote_change_authorizations',{query:'select=id,status,reason,decision_note,created_at,decided_at&source=eq.form&vote_id=eq.'+vote.id+'&requester_id=eq.'+user.userId+'&order=created_at.desc&limit=1'});
+   return json(res,200,{registered:true,can_request:forms[0].status==='open'&&(!forms[0].due_at||Date.parse(forms[0].due_at)>Date.now()),request:auth[0]||null,submitted_at:vote.submitted_at});
+  }
+  if(action==='vote_change_queue'){
+   if(user.role!=='prescon')fail(403,'Só a PRESCON vê solicitações de alteração.');
+   const requests=await db('portal_vote_change_authorizations',{query:'select=id,source,form_id,ej_id,requester_id,reason,status,decision_note,created_at,decided_at&order=created_at.desc&limit=200'});
+   return json(res,200,{requests});
+  }
   if(action==='report'){
    if(user.role!=='prescon')fail(403,'Relatórios individuais são exclusivos da PRESCON.');
    const formId=String(req.query.id||'');if(!uuid(formId))fail(400,'Formulário inválido.');
@@ -348,6 +406,41 @@ async function handler(req,res){
   if(conflict.length)fail(409,'Esta EJ já registrou uma resposta válida. Procure a PRESCON para revisão.');
   await db('portal_form_submissions',{method:'POST',prefer:'return=minimal',data:{form_id:formId,ej_id:user.ej_id,user_id:user.userId,respondent_email:user.email,channel:'portal',state:'accepted',answers:answerMap}});
   return json(res,201,{ok:true,message:'Sua resposta foi registrada no Portal NEJLON.'});
+ }
+ if(action==='request_vote_change'){
+  if(user.role!=='counselor'||!user.ej_id)fail(403,'Somente o conselheiro pode solicitar alteração do próprio voto.');
+  const formId=String(data.formId||''),reason=String(data.reason||'').trim().slice(0,2000);
+  if(!uuid(formId)||reason.length<10)fail(400,'Selecione um formulário e explique a solicitação.');
+  const [form]=await db('portal_forms',{query:'select=id,status,due_at&id=eq.'+formId+'&limit=1'});
+  if(!form||form.status!=='open'||form.due_at&&Date.parse(form.due_at)<=Date.now())fail(409,'Prazo encerrado. A solicitação deve ser feita enquanto o formulário está aberto.');
+  const vote=(await db('portal_form_submissions',{query:'select=id&form_id=eq.'+formId+'&ej_id=eq.'+user.ej_id+'&state=eq.accepted&limit=1'}))[0];
+  if(!vote)fail(404,'Não há voto validado desta EJ para alterar.');
+  const outstanding=await db('portal_vote_change_authorizations',{query:'select=id&source=eq.form&vote_id=eq.'+vote.id+'&status=in.(requested,approved)&limit=1'});
+  if(outstanding.length)fail(409,'Já existe solicitação pendente ou autorização concedida.');
+  const rows=await db('portal_vote_change_authorizations',{method:'POST',prefer:'return=representation',data:{
+   source:'form',vote_id:vote.id,form_id:formId,ej_id:user.ej_id,requester_id:user.userId,reason,status:'requested'
+  }});
+  return json(res,201,{ok:true,request:{id:rows[0].id,status:'requested'},message:'Solicitação enviada à PRESCON. Seu voto não foi alterado.'});
+ }
+ if(action==='apply_vote_change'){
+  if(user.role!=='counselor'||!user.ej_id)fail(403,'Somente o conselheiro pode aplicar uma alteração autorizada.');
+  const authorizationId=String(data.authorizationId||'');
+  if(!uuid(authorizationId))fail(400,'Autorização inválida.');
+  const answers=data.answers;
+  if(!answers||typeof answers!=='object'||Array.isArray(answers))fail(400,'Informe novas respostas.');
+  const result=await db('rpc/portal_apply_approved_vote_change',{method:'POST',data:{
+   p_authorization_id:authorizationId,p_editor_id:user.userId,p_new_vote:answers
+  }});
+  return json(res,200,{ok:true,result,message:'Voto substituído conforme autorização da PRESCON. Alteração registrada no histórico.'});
+ }
+ if(action==='review_vote_change'){
+  if(user.role!=='prescon')fail(403,'Somente a PRESCON pode autorizar alterações de voto.');
+  const id=String(data.id||''),decision=String(data.decision||''),note=String(data.note||'').trim().slice(0,2500);
+  if(!uuid(id)||!['approved','denied'].includes(decision)||note.length<8)fail(400,'Informe a decisão e uma justificativa com pelo menos 8 caracteres.');
+  const result=await db('rpc/portal_review_vote_edit_request',{method:'POST',data:{
+   p_authorization_id:id,p_prescon_id:user.userId,p_decision:decision,p_note:note
+  }});
+  return json(res,200,{ok:true,result,message:decision==='approved'?'Alteração autorizada; o conselheiro pode enviar um novo voto uma única vez.':'Solicitação recusada e justificativa registrada.'});
  }
  if(user.role!=='prescon')fail(403,'Somente a PRESCON pode gerenciar formulários.');
  if(action==='create'){
@@ -419,6 +512,41 @@ async function handler(req,res){
 return protect(handler);
 })();
 
+const handler2=(()=>{
+const {json,fail,body,protect,db,userFromToken}=G;
+const allowedKeys=['calendario','drive-conselho','mapa-estrategico','demandas','politica-participacao','reunioes-virtuais','reunioes-conselho','deliberacoes','painel-gamificacao','politica-pontuacao'];
+function externalUrl(raw){
+ if(!raw)return null;
+ let url;try{url=new URL(String(raw).trim())}catch{fail(400,'Informe um link completo começando com https://.')}
+ if(url.protocol!=='https:')fail(400,'Somente links HTTPS são aceitos.');
+ return url.href.slice(0,1800);
+}
+async function handler(req,res){
+ const user=await userFromToken(req);
+ if(!['counselor','prescon'].includes(user.role))fail(403,'Esta área é exclusiva do Conselho e da PRESCON.');
+ const action=String(req.query?.action||'list');
+ if(req.method==='GET'&&action==='list'){
+  const resources=await db('portal_council_resources',{query:'select=key,label,description,reference_year,official_url,status,updated_at&order=label.asc&limit=30'});
+  const forms=await db('portal_forms',{query:'select=id,title,kind,status,due_at,created_at&status=eq.open&order=created_at.desc&limit=100'});
+  const delibs=await db('deliberations',{query:'select=id,title,status,due_at,created_at&is_demo=eq.false&status=neq.draft&order=created_at.desc&limit=100'});
+  return json(res,200,{role:user.role,resources,forms,deliberations:delibs,own_ej:user.ej_id||null});
+ }
+ if(req.method==='POST'&&action==='update'){
+  if(user.role!=='prescon')fail(403,'Só a PRESCON pode editar os links do painel.');
+  const data=body(req),key=String(data.key||''),status=String(data.status||'pending');
+  if(!allowedKeys.includes(key))fail(400,'Recurso não reconhecido.');
+  if(!['pending','active','archived'].includes(status))fail(400,'Situação inválida.');
+  const url=externalUrl(data.url);
+  if(status==='active'&&!url)fail(400,'Para ativar, cadastre o link oficial.');
+  const updated=await db('portal_council_resources',{method:'PATCH',query:'key=eq.'+encodeURIComponent(key),prefer:'return=representation',
+   data:{official_url:url,status,updated_by:user.userId,updated_at:new Date().toISOString()}});
+  return json(res,200,{ok:true,resource:updated[0]});
+ }
+ fail(404,'Operação indisponível.');
+}
+return protect(handler);
+})();
+
 Deno.serve(async req=>{
  const origin=req.headers.get('origin')||'';
  if(origin&&!ALLOWED.has(origin))return new Response(JSON.stringify({error:'Origem não autorizada.'}),{status:403,headers:{'Content-Type':'application/json'}});
@@ -438,6 +566,7 @@ Deno.serve(async req=>{
   if(which==='demands')await handler0(adapted,res);
   else if(which==='forms')await handler1(adapted,res);
   else if(which==='drive')await handleDrive(adapted,res);
+  else if(which==='council')await handler2(adapted,res);
   else json(res,404,{error:'Rota inexistente.'});
  }catch{json(res,500,{error:'Erro inesperado. Tente novamente.'})}
  return output()
