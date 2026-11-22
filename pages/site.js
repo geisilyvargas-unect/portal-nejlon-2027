@@ -4,7 +4,9 @@ const D=window.NEJLON_DEMO;
 // Adiciona a deliberação IDEALIZE exclusivamente à demonstração estática.
 if(D&&window.NEJLON_IDEALIZE_VOTES&&!D.delibs.some(x=>x.id==='idealize')){
  D.delibs.push({id:'idealize',name:'IDEALIZE 2026 — PF (simulação aberta)',status:'Aberta',visibility:'DIREX e Conselho',due:'Sem prazo oficial — demonstração'});
- D.votes.idealize=window.NEJLON_IDEALIZE_VOTES.map(v=>({slug:v.ej,position:v.answers[0].position,note:v.answers[0].justification}));
+ D.votes.idealize=(Array.isArray(window.NEJLON_IDEALIZE_VOTES)?window.NEJLON_IDEALIZE_VOTES:[])
+  .filter(v=>v&&typeof v.ej==='string'&&Array.isArray(v.answers)&&v.answers[0]&&typeof v.answers[0].position==='string')
+  .map(v=>({slug:v.ej,position:v.answers[0].position,note:v.answers[0].justification||''}));
 }
 
 if(!D){document.getElementById('view').textContent='Dados demonstrativos indisponíveis.';return;}
@@ -24,10 +26,17 @@ const $=id=>document.getElementById(id);
 const esc=x=>String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const fmt=n=>Math.round(n)+'%';
 const role=()=>roleMap[s.role];
-const votes=id=>D.votes[id]||[];
+const votes=id=>{
+ const valid=new Set(D.ejs.map(e=>e.slug));
+ const seen=new Set();
+ return (Array.isArray(D.votes[id])?D.votes[id]:[]).filter(v=>{
+  if(!v||!valid.has(v.slug)||!D.positions[v.position]||seen.has(v.slug))return false;
+  seen.add(v.slug);return true;
+ });
+};
 const delib=id=>D.delibs.find(x=>x.id===id)||D.delibs[0];
 const done=(ej,id)=>votes(id).find(v=>v.slug===ej);
-const summary=id=>({votes:votes(id).length,pending:D.ejs.length-votes(id).length,pct:Math.round(votes(id).length*100/D.ejs.length)});
+const summary=id=>{const n=votes(id).length,total=D.ejs.length;return {votes:n,pending:Math.max(0,total-n),pct:total?Math.round(n*100/total):0}};
 const perEj=ej=>{const n=D.delibs.filter(d=>done(ej.slug,d.id)).length;const total=D.delibs.length;return {...ej,done:n,missing:total-n,pct:Math.round(n*100/total),status:n/total>=.8?'high':n/total>=.5?'medium':'low',answered:D.delibs.filter(d=>done(ej.slug,d.id)),pending:D.delibs.filter(d=>!done(ej.slug,d.id))}};
 const ejData=()=>D.ejs.map(perEj).sort((a,b)=>a.name.localeCompare(b.name,'pt-BR'));
 const metric=(label,value,footer,icon='◇')=>'<article class="stat-card"><span class="stat-icon">'+icon+'</span><span class="stat-label">'+esc(label)+'</span><strong>'+esc(value)+'</strong><span class="stat-footer">'+esc(footer)+'</span></article>';
