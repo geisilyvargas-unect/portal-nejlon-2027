@@ -315,7 +315,7 @@ export async function publishDeliberationReport(form:FormData) {
   const scenario=sc&&typeof sc==='object'?sc as Record<string,unknown>:{};
   const votes=(rows||[]).map((r:Record<string,unknown>)=>{
    const answers=Array.isArray(r.scenario_answers)?r.scenario_answers:[];
-   const answer=answers[index] as Record<string,unknown>|undefined;
+   const answer=answers.find((a:unknown)=>a&&typeof a==='object'&&(a as Record<string,unknown>).scenario_key===scenario.key) as Record<string,unknown>|undefined;
    return String(answer?.position||r.position||'');
   });
   return {title:String(scenario.title||'Cenário '+(index+1)),votes:votes.length,counts:Object.fromEntries(positions.map(p=>[p,votes.filter(v=>v===p).length]))};
