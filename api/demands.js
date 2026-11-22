@@ -45,7 +45,7 @@ async function handler(req,res){
  const user=await userFromToken(req);
  const action=String(req.query?.action||'list');
  if(req.method==='GET'){
-  if(action==='list')return json(res,200,await list(user));
+  if(action==='list')return json(res,200,{...(await list(user)),role:user.role});
   if(action==='summary'){
    if(user.role!=='prescon')fail(403,'Apenas a PRESCON pode consultar o panorama de toda a Rede.');
    const overview=await list(user);
