@@ -165,7 +165,36 @@ function reports(){
  panel('Distribuição dos posicionamentos','Clique em uma barra para filtrar os comentários. Contagem e percentuais fictícios.',responseCharts(id))+
  panel('Pareceres para avaliação','Filtrados pela barra selecionada; não há decisão automática da PRESCON.',recordList(id,false))+'</div>';
 }
+const liveSB='https://imsisbixzkqphooxyfhr.supabase.co',liveKey='sb_publishable_mS_TDGKZhUuJi-rxc5Nu1w_IXODeo-_';
+const liveStores=['nejlon.prescon.central.session.v1','nejlon.oversight.session.v1','nejlon.demands.session.v1','nejlon.respond.session.v1'];
+let liveSession=null,liveForms=null,liveError='',liveLoading=false;
+function findLiveSession(){for(const key of liveStores){try{const v=JSON.parse(sessionStorage.getItem(key)||'null');if(v?.access_token)return v}catch{}}return null}
+async function loadLiveForms(){
+ if(liveLoading)return;liveSession=findLiveSession()||liveSession;
+ if(!liveSession?.access_token){liveError='Entre com uma conta institucional para consultar as deliberações reais.';liveForms=null;if(s.section==='deliberacoes')render();return}
+ liveLoading=true;liveError='';
+ try{
+  const headers={apikey:liveKey,Authorization:'Bearer '+liveSession.access_token};
+  const res=await fetch(liveSB+'/rest/v1/portal_forms?select=id,title,description,kind,status,due_at,created_at&order=created_at.desc&limit=100',{headers,cache:'no-store'});
+  if(!res.ok)throw Error(res.status===401?'Sessão expirada. Entre novamente.':'Consulta não autorizada ('+res.status+').');
+  liveForms=await res.json();
+ }catch(e){liveError=e.message;liveForms=null}
+ finally{liveLoading=false;if(s.section==='deliberacoes')render()}
+}
+function liveDeliberations(){
+ const entries=Array.isArray(liveForms)?liveForms:[];
+ const rows=entries.map(d=>{
+  const closed=d.status==='closed',open=d.status==='open',pending=d.status==='draft';
+  const action=open?'<a class="btn red" href="./pages/responder.html?id='+encodeURIComponent(d.id)+'">Responder formulário ↗</a>':closed?'<a class="btn red" href="./pages/pf-deliberation-screen.html?id='+encodeURIComponent(d.id)+'">Consultar deliberação ↗</a>':'<button class="btn" type="button" disabled>Aguardando avaliação da PRESCON</button>';
+  const badge=open?'Aberta':closed?'Encerrada':'Aguardando avaliação';
+  return '<div class="list-item deliberation-status-row"><div><strong>'+esc(d.title)+'</strong><p>'+esc(d.description||'Formulário institucional')+' · '+esc(d.kind==='pf'?'Planejamento financeiro':'Deliberação')+'</p></div><div class="right">'+tag(badge,open?'green':closed?'yellow':'')+action+'</div></div>';
+ }).join('');
+ const info='<div class="notice">Esta lista consulta o Supabase com sua conta institucional. Novos formulários publicados pela PRESCON aparecem ao atualizar. Os registros demonstrativos não são misturados aqui.</div>';
+ const login='<form id="live-delib-login" class="toolrow" style="flex-wrap:wrap"><input class="select" type="email" name="email" placeholder="E-mail institucional" required autocomplete="username" aria-label="E-mail institucional"><input class="select" type="password" name="password" placeholder="Senha" required autocomplete="current-password" aria-label="Senha"><button class="btn red" type="submit">Entrar e atualizar</button></form>';
+ return '<div class="view-grid">'+panel('Deliberações publicadas pela PRESCON','Dados reais, atualizados pelo sistema.',info+(liveError?'<p class="note" role="status">'+esc(liveError)+'</p>':'')+(liveLoading?'<p>Atualizando deliberações...</p>':liveForms===null?login:rows||'<p>Nenhuma deliberação disponível para este perfil.</p>')+(liveForms!==null?'<div class="toolrow"><button class="btn" type="button" data-refresh-live>Atualizar lista ↻</button></div>':''))+'</div>';
+}
 function deliberations(){
+ if(liveSession?.access_token||findLiveSession())return liveDeliberations();
  const cards=D.delibs.filter(d=>s.role!=='ej_direx'||d.visibility!=='Conselho');
  const id=s.delib,selected=delib(id);
  const stateOf=d=>{const status=String(d.status||'').toLocaleLowerCase('pt-BR');if(/avalia|análise|analise|pendente/.test(status))return 'review';if(/encerrad|fechad|concluíd|concluid|finalizad/.test(status))return 'closed';return 'open';};
@@ -249,18 +278,20 @@ function openDemoDeliberationReport(id){
 document.addEventListener('click',e=>{
  const target=e.target.closest('button');if(!target)return;
  if(target.dataset.demoReport){openDemoDeliberationReport(target.dataset.demoReport);return;}
+ if(target.hasAttribute('data-refresh-live')){loadLiveForms();return;}
  if(target.dataset.calendarRemove&&s.role==='prescon'){const id=target.dataset.calendarRemove;if(calendarSave(calendarEntries().filter(x=>x.id!==id)))render();else alert('Não foi possível atualizar a agenda neste navegador.');return;}
  if(target.dataset.calendarShift){const d=new Date(s.calendarYear,s.calendarMonth+Number(target.dataset.calendarShift),1);s.calendarYear=d.getFullYear();s.calendarMonth=d.getMonth();render();return;}
  if(target.hasAttribute('data-calendar-today')){s.calendarYear=new Date().getFullYear();s.calendarMonth=new Date().getMonth();render();return;}
  if(target.dataset.exportReport){exportReport(target.dataset.exportReport);return;}
  if(target.dataset.role){s.role=target.dataset.role;s.section='painel';render();return;}
- if(target.dataset.nav){s.section=target.dataset.nav;render();return;}
+ if(target.dataset.nav){s.section=target.dataset.nav;render();if(s.section==='deliberacoes')loadLiveForms();return;}
  if(target.dataset.ej){s.selected=target.dataset.ej;render();return;}
  if(target.dataset.filter){s.filter=target.dataset.filter;render();return;}
  if(target.dataset.position){s.positionFilter=target.dataset.position;render();return;}
  if(target.dataset.openDelib){s.delib=target.dataset.openDelib;s.section='deliberacoes';render();return;}
  if(target.dataset.selectRede){s.selected=target.dataset.selectRede;s.section='painel';s.role='prescon';render();return;}
 });
+document.addEventListener('submit',async e=>{if(e.target.id!=='live-delib-login')return;e.preventDefault();const fd=new FormData(e.target);try{const r=await fetch(liveSB+'/auth/v1/token?grant_type=password',{method:'POST',headers:{apikey:liveKey,'Content-Type':'application/json'},body:JSON.stringify({email:fd.get('email'),password:fd.get('password')})});const v=await r.json();if(!r.ok)throw Error('Credenciais inválidas.');liveSession=v;sessionStorage.setItem('nejlon.respond.session.v1',JSON.stringify(v));await loadLiveForms()}catch(err){liveError=err.message;render()}});
 document.addEventListener('submit',e=>{if(e.target.id!=='portal-calendar-form'||s.role!=='prescon')return;e.preventDefault();const form=e.target,fd=new FormData(form),date=String(fd.get('date')||''),title=String(fd.get('title')||'').trim(),category=String(fd.get('category')||'Evento');if(!/^\\d{4}-\\d{2}-\\d{2}$/.test(date)||!title)return;const entries=calendarEntries();entries.push({id:String(Date.now())+'-'+Math.random().toString(36).slice(2,8),date,title,category});if(!calendarSave(entries)){alert('Não foi possível salvar neste navegador.');return}const parts=date.split('-');s.calendarYear=Number(parts[0]);s.calendarMonth=Number(parts[1])-1;render();});
 document.addEventListener('change',e=>{
  if(e.target.id==='ej-picker'){s.ej=e.target.value;render();}
@@ -276,4 +307,5 @@ document.addEventListener('input',e=>{
 });
 $('current-date').textContent=new Intl.DateTimeFormat('pt-BR',{dateStyle:'long',timeZone:'America/Sao_Paulo'}).format(new Date());
 render();
+if(findLiveSession())loadLiveForms();
 })();
