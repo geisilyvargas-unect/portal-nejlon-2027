@@ -7,11 +7,14 @@ import {
 } from 'lucide-react';
 import {EJS_DEMO,DEMO_ROLES,expectedEmail,type DemoRole} from '@/lib/demo-ejs';
 import {ThemeToggle} from '@/components/theme-toggle';
+import {NetworkEngagement} from '@/components/network-engagement';
+import {buildEngagement} from '@/lib/engagement';
 import {DEMO_DELIBERATIONS,DEMO_POSITIONS,DEMO_EJ_BY_SLUG,demoVotesFor,demoPendingFor,demoCountsFor,demoSummary,type DemoDeliberationId} from '@/lib/demo-responses';
 
-type Section='painel'|'deliberacoes'|'pendencias'|'relatorios'|'acessos'|'calendario'|'demandas'|'jornada'|'rede';
+type Section='painel'|'engajamento'|'deliberacoes'|'pendencias'|'relatorios'|'acessos'|'calendario'|'demandas'|'jornada'|'rede';
 const NAV:ReadonlyArray<{id:Section;name:string;icon:typeof LayoutDashboard}>= [
  {id:'painel',name:'Visão geral',icon:LayoutDashboard},
+ {id:'engajamento',name:'Engajamento das EJs',icon:Building2},
  {id:'deliberacoes',name:'Deliberações',icon:ClipboardList},
  {id:'pendencias',name:'Pendências',icon:CheckCircle2},
  {id:'relatorios',name:'Relatórios',icon:FileText},
@@ -22,11 +25,23 @@ const NAV:ReadonlyArray<{id:Section;name:string;icon:typeof LayoutDashboard}>= [
  {id:'rede',name:'Rede de EJs',icon:Building2}
 ];
 const VISIBLE:Record<DemoRole,Section[]>={
- prescon:['painel','deliberacoes','pendencias','relatorios','acessos','demandas','calendario','jornada','rede'],
+ prescon:['painel','engajamento','deliberacoes','pendencias','relatorios','acessos','demandas','calendario','jornada','rede'],
  counselor:['painel','deliberacoes','calendario','jornada','rede'],
  ej_direx:['painel','deliberacoes','demandas','calendario','rede'],
  nucleus_direx:['painel','deliberacoes','demandas','calendario','rede']
 };
+const DEMO_PERIODS:Record<DemoDeliberationId,string>={
+ financeiro:'2027-01-15T12:00:00Z',calendario:'2027-02-15T12:00:00Z',encerramento:'2027-03-15T12:00:00Z'
+};
+const DEMO_NETWORK_SNAPSHOT=buildEngagement(
+ EJS_DEMO.map(e=>({id:e.slug,name:e.name,slug:e.slug})),
+ DEMO_DELIBERATIONS.map(d=>({
+  id:d.id,title:d.title,due_at:DEMO_PERIODS[d.id],is_demo:true,
+  status:d.open?'open' as const:'closed' as const
+ })),
+ DEMO_DELIBERATIONS.flatMap(d=>demoVotesFor(d.id).map(v=>({ej_id:v.slug,deliberation_id:d.id}))),
+ {includeDemo:true}
+);
 const SAMPLE_EVENTS=[
  {name:'Reunião interna do Conselho',type:'Reunião',date:'15/03/2027',time:'19h',direx:false},
  {name:'Encontro da Rede NEJLON',type:'Institucional',date:'20/03/2027',time:'18h',direx:true},
@@ -155,6 +170,7 @@ export function DemoTour(){
        <Stat label={isPrescon?'Respostas recebidas':isCouncil?'Posicionamento da EJ':'Demandas'} value={isPrescon?String(demoSummary('financeiro').received):isCouncil?(demoVotesFor('financeiro').some(v=>v.slug===ejSlug)?'1':'0'):'2'} detail={isPrescon?'Exemplo financeiro':isCouncil?'Exemplo financeiro':'Dados simulados'}/>
        <Stat label={isPrescon?'EJs pendentes':isCouncil?'Suas pendências':'Eventos'} value={isPrescon?String(demoSummary('financeiro').pending):isCouncil?(demoVotesFor('financeiro').some(v=>v.slug===ejSlug)?'0':'1'):'2'} detail={isPrescon?'Exemplo financeiro':isCouncil?'Exemplo financeiro':'Dados simulados'}/>
       </div>
+      {isPrescon&&<NetworkEngagement snapshot={DEMO_NETWORK_SNAPSHOT} demo/>}
       <div className="panel">
        <h3>O que este perfil pode fazer?</h3>
        <div className="demo-feature-grid">
@@ -178,6 +194,7 @@ export function DemoTour(){
        </div>
       </div>
      </>}
+     {section==='engajamento'&&isPrescon&&<NetworkEngagement snapshot={DEMO_NETWORK_SNAPSHOT} demo/>}
      {section==='deliberacoes'&&<>
       <TitleBlock eyebrow="Governança • Deliberações" title="Deliberações"
        description={isPrescon?'A PRESCON acompanha e organiza os resultados.':isCouncil?'O Conselho responde em nome da própria EJ.':'Esta visão apenas consulta deliberações autorizadas, sem votar.'}/>
