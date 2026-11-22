@@ -2,54 +2,165 @@
 <html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#090909"><title>Portal de Deliberações · Template</title>
 <style>
 :root{color-scheme:dark;font-family:Arial,Helvetica,sans-serif;background:#080808;color:#fff}*{box-sizing:border-box}body{margin:0}button,input,textarea,select{font:inherit}button{cursor:pointer}button:disabled{cursor:not-allowed;opacity:.48}a{color:inherit}aside{position:fixed;inset:0 auto 0 0;width:235px;background:#050505;border-right:1px solid #303030;padding:24px 17px}.brand{font-size:20px;font-weight:900;letter-spacing:.03em}.brand b{display:inline-grid;place-items:center;background:#ed1c24;border-radius:9px;width:36px;height:36px;margin-right:10px}.brand small{display:block;font-size:10px;letter-spacing:.14em;margin:5px 0 0 50px;color:#bbb}.side-label{color:#ff3036;font-size:11px;letter-spacing:.16em;font-weight:900;margin:45px 0 14px}.nav{display:block;background:#f00;border:0;color:#fff;width:100%;text-align:left;padding:14px;font-size:13px;font-weight:900}.side-foot{position:absolute;bottom:25px;left:17px;right:17px;padding:14px;border:1px solid #444;border-radius:9px;color:#ddd;font-size:12px}main{margin-left:235px;min-height:100vh}.topbar{border-bottom:1px solid #292929;padding:22px 35px;font-size:11px;font-weight:900;letter-spacing:.12em}.topbar strong,.eyebrow{color:#ff3036}.wrap{max-width:1200px;margin:auto;padding:28px 38px}.hero,.panel{border:1px solid #353535;border-radius:16px;background:#111;padding:28px;margin-bottom:18px}.eyebrow{font-size:11px;font-weight:900;letter-spacing:.17em}.hero h1{font-size:clamp(31px,5vw,62px);line-height:1.1;letter-spacing:-.04em;margin:18px 0 22px;font-weight:1000}.hero h1 span{position:relative;display:inline-block;white-space:nowrap;text-shadow:0 4px 0 #f00,0 7px 0 #000}.hero p,.muted{color:#bcbcbc;font-size:14px;line-height:1.6}.rolebar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:18px}.rolebar button,.btn{border:1px solid #555;background:#242424;color:white;padding:12px 16px;border-radius:8px;font-size:13px;font-weight:800}.rolebar button.active,.btn.red{background:#f00;border-color:#f00}.panel h2{margin:0 0 6px;font-size:20px}.row{display:flex;gap:18px;align-items:center;justify-content:space-between;padding:18px 0;border-bottom:1px solid #333;flex-wrap:wrap}.row:last-child{border-bottom:0}.row strong{display:block;margin-bottom:6px}.actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.badge{padding:7px 10px;border-radius:30px;border:1px solid #555;font-size:11px;font-weight:800}.notice{background:#1d292c;border:1px solid #405257;border-radius:8px;padding:14px;margin-bottom:18px;color:#dce9eb;font-size:13px}.field{display:block;margin:14px 0;font-size:13px;font-weight:700}.field input,.field textarea,.field select{display:block;width:100%;background:#090909;color:#fff;border:1px solid #555;border-radius:7px;padding:12px;margin-top:7px}.field textarea{min-height:100px}.empty{padding:25px;color:#bbb;text-align:center;border:1px dashed #555;border-radius:9px}.hidden{display:none!important}.footer{color:#aaa;font-size:12px;padding:20px 0}.danger{color:#ff7e7e}.hint{font-size:12px;color:#bbb}.smallbtn{padding:7px 10px}.stack{display:flex;gap:10px;flex-wrap:wrap}@media(max-width:700px){aside{position:static;width:auto;padding:15px}.side-label,.side-foot{display:none}.nav{margin-top:12px}main{margin:0}.topbar{padding:15px}.wrap{padding:18px}.hero,.panel{padding:18px}.hero h1{font-size:clamp(24px,7.5vw,43px)}}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px}.tabs button{padding:12px 15px;border:1px solid #555;border-radius:8px;background:#222;color:white;font-weight:800}.tabs button.active{background:#f00;border-color:#f00}.pf-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px;margin:14px 0}.pf-card{border:1px solid #555;background:#191919;border-radius:10px;padding:14px;min-width:0}.pf-card h3{font-size:15px;margin:0 0 8px}.pf-card p{margin:4px 0}.pf-table{width:100%;border-collapse:collapse;font-size:12px}.pf-table th,.pf-table td{border:1px solid #444;padding:7px;text-align:left;max-width:230px;overflow-wrap:anywhere}.scroll-table{overflow:auto;max-height:310px}.form-box{padding:16px;border:1px solid #484848;border-radius:10px;margin:15px 0}.form-box h3{margin:0 0 8px}.form-box label{display:block;margin:10px 0}.form-box input[type=radio]{margin-right:9px}.notice.warn{background:#30221a;border-color:#805533}.muted code{color:#fff}.toolbar{display:flex;gap:9px;flex-wrap:wrap;margin:14px 0}.summary{white-space:pre-wrap;line-height:1.7}.review-card{border-left:4px solid #f00;padding:15px;background:#1b1b1b;margin:12px 0}.review-card p{overflow-wrap:anywhere}.row{align-items:flex-start}.row>div:first-child{flex:1;min-width:220px}.row .actions{flex-shrink:0}input[type=file]{max-width:100%}button:focus-visible,input:focus-visible,textarea:focus-visible{outline:2px solid #fff;outline-offset:2px}@media print{aside,.topbar,.hero,.rolebar,.tabs,.toolbar,.notice,.footer,#create-panel,#list-panel{display:none!important}main{margin:0}.wrap{padding:0}.panel{border:0;background:#fff;color:#000}.muted{color:#444}.review-card{background:#fff;color:#000}} 
 </style></head><body>
 <aside><div class="brand"><b>N</b> PORTAL<small>DE DELIBERAÇÕES</small></div><div class="side-label">NAVEGAÇÃO</div><button class="nav" type="button">▤ &nbsp; DELIBERAÇÕES</button><div class="side-foot">● TEMPLATE DE TESTE<br><span class="muted">Sem login e sem dados reais</span></div></aside>
 <main><header class="topbar">✦ &nbsp; PORTAL DE DELIBERAÇÕES <strong>/ TEMPLATE</strong></header><div class="wrap">
 <section class="hero"><div class="eyebrow">MODELO EDITÁVEL · DEMONSTRAÇÃO</div><h1><span>DELIBERAÇÕES</span></h1><p>Um modelo para testar criação, votação, avaliação e publicação de relatórios, sem informações institucionais reais.</p></section>
 <div class="notice"><strong>Ambiente 100% demonstrativo.</strong> Todos os registros são exemplos fictícios criados neste navegador. Nenhum formulário envia dados a servidores, e nenhuma votação ou relatório tem valor oficial.</div>
 <div class="rolebar"><strong>VISUALIZAR COMO:</strong><button id="role-prescon" class="active" type="button">PRESCON</button><button id="role-conselho" type="button">Conselho</button></div>
-<section class="panel" id="create-panel"><h2>Criar deliberação</h2><p class="muted">Preencha um exemplo fictício para visualizar o fluxo completo.</p><form id="create-form"><label class="field">Título da deliberação<input name="title" required maxlength="120" placeholder="Ex.: Planejamento Financeiro — Evento Exemplo"></label><label class="field">Descrição<textarea name="description" placeholder="Descreva o objetivo da votação (dados fictícios)"></textarea></label><button class="btn red" type="submit">Criar formulário de teste</button></form></section>
-<section class="panel"><h2>Deliberações</h2><p class="muted">A lista é atualizada automaticamente neste navegador conforme as etapas forem alteradas.</p><div id="entries"></div></section>
+<div class="tabs" role="tablist" aria-label="Etapas de deliberação"><button type="button" class="active" data-tab="forms">Formulários</button><button type="button" data-tab="pf">Planejamento financeiro</button><button type="button" data-tab="reports">Relatórios</button></div>
+<section class="panel" id="create-panel"><h2>Importar Planejamento Financeiro</h2><p class="muted">A PRESCON inicia uma deliberação apenas enviando um arquivo .xlsx. O portal extrai as abas, identifica cenários e prepara automaticamente as perguntas de votação. Nenhum arquivo sai deste navegador.</p>
+<form id="create-form"><label class="field">Planilha de Planejamento Financeiro (.xlsx)<input id="pf-file" type="file" accept=".xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" required></label><div class="toolbar"><button class="btn red" type="submit">Importar XLSX e gerar formulário</button></div></form><div id="import-feedback" role="status"></div></section>
+<section class="panel" id="list-panel"><h2 id="list-heading">Formulários de deliberação</h2><p class="muted" id="list-description">A PRESCON importa o XLSX; o Conselho responde a cada cenário. Ressalvas e sugestões aguardam avaliação humana.</p><div id="entries"></div></section>
+<section class="panel hidden" id="detail-panel" aria-live="polite"></section>
 <div class="stack"><button class="btn smallbtn" id="reset" type="button">Limpar dados do template</button></div><div class="footer">PORTAL DE DELIBERAÇÕES · TEMPLATE FICTÍCIO · SEM AUTENTICAÇÃO OU INTEGRAÇÃO COM BANCO DE DADOS</div>
 </div></main>
+<script defer src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 <script>
 (()=>{'use strict';
-const key='portal-deliberacoes-template-v1',defaults=[
-{id:'exemplo-1',title:'Planejamento Financeiro — Exemplo',description:'Simulação de votação sobre um planejamento financeiro fictício.',status:'open',votes:[],report:''},
-{id:'exemplo-2',title:'Deliberação Institucional — Exemplo',description:'Simulação de deliberação aguardando avaliação.',status:'review',votes:[],report:''},
-{id:'exemplo-3',title:'Relatório Demonstrativo — Exemplo',description:'Simulação de relatório já publicado.',status:'published',votes:[],report:'Este é um relatório inteiramente fictício. Nenhuma decisão institucional foi registrada.'}
-];let role='prescon';const $=id=>document.getElementById(id),escape=x=>String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;','\'':'&#39;'}[c]));
-let entries;try{const saved=JSON.parse(localStorage.getItem(key));entries=Array.isArray(saved)?saved:defaults}catch{entries=defaults}
-const save=()=>{localStorage.setItem(key,JSON.stringify(entries));render()};
-function render(){
-$('role-prescon').classList.toggle('active',role==='prescon');$('role-conselho').classList.toggle('active',role==='conselho');$('create-panel').classList.toggle('hidden',role!=='prescon');
-$('entries').innerHTML=entries.length?entries.map(d=>{
-const open=d.status==='open',review=d.status==='review',published=d.status==='published',closed=d.status==='closed';
-const status=open?'Aberta':review?'Aguardando avaliação':published?'Relatório publicado':'Encerrada';
-const votes=Array.isArray(d.votes)?d.votes:[];
-let buttons='';
-if(role==='prescon'){
-if(open)buttons='<button class="btn smallbtn" data-action="review" data-id="'+escape(d.id)+'">Encerrar votação</button>';
-if(review)buttons='<button class="btn smallbtn" data-action="close" data-id="'+escape(d.id)+'">Concluir avaliação</button>';
-if(closed)buttons='<button class="btn smallbtn" data-action="publish" data-id="'+escape(d.id)+'">Publicar relatório</button>';
-}else if(open)buttons='<button class="btn red smallbtn" data-action="vote" data-id="'+escape(d.id)+'">Responder formulário</button>';
-if(published)buttons+='<button class="btn red smallbtn" data-action="report" data-id="'+escape(d.id)+'">Ver relatório</button>';
-const detail=role==='prescon'&&closed?'<div class="field"><label>Relatório fictício<textarea data-report="'+escape(d.id)+'" placeholder="Registre o parecer de teste...">'+escape(d.report||'')+'</textarea></label></div>':'';
-return '<div class="row"><div><strong>'+escape(d.title)+'</strong><div class="muted">'+escape(d.description||'Sem descrição')+'</div><p class="hint">'+votes.length+' resposta(s) fictícia(s)</p>'+detail+'</div><div class="actions"><span class="badge">'+status+'</span>'+buttons+'</div></div>';
-}).join(''):'<div class="empty">Nenhuma deliberação. Crie uma na visão PRESCON.</div>';
+const key='portal-deliberacoes-xlsx-template-v2',oldKey='portal-deliberacoes-template-v1';
+const OPTIONS=['Aprova','Aprova com sugestões','Aprova com ressalvas','Reprova','Abstém'];
+const $=id=>document.getElementById(id);
+const esc=x=>String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;','\'':'&#39;'}[c]));
+const clean=x=>String(x??'').trim();
+const norm=x=>clean(x).normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
+let role='prescon',tab='forms',selected=null,entries=[];
+try{const saved=JSON.parse(localStorage.getItem(key)||'[]');if(Array.isArray(saved))entries=saved}catch{}
+const persist=()=>{try{localStorage.setItem(key,JSON.stringify(entries));return true}catch{alert('O navegador não conseguiu salvar todos os dados. A planilha pode ser grande; reduza o arquivo e tente novamente.');return false}};
+const save=()=>{persist();render()};
+const find=id=>entries.find(d=>d.id===id);
+function extract(file,buffer){
+ if(!window.XLSX)throw Error('Biblioteca XLSX não carregou. Verifique sua conexão e tente novamente.');
+ const wb=XLSX.read(buffer,{type:'array',cellDates:true,cellFormula:true});
+ const sheets=wb.SheetNames.map(name=>{
+  const ws=wb.Sheets[name],rows=XLSX.utils.sheet_to_json(ws,{header:1,defval:'',raw:false}).map(r=>r.map(clean));
+  const nonempty=rows.filter(r=>r.some(Boolean));
+  return {name,rows:nonempty.slice(0,140),totalRows:nonempty.length};
+ }).filter(x=>x.totalRows);
+ if(!sheets.length)throw Error('A planilha não contém abas preenchidas.');
+ // Cenários são extraídos somente de rótulos realmente encontrados; não são inventados.
+ const seen=new Set(),scenarios=[];
+ const pattern=/\b(cen[aá]rio\s*\d+|c\s*\d+\b|pessimista|realista|otimista|otimista|alternativa\s*\d+|proposta\s*\d+)\b/gi;
+ for(const sheet of sheets){
+  for(const row of sheet.rows){
+   for(const cell of row){
+    const matches=clean(cell).match(pattern)||[];
+    for(const match of matches){const label=match.replace(/\s+/g,' ').trim();const id=norm(label).replace(/\s/g,'');if(!seen.has(id)){seen.add(id);scenarios.push({id,label,source:sheet.name})}}
+   }
+  }
+ }
+ // Se não houver cenários identificáveis, vota-se a proposta única, sem inventar cenários.
+ if(!scenarios.length)scenarios.push({id:'proposta-unica',label:'Planejamento financeiro apresentado',source:sheets[0].name});
+ if(scenarios.length>25)throw Error('Foram identificados mais de 25 rótulos de cenários. Revise a planilha antes de gerar o formulário.');
+ return {id:'pf-'+Date.now().toString(36),title:'Planejamento Financeiro — '+file.name.replace(/\.xlsx$/i,''),filename:file.name,importedAt:new Date().toISOString(),status:'draft',sheets,scenarios,votes:[],reviews:{},report:'',publishedAt:null,confirmed:false};
 }
-$('role-prescon').onclick=()=>{role='prescon';render()};$('role-conselho').onclick=()=>{role='conselho';render()};
-$('create-form').onsubmit=e=>{e.preventDefault();const fd=new FormData(e.target),title=String(fd.get('title')||'').trim();if(!title)return;entries.unshift({id:'ex-'+Date.now(),title,description:String(fd.get('description')||''),status:'open',votes:[],report:''});e.target.reset();save()};
-$('entries').addEventListener('input',e=>{if(e.target.dataset.report){const d=entries.find(x=>x.id===e.target.dataset.report);if(d){d.report=e.target.value;localStorage.setItem(key,JSON.stringify(entries))}}});
-$('entries').addEventListener('click',e=>{const b=e.target.closest('[data-action]');if(!b)return;const d=entries.find(x=>x.id===b.dataset.id);if(!d)return;const action=b.dataset.action;
-if(action==='vote'&&role==='conselho'&&d.status==='open'){const response=prompt('Resposta fictícia: favorável, contrária ou abstenção','favorável');if(response!==null&&response.trim()){d.votes.push({answer:response.trim(),date:new Date().toISOString()});save()}return}
-if(action==='report'&&d.status==='published'){alert('RELATÓRIO DEMONSTRATIVO — '+d.title+'\n\n'+(d.report||'Nenhum texto informado.')+'\n\nRespostas fictícias: '+d.votes.length);return}
-if(role!=='prescon')return;
-if(action==='review'&&d.status==='open')d.status='review';
-else if(action==='close'&&d.status==='review')d.status='closed';
-else if(action==='publish'&&d.status==='closed'){if(!String(d.report||'').trim()){alert('Preencha o texto do relatório antes de publicar.');return}d.status='published'}else return;save()
+function statusText(d){return {draft:'Aguardando conferência da PRESCON',open:'Votação aberta',review:'Aguardando avaliação da PRESCON',closed:'Pronto para publicação',published:'Relatório publicado'}[d.status]||'Desconhecido'}
+function render(){
+ $('role-prescon').classList.toggle('active',role==='prescon');$('role-conselho').classList.toggle('active',role==='conselho');
+ $('create-panel').classList.toggle('hidden',role!=='prescon'||tab!=='forms');
+ document.querySelectorAll('[data-tab]').forEach(b=>{b.classList.toggle('active',b.dataset.tab===tab);b.setAttribute('aria-selected',String(b.dataset.tab===tab))});
+ $('list-heading').textContent=tab==='forms'?'Formulários de deliberação':tab==='pf'?'Planejamentos financeiros importados':'Relatórios de deliberação';
+ $('list-description').textContent=tab==='forms'?'Formulários gerados a partir do XLSX, com uma pergunta por cenário/proposta.':tab==='pf'?'Dados extraídos para conferência e consulta. O arquivo original fica apenas no navegador.':'Relatórios só aparecem ao Conselho depois de publicados pela PRESCON.';
+ const visible=entries.filter(d=>tab!=='reports'||role==='prescon'||d.status==='published');
+ $('entries').innerHTML=visible.length?visible.map(d=>{
+  const action=tab==='pf'?'Ver dados extraídos':tab==='reports'?'Ver relatório':role==='prescon'?'Gerenciar deliberação':d.status==='open'?'Responder formulário':d.status==='published'?'Ver relatório':'Consultar deliberação';
+  return '<div class="row"><div><strong>'+esc(d.title)+'</strong><p class="muted">'+esc(d.filename)+' · '+esc(statusText(d))+'</p><p class="hint">'+d.scenarios.length+' proposta(s)/cenário(s) · '+d.votes.length+' resposta(s) de teste</p></div><div class="actions"><span class="badge">'+esc(statusText(d))+'</span><button class="btn '+(d.status==='open'?'red':'')+' smallbtn" data-open="'+esc(d.id)+'">'+action+'</button></div></div>';
+ }).join(''):'<div class="empty">'+(tab==='reports'?'Nenhum relatório disponível nesta visão.':'Nenhum planejamento financeiro importado. Na visão PRESCON, envie um XLSX para começar.')+'</div>';
+ if(selected&&!find(selected))selected=null;
+ if(selected)renderDetail(find(selected));else{$('detail-panel').classList.add('hidden');$('detail-panel').innerHTML=''}
+}
+function pfHtml(d){
+ return '<h2>Planejamento financeiro extraído</h2><p class="muted">Arquivo: '+esc(d.filename)+' · '+d.sheets.length+' aba(s). Consulta somente leitura; dados extraídos da planilha enviada. Verifique fórmulas, cenários e totais antes de publicar.</p>'+
+ '<div class="pf-grid">'+d.sheets.map(sh=>'<div class="pf-card"><h3>'+esc(sh.name)+'</h3><p>'+sh.totalRows+' linha(s) preenchida(s)</p><p class="hint">Exibição limitada às primeiras 140 linhas por aba</p></div>').join('')+'</div>'+
+ d.sheets.map(sh=>'<details><summary>'+esc(sh.name)+' · Visualizar tabela</summary><div class="scroll-table"><table class="pf-table">'+sh.rows.map(row=>'<tr>'+row.slice(0,25).map(c=>'<td>'+esc(c)+'</td>').join('')+'</tr>').join('')+'</table></div></details>').join('')+
+ '<h3>Propostas identificadas</h3><div class="pf-grid">'+d.scenarios.map((sc,i)=>'<div class="pf-card"><h3>'+esc(sc.label)+'</h3><p class="muted">Origem: '+esc(sc.source)+'</p><p class="hint">Pergunta '+(i+1)+' no formulário</p></div>').join('')+'</div>';
+}
+function voteHtml(d){
+ if(d.status!=='open')return '<p class="notice warn">A votação não está aberta. Aguarde a publicação do formulário pela PRESCON.</p>';
+ return '<h2>Responder formulário de deliberação</h2><p class="muted">Uma resposta de teste por envio, com posicionamento e justificativa para cada proposta. Nenhum dado é transmitido.</p>'+
+ '<form id="vote-form" data-id="'+esc(d.id)+'"><label class="field">Identificação da EJ (fictícia)<input name="ej" required maxlength="80" placeholder="Ex.: EJ Exemplo"></label>'+
+ d.scenarios.map((sc,i)=>'<fieldset class="form-box"><legend><strong>['+(i+1)+'] '+esc(sc.label)+'</strong></legend><p class="muted">Qual seu posicionamento em relação a esta proposta?</p>'+
+ OPTIONS.map((o,j)=>'<label><input type="radio" name="position-'+i+'" value="'+esc(o)+'" '+(j===0?'required':'')+'>'+esc(o)+'</label>').join('')+
+ '<label class="field">Justifique seu posicionamento<textarea name="justification-'+i+'" required minlength="5" placeholder="Explique os motivos do voto"></textarea></label>'+
+ '<label class="field">Sugestões (quando aplicável)<textarea name="suggestions-'+i+'" placeholder="Descreva cada sugestão de forma objetiva"></textarea></label>'+
+ '<label class="field">Ressalvas (quando aplicável)<textarea name="caveats-'+i+'" placeholder="Descreva cada ressalva de forma objetiva"></textarea></label></fieldset>').join('')+
+ '<label class="field">Avaliação de clareza do planejamento<select name="clarity" required><option value="">Selecione</option><option>Clara</option><option>Parcialmente clara</option><option>Pouco clara</option></select></label><label class="field">Dificuldades ou observações gerais<textarea name="difficulty"></textarea></label><button class="btn red" type="submit">Registrar resposta de teste</button></form>';
+}
+function reviewItems(d){
+ const items=[];for(const vote of d.votes){vote.answers.forEach((a,i)=>{
+ for(const [type,text] of [['suggestion',a.suggestions],['caveat',a.caveats]])if(clean(text)){const id=vote.id+'-'+i+'-'+type;items.push({id,vote,scenario:d.scenarios[i],type,text})}
+ })}
+ return items;
+}
+function reviewHtml(d){
+ const items=reviewItems(d);
+ return '<h2>Avaliação individual pela PRESCON</h2><p class="muted">Aprovar ou reprovar cada ressalva/sugestão com fundamentação. A decisão nunca é automática.</p>'+
+ (items.length?items.map(item=>{const rv=d.reviews[item.id]||{};return '<div class="review-card"><strong>'+esc(item.type==='suggestion'?'SUGESTÃO':'RESSALVA')+' · '+esc(item.scenario?.label)+'</strong><p>'+esc(item.vote.ej)+' — '+esc(item.text)+'</p><label class="field">Decisão<select data-review="'+esc(item.id)+'"><option value="">Aguardando decisão</option><option value="approved" '+(rv.decision==='approved'?'selected':'')+'>Aceita</option><option value="rejected" '+(rv.decision==='rejected'?'selected':'')+'>Rejeitada</option></select></label><label class="field">Fundamentação<textarea data-review-note="'+esc(item.id)+'" placeholder="Justifique a decisão da PRESCON">'+esc(rv.reason||'')+'</textarea></label></div>'}).join(''):'<p class="notice">Nenhuma ressalva ou sugestão foi registrada. A PRESCON ainda precisa concluir a avaliação.</p>')+
+ '<div class="toolbar"><button class="btn red" data-action="finish-review" data-id="'+esc(d.id)+'">Concluir avaliação e gerar relatório</button></div>';
+}
+function reportHtml(d){
+ const votes=d.votes,items=reviewItems(d),received=new Set(votes.map(v=>norm(v.ej)));
+ const lines=d.scenarios.map((sc,i)=>{
+ const counts=OPTIONS.map(o=>({label:o,n:votes.filter(v=>v.answers[i]?.position===o).length}));
+ return '<section class="form-box"><h3>'+esc(sc.label)+'</h3><table class="pf-table">'+counts.map(c=>'<tr><td>'+esc(c.label)+'</td><td>'+c.n+'</td></tr>').join('')+'</table><h4>Posicionamentos e justificativas</h4>'+votes.map(v=>'<p><strong>'+esc(v.ej)+': '+esc(v.answers[i]?.position||'Não informado')+'</strong><br>'+esc(v.answers[i]?.justification||'Sem justificativa')+'</p>').join('')+'</section>';
+ }).join('');
+ return '<h2>Relatório de deliberação · '+esc(d.title)+'</h2><p class="muted">RELATÓRIO DEMONSTRATIVO · NÃO É ATA OU DELIBERAÇÃO OFICIAL</p><p>Planilha de origem: '+esc(d.filename)+'</p><p>Respostas recebidas: '+votes.length+' · EJs respondentes distintas: '+received.size+'</p><p class="muted">Pendências: não calculadas, pois o template não possui cadastro oficial de EJs esperadas.</p>'+lines+
+ '<h3>Ressalvas e sugestões — decisões da PRESCON</h3>'+(items.length?items.map(item=>{const rv=d.reviews[item.id]||{};return '<div class="review-card"><strong>'+esc(item.type==='caveat'?'Ressalva':'Sugestão')+' · '+esc(item.scenario?.label)+' · '+esc(item.vote.ej)+'</strong><p>'+esc(item.text)+'</p><p><strong>Decisão:</strong> '+esc(rv.decision==='approved'?'Aceita':rv.decision==='rejected'?'Rejeitada':'Pendente')+'</p><p><strong>Fundamentação:</strong> '+esc(rv.reason||'Não informada')+'</p></div>'}).join(''):'<p>Nenhuma ressalva ou sugestão registrada.</p>')+
+ '<h3>Encaminhamentos e considerações finais</h3><div class="summary">'+esc(d.report||'Não informado.')+'</div><p class="hint">Publicado: '+(d.publishedAt?esc(new Date(d.publishedAt).toLocaleString('pt-BR')):'Ainda não publicado')+'</p>';
+}
+function renderDetail(d){
+ const el=$('detail-panel');el.classList.remove('hidden');
+ if(tab==='pf'){el.innerHTML=pfHtml(d);return}
+ if(tab==='reports'){el.innerHTML=d.status==='published'||role==='prescon'&&d.status==='closed'?reportHtml(d)+'<div class="toolbar"><button class="btn" data-action="print" data-id="'+esc(d.id)+'">Imprimir / salvar PDF</button></div>':'<p class="notice warn">O relatório só ficará disponível após avaliação e publicação pela PRESCON.</p>';return}
+ if(role==='conselho'){el.innerHTML=d.status==='open'?voteHtml(d):d.status==='published'?reportHtml(d):'<h2>'+esc(d.title)+'</h2><p class="notice warn">'+esc(statusText(d))+' — aguarde a PRESCON.</p>';return}
+ let body=pfHtml(d);
+ if(d.status==='draft')body+='<div class="notice warn">Confira os dados e os cenários identificados antes de publicar. A importação não garante interpretação perfeita de todas as fórmulas e formatos de planilha.</div><div class="toolbar"><button class="btn red" data-action="open" data-id="'+esc(d.id)+'">Conferi os dados · Publicar formulário</button></div>';
+ if(d.status==='open')body+='<div class="toolbar"><button class="btn red" data-action="review" data-id="'+esc(d.id)+'">Encerrar votação e iniciar avaliação</button></div>';
+ if(d.status==='review')body+=reviewHtml(d);
+ if(d.status==='closed')body+='<h2>Relatório gerado automaticamente</h2>'+reportHtml(d)+'<label class="field">Considerações finais e encaminhamentos da PRESCON<textarea id="report-final" rows="6">'+esc(d.report||'')+'</textarea></label><div class="toolbar"><button class="btn red" data-action="publish" data-id="'+esc(d.id)+'">Revisar e publicar relatório</button></div>';
+ if(d.status==='published')body+=reportHtml(d)+'<div class="toolbar"><button class="btn" data-action="print" data-id="'+esc(d.id)+'">Imprimir / salvar PDF</button></div>';
+ el.innerHTML=body;
+}
+document.querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>{tab=b.dataset.tab;selected=null;render()});
+$('role-prescon').onclick=()=>{role='prescon';selected=null;render()};
+$('role-conselho').onclick=()=>{role='conselho';selected=null;render()};
+$('create-form').onsubmit=async e=>{
+ e.preventDefault();const file=$('pf-file').files[0],feedback=$('import-feedback');
+ if(!file||!/\.xlsx$/i.test(file.name)){feedback.textContent='Selecione um arquivo .xlsx válido.';return}
+ if(file.size>8*1024*1024){feedback.textContent='Arquivo muito grande para o template local (limite 8 MB).';return}
+ feedback.textContent='Lendo e analisando a planilha...';
+ try{const d=extract(file,await file.arrayBuffer());entries.unshift(d);selected=d.id;tab='pf';$('create-form').reset();if(!persist())throw Error('Não foi possível salvar o planejamento neste navegador.');render();feedback.textContent='Planilha importada para conferência.'}catch(err){feedback.textContent='Importação não concluída: '+err.message}
+};
+$('entries').onclick=e=>{const b=e.target.closest('[data-open]');if(!b)return;selected=b.dataset.open;render();$('detail-panel').scrollIntoView({behavior:'smooth',block:'start'})};
+$('detail-panel').addEventListener('change',e=>{const id=e.target.dataset.review;if(!id)return;const d=find(selected);if(!d||role!=='prescon'||d.status!=='review')return;d.reviews[id]??={};d.reviews[id].decision=e.target.value;persist()});
+$('detail-panel').addEventListener('input',e=>{const id=e.target.dataset.reviewNote;if(!id)return;const d=find(selected);if(!d||role!=='prescon'||d.status!=='review')return;d.reviews[id]??={};d.reviews[id].reason=e.target.value;persist()});
+$('detail-panel').addEventListener('submit',e=>{
+ if(e.target.id!=='vote-form')return;e.preventDefault();const d=find(e.target.dataset.id);if(!d||role!=='conselho'||d.status!=='open')return;
+ const fd=new FormData(e.target),ej=clean(fd.get('ej'));if(!ej)return;
+ const answers=d.scenarios.map((sc,i)=>({position:clean(fd.get('position-'+i)),justification:clean(fd.get('justification-'+i)),suggestions:clean(fd.get('suggestions-'+i)),caveats:clean(fd.get('caveats-'+i))}));
+ if(answers.some(a=>!OPTIONS.includes(a.position)||a.justification.length<5||a.position==='Aprova com sugestões'&&!a.suggestions||a.position==='Aprova com ressalvas'&&!a.caveats)){alert('Preencha os posicionamentos, justificativas e sugestões/ressalvas obrigatórias.');return}
+ if(d.votes.some(v=>norm(v.ej)===norm(ej))){alert('Esta EJ já enviou uma resposta de teste. Não são permitidas duplicidades.');return}
+ d.votes.push({id:'vote-'+Date.now().toString(36),ej,answers,clarity:clean(fd.get('clarity')),difficulty:clean(fd.get('difficulty')),createdAt:new Date().toISOString()});selected=null;save();alert('Resposta fictícia registrada neste navegador.');
 });
-$('reset').onclick=()=>{if(confirm('Apagar os dados de teste deste navegador e restaurar os exemplos fictícios?')){entries=JSON.parse(JSON.stringify(defaults));save()}};
+$('detail-panel').onclick=e=>{
+ const b=e.target.closest('[data-action]');if(!b)return;const d=find(b.dataset.id);if(!d)return;const action=b.dataset.action;
+ if(action==='print'){window.print();return}
+ if(role!=='prescon')return;
+ if(action==='open'&&d.status==='draft'){d.status='open';save();return}
+ if(action==='review'&&d.status==='open'){if(!confirm('Encerrar a votação e iniciar a avaliação da PRESCON?'))return;d.status='review';save();return}
+ if(action==='finish-review'&&d.status==='review'){
+ const pending=reviewItems(d).filter(item=>{const rv=d.reviews[item.id];return !rv||!['approved','rejected'].includes(rv.decision)||!clean(rv.reason)});
+ if(pending.length){alert('Avalie e fundamente todas as ressalvas e sugestões antes de concluir. Pendentes: '+pending.length);return}
+ d.status='closed';save();return
+ }
+ if(action==='publish'&&d.status==='closed'){
+ const report=clean($('report-final')?.value);if(report.length<15){alert('Registre as considerações finais e encaminhamentos da PRESCON (mínimo 15 caracteres).');return}
+ if(!confirm('Publicar o relatório demonstrativo e disponibilizá-lo na visão Conselho?'))return;
+ d.report=report;d.status='published';d.publishedAt=new Date().toISOString();tab='reports';save()
+ }
+};
+$('reset').onclick=()=>{if(confirm('Apagar todas as planilhas, votos, avaliações e relatórios deste navegador?')){entries=[];selected=null;localStorage.removeItem(key);localStorage.removeItem(oldKey);render()}};
 render();
 })();
 </script></body></html>
