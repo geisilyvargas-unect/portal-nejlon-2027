@@ -85,3 +85,9 @@ body{background:#191919}
 .idealize-guide-item:nth-child(5){border-left-color:#a9a0cb}
 .idealize-manual-note{font-size:11px;color:#e1ebc4;line-height:1.65;margin:0 15px 15px;padding:12px;background:#283227;border:1px solid #5d7243;border-radius:8px}
 @media(max-width:600px){.idealize-manual-steps{grid-template-columns:1fr}.idealize-guide>div{grid-template-columns:1fr}.idealize-manual-art::after{opacity:.14;width:115px;height:125px}.idealize-manual-art{padding:20px}}
+
+/* Mais respiro em títulos da deliberação e do manual integrado. */
+.idealize-banner h1{letter-spacing:.025em;line-height:1.18;text-shadow:2px 3px 0 #ac262d}
+.idealize-manual-art h3{letter-spacing:.025em;line-height:1.2;text-shadow:2px 3px 0 #bb2830}
+.idealize-shell h2{letter-spacing:.035em;line-height:1.25}
+@media(max-width:600px){.idealize-banner h1,.idealize-manual-art h3{letter-spacing:.015em}}
