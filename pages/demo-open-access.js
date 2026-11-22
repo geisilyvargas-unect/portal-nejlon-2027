@@ -13,8 +13,35 @@ function openApp(id){const n=$(id);if(n)n.hidden=false}
 function removeAuth(id){const n=$(id);if(n)n.remove()}
 function banner(){const hero=document.querySelector('.automation-hero');if(hero){const n=document.createElement('div');n.className='automation-note';n.innerHTML='<strong>MODO DE TESTE · ACESSO LIVRE</strong> — Navegue sem e-mail ou senha. As ações desta página são simulações locais.';hero.after(n)}document.querySelectorAll('[id$="-logout"],#auto-open-login,#auto-connect-google').forEach(n=>n.remove())}
 function demands(){
- removeAuth('demands-login');openApp('demands-app');set('demands-user','Visitante · prévia sem autenticação');
- set('demands-root','<section class="automation-panel"><h2>DEMANDAS DA REDE · EXEMPLOS</h2>'+note+'<div class="automation-grid">'+sample.map(d=>card(d.ej+' · '+d.name,'<p>Prazo: '+d.date+'</p>'+tag(d.status)+'<p class="automation-muted">Exemplo para consulta. Nenhuma ação de envio está disponível nesta prévia.</p>')).join('')+'</div></section>');
+ removeAuth('demands-login');openApp('demands-app');set('demands-user','PRESCON · demonstração local');
+ const key='nejlon.demo.demands.decisions.v1';
+ let saved={};try{saved=JSON.parse(sessionStorage.getItem(key)||'{}')||{}}catch{}
+ const examples=[
+  {id:'unect',ej:'UNECT',name:'Planejamento financeiro IDEALIZE 2026',date:'28/11/2026',reason:'Solicitação de prazo adicional',explanation:'Solicitamos prazo adicional para conferir as projeções financeiras antes da entrega.'},
+  {id:'boson',ej:'BÓSON',name:'Atualização cadastral',date:'30/11/2026',reason:'Dificuldade operacional',explanation:'A atualização ficou pendente por indisponibilidade temporária da equipe.'},
+  {id:'lex',ej:'LEX',name:'Acompanhamento de deliberações',date:'20/11/2026',reason:'Ausência',explanation:'A responsável não conseguiu comparecer à reunião de acompanhamento.'}
+ ];
+ function draw(){
+  set('demands-root','<section class="automation-panel"><h2>DEMANDAS DA REDE · ANÁLISE PRESCON (SIMULAÇÃO)</h2>'+note+'<p class="automation-muted">As decisões ficam apenas nesta aba do navegador durante o teste. Não alteram demandas reais.</p><div class="automation-grid">'+examples.map(d=>{
+   const decision=saved[d.id];
+   const body='<p><strong>Prazo:</strong> '+d.date+'</p><p><strong>Motivo:</strong> '+esc(d.reason)+'</p><p><strong>Justificativa enviada:</strong> '+esc(d.explanation)+'</p>';
+   if(decision)return card(d.ej+' · '+d.name,body+tag(decision.type==='accepted'?'Justificativa aceita':'Justificativa recusada')+'<p><strong>Decisão da PRESCON:</strong> '+esc(decision.note)+'</p><button type="button" class="btn" data-demo-reopen="'+d.id+'">Rever decisão (teste)</button>');
+   return card(d.ej+' · '+d.name,body+tag('Aguardando decisão')+'<form data-demo-decision="'+d.id+'"><label>Justificativa da decisão da PRESCON<textarea name="note" minlength="8" maxlength="3000" required rows="3" placeholder="Explique o motivo da aceitação ou recusa"></textarea></label><div class="automation-actions"><button class="btn red" type="submit" name="decision" value="accepted">Aceitar justificativa</button><button class="btn" type="submit" name="decision" value="rejected">Recusar justificativa</button></div></form>');
+  }).join('')+'</div></section>');
+ }
+ const root=$('demands-root');
+ root.addEventListener('submit',e=>{
+  const form=e.target.closest('[data-demo-decision]');if(!form)return;
+  e.preventDefault();
+  const note=String(new FormData(form).get('note')||'').trim();
+  const decision=e.submitter?.value;
+  if(note.length<8){form.querySelector('textarea').setCustomValidity('Explique a decisão com pelo menos 8 caracteres.');form.reportValidity();form.querySelector('textarea').setCustomValidity('');return}
+  if(!['accepted','rejected'].includes(decision))return;
+  saved[form.dataset.demoDecision]={type:decision,note};
+  sessionStorage.setItem(key,JSON.stringify(saved));draw();
+ });
+ root.addEventListener('click',e=>{const button=e.target.closest('[data-demo-reopen]');if(!button)return;delete saved[button.dataset.demoReopen];sessionStorage.setItem(key,JSON.stringify(saved));draw()});
+ draw();
 }
 function oversight(){
  removeAuth('oversight-login');openApp('oversight-app');set('oversight-user','Visitante · DIREX Núcleo (simulado)');
