@@ -30,9 +30,9 @@ return '<div class="grid">'+[
  ['Central de Automações','Ferramentas administrativas, com login PRESCON.','./central-automacoes.html']
 ].map(([t,d,url])=>card(t,'<p>'+esc(d)+'</p><a href="'+esc(url)+'">Abrir recurso →</a>')).join('')+'</div><p class="muted small">Os links levam a módulos existentes e podem exigir autenticação. Materiais antigos devem ser validados antes de uso institucional.</p>';
 }
+const orderedEvents=()=>[...data.events].sort((a,b)=>((a.date||'')+(a.time||'')).localeCompare((b.date||'')+(b.time||'')));
 function overview(){
 const today=()=>{const now=new Date();return [now.getFullYear(),String(now.getMonth()+1).padStart(2,'0'),String(now.getDate()).padStart(2,'0')].join('-')};
-const orderedEvents=()=>[...data.events].sort((a,b)=>((a.date||'')+(a.time||'')).localeCompare((b.date||'')+(b.time||'')));
 const upcoming=orderedEvents().filter(e=>(e.visibility==='public'||isCouncil())&&e.date>=today()).slice(0,3);
 return '<div class="grid">'+card('Próximos compromissos','<div class="stat">'+upcoming.length+'</div><p>Eventos demonstrativos disponíveis</p>')+card('Materiais de formação','<div class="stat">'+(isCouncil()?data.steps.length:'—')+'</div><p>Etapas da Jornada</p>')+card('Encaminhamentos','<div class="stat">'+(isCouncil()?data.actions.filter(a=>a.status==='pending'&&(isAdmin()||(own()&&a.owner===own().id))).length:'—')+'</div><p>Ações demonstrativas pendentes</p>')+'</div><h2>Comunicados</h2><div class="stack">'+data.announcements.filter(a=>isCouncil()||a.audience==='public').map(a=>card(a.title,'<p>'+esc(a.body)+'</p>')).join('')+'</div><h2>Próximas atividades</h2><div class="grid">'+(upcoming.length?upcoming.map(e=>card(e.title,'<p>'+esc(date(e.date))+' · '+esc(e.time)+'</p><span class="tag">'+esc(e.type)+'</span>')).join(''):'<p class="empty">Nenhuma atividade futura disponível nesta visão.</p>')+'</div>'+note();
 }
