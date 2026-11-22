@@ -46,3 +46,12 @@ html[data-theme="red"] :is(.intro h1,.workhead h2,.panel h3,.ej-directory-card h
 html[data-theme="red"] .nejlon-layer-title em{color:inherit!important;font-style:normal}
 html[data-theme="red"] .intro h1.nejlon-layer-title::before{transform:translate(4px,9px)}
 @media(max-width:600px){html[data-theme="red"] .nejlon-layer-title{-webkit-text-stroke:1.5px #000!important}html[data-theme="red"] .nejlon-layer-title::before{-webkit-text-stroke:1.5px #000!important;transform:translate(2px,5px)!important}}
+
+/* Contorno e relevo com sombra independente da quebra dinâmica das linhas:
+   a sombra tipográfica acompanha cada linha, enquanto a cópia editorial
+   permanece decorativa somente para títulos curtos. */
+html[data-theme="red"] .intro h1.nejlon-layer-title::before{content:none!important}
+html[data-theme="red"] .intro h1.nejlon-layer-title{text-shadow:3px 6px 0 #ff0000,4px 8px 0 #050505!important}
+html[data-theme="red"] :is(.workhead h2,.panel h3,.ej-directory-card h3,.wa-panel h2,.idealize-shell h2).nejlon-layer-title::before{content:none!important}
+html[data-theme="red"] :is(.workhead h2,.panel h3,.ej-directory-card h3,.wa-panel h2,.idealize-shell h2).nejlon-layer-title{text-shadow:2px 4px 0 #ff0000!important}
+@media(max-width:600px){html[data-theme="red"] .intro h1.nejlon-layer-title{text-shadow:2px 4px 0 #ff0000,3px 6px 0 #050505!important}}
