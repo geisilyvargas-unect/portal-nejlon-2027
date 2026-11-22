@@ -1,0 +1,24 @@
+/* Interpretação automática e conservadora dos gráficos financeiros — demonstração NEJLON. */
+(()=>{'use strict';
+const labels={pessimistic:'Pessimista',realistic:'Realista',optimistic:'Otimista'},keys=Object.keys(labels);
+const esc=x=>String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;','\'':'&#39;'}[c]));
+const fmt=n=>new Intl.NumberFormat('pt-BR',{style:'currency',currency:'BRL'}).format(n);
+const money=n=>Number.isFinite(n);
+function interpret(a){
+ const p=a?.projections;
+ if(!p||!keys.every(k=>money(p[k]?.revenue)&&money(p[k]?.expenses)))return {valid:false,html:'Não há valores suficientes para interpretar este gráfico. Confira o XLSX original; nenhuma conclusão será presumida.'};
+ const rows=keys.map(k=>({name:labels[k],revenue:p[k].revenue,expenses:p[k].expenses,balance:p[k].revenue-p[k].expenses}));
+ const saldo=rows.map(r=>r.balance);
+ const best=rows.reduce((x,y)=>y.balance>x.balance?y:x),worst=rows.reduce((x,y)=>y.balance<x.balance?y:x);
+ const summary=rows.map(r=>r.name+': '+(r.balance>0?'superávit':r.balance<0?'déficit':'equilíbrio')+' de '+fmt(Math.abs(r.balance))).join('; ');
+ const alert=saldo.every(v=>v>=0)?'Todos os cenários apresentam saldo não negativo.':saldo.every(v=>v<0)?'Todos os cenários apresentam déficit projetado.':'Há cenários com resultados positivos e negativos; a decisão depende das premissas.';
+ const gap=Math.max(...saldo)-Math.min(...saldo);
+ const html='<div class="pf-auto-interpretation" role="region" aria-label="Interpretação automática dos gráficos"><h4>INTERPRETAÇÃO AUTOMÁTICA · '+esc(a.label)+'</h4><p><strong>Leitura dos saldos:</strong> '+esc(summary)+'.</p><p><strong>Comparação:</strong> maior saldo em '+esc(best.name)+' ('+fmt(best.balance)+') e menor em '+esc(worst.name)+' ('+fmt(worst.balance)+'). Diferença: '+fmt(gap)+'.</p><p><strong>Ponto de atenção:</strong> '+esc(alert)+'</p><p class="pf-interpret-warning">Análise descritiva calculada somente com receitas e despesas identificadas na planilha. Não valida premissas, fórmulas, riscos, viabilidade nem recomenda voto. Confira o XLSX original antes de deliberar.</p></div>';
+ return {valid:true,html,rows};
+}
+function render(data,target){if(!target)return;const alts=data?.alternatives||[];target.innerHTML=alts.length?alts.map(a=>interpret(a).html).join(''):'<p class="pf-interpret-warning">A planilha não contém um painel financeiro completo reconhecido. A interpretação automática não será exibida; confira os gráficos e dados originais.</p>';if(data?.warnings?.length){const p=document.createElement('p');p.className='pf-interpret-warning';p.textContent='Avisos da extração: '+data.warnings.join(' | ');target.append(p)}}
+function create(){const file=document.getElementById('pf-file'),review=document.getElementById('pf-extraction-review');if(!file||!review)return;let target=document.getElementById('pf-auto-analysis');if(!target){target=document.createElement('div');target.id='pf-auto-analysis';target.setAttribute('aria-live','polite');review.after(target)}let version=0;
+ file.addEventListener('change',async()=>{const token=++version;target.innerHTML='<p>Interpretando automaticamente os gráficos e saldos do PF…</p>';const f=file.files?.[0];if(!f)return;try{let sheets;if(/\.csv$/i.test(f.name)){const text=new TextDecoder().decode(await f.arrayBuffer());sheets=[{name:'Planejamento',rows:text.split(/\r?\n/).map(line=>line.split(/[;,\t]/))}]}else{if(!window.XLSX)throw Error('Leitor XLSX indisponível.');const wb=XLSX.read(await f.arrayBuffer(),{type:'array'});sheets=wb.SheetNames.map(name=>({name,rows:XLSX.utils.sheet_to_json(wb.Sheets[name],{header:1,defval:'',raw:false})}))}const data=window.NEJLON_PF_PARSER?.parse(sheets);if(token===version)render(data,target)}catch(e){if(token===version)target.textContent='Não foi possível interpretar automaticamente: '+e.message}})}
+function form(){const host=document.getElementById('financial-dashboard');if(!host)return;const id=new URLSearchParams(location.search).get('id')||'financeiro';let data=null;if(id.startsWith('local-')){try{data=JSON.parse(localStorage.getItem('nejlon-demo-delib-'+id)||'null')?.financial}catch{}}const target=document.createElement('div');target.id='pf-form-interpretation';host.after(target);if(data){render(data,target)}else if(id==='idealize'){fetch('./idealize-financial.json').then(r=>{if(!r.ok)throw Error('Dados indisponíveis');return r.json()}).then(d=>render(d,target)).catch(()=>{target.textContent='Interpretação indisponível: consulte os dados financeiros originais.'})}else{target.innerHTML='<p class="pf-interpret-warning">Sem dados estruturados para interpretação automática. Consulte a planilha original.</p>'}}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>{create();form()});else{create();form()}
+})();
