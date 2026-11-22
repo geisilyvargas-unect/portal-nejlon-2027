@@ -95,3 +95,7 @@ O agendamento pode ter atraso de até um dia. Não é sincronização em tempo r
 - Este panorama **não gera mensagens automáticas** nem avalia motivos de ausência; o envio ao WhatsApp depende da escolha do grupo e da confirmação humana.
 - Demandas, calendário e integração Google Calendar **ainda não fazem parte do resumo** porque não estão conectados a dados operacionais reais.
 - A seção atualiza quando a PRESCON entra na Central ou usa **Atualizar prioridades**. Não é um resumo distribuído automaticamente por e-mail.
+
+## Demandas integradas (novembro de 2026)
+
+A Central recebeu uma aba **Demandas**, com criação em lote por EJ, modelos reutilizáveis, classificações Amarela/Laranja/Vermelha, justificativas e histórico. Conselho e DIREX acessam a página autenticada `pages/demandas.html` e podem justificar suas próprias demandas. **Somente a PRESCON decide se aceita ou recusa**, sempre deixando um comentário. A seção semanal destaca demandas vencidas e justificativas aguardando análise. Para regras e limites, leia [Sistema de Demandas](./SISTEMA-DE-DEMANDAS.md).
