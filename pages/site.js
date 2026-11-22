@@ -185,7 +185,7 @@ function liveDeliberations(){
  const entries=Array.isArray(liveForms)?liveForms:[];
  const rows=entries.map(d=>{
   const closed=d.status==='closed',open=d.status==='open',pending=d.status==='draft';
-  const action=open?'<a class="btn red" href="./pages/responder.html?id='+encodeURIComponent(d.id)+'">Responder formulário ↗</a>':closed?'<a class="btn red" href="./pages/pf-deliberation-screen.html?id='+encodeURIComponent(d.id)+'">Consultar deliberação ↗</a>':'<button class="btn" type="button" disabled>Aguardando avaliação da PRESCON</button>';
+  const action=open?'<a class="btn red" href="./pages/responder.html?id='+encodeURIComponent(d.id)+'">Responder formulário ↗</a>':closed?'<a class="btn red" href="./pages/pf-deliberation-screen.html?id='+encodeURIComponent(d.id)+'">Consultar deliberação encerrada ↗</a>':'<button class="btn" type="button" disabled>Aguardando avaliação da PRESCON</button>';
   const badge=open?'Aberta':closed?'Encerrada':'Aguardando avaliação';
   return '<div class="list-item deliberation-status-row"><div><strong>'+esc(d.title)+'</strong><p>'+esc(d.description||'Formulário institucional')+' · '+esc(d.kind==='pf'?'Planejamento financeiro':'Deliberação')+'</p></div><div class="right">'+tag(badge,open?'green':closed?'yellow':'')+action+'</div></div>';
  }).join('');
