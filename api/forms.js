@@ -45,6 +45,8 @@ async function createGoogleForm(token,title,description,questions){
 }
 async function overview(user){
  const prescon=user.role==='prescon';
+ // DIREX de EJ não recebe formulários, manuais, arquivos nem links.
+ if(!prescon&&user.role!=='counselor')return [];
  const forms=await db('portal_forms',{query:'select=id,title,description,questions,kind,status,audience,google_form_id,google_responder_url,created_at,due_at&'+(prescon?'':'status=eq.open&')+'order=created_at.desc&limit=100'});
  return prescon?forms:forms.filter(f=>f.audience==='all_members'||user.role==='counselor');
 }
