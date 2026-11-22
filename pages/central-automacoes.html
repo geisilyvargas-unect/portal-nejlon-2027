@@ -9,9 +9,10 @@
 <nav class="automation-top"><a href="../index.html">← Voltar ao Portal</a><span>NEJLON 2027 · GESTÃO PRESCON</span></nav>
 <main class="automation-shell" id="conteudo">
 <header class="automation-hero"><span class="eyebrow">PRESCON · GESTÃO SIMPLIFICADA</span><h1>CENTRAL DE <em>AUTOMAÇÕES</em></h1><p>Uma única área para criar formulários, organizar documentos no Drive, acompanhar as respostas e preparar comunicados para o grupo do Conselho.</p></header>
-<div class="automation-note"><strong>Ambiente de gestão:</strong> esta página usa autenticação da PRESCON no Supabase e também funciona pelo GitHub Pages. Drive e Google Forms exigem autorização Google separada. O painel demonstrativo do portal permanece separado.</div>
-<section class="automation-panel" id="auto-login">
-<h2><span>01</span> Entrar como PRESCON</h2>
+<div class="automation-note"><strong>Prévia liberada:</strong> explore a Central sem senha. Os exemplos não são dados reais. Para criar demandas, publicar formulários, votar ou consultar relatórios institucionais, entre com uma conta autorizada. Drive e Google Forms exigem autorização adicional do Google.</div>
+<section class="automation-panel" id="auto-login" hidden>
+<div class="automation-login-top"><p><strong>Acesso à gestão real</strong> — opcional durante a prévia. Você pode explorar todas as áreas sem informar senha.</p><button type="button" class="btn" id="auto-close-login">Fechar</button></div>
+<h2>Entrar para administrar os dados reais</h2>
 <p>Use sua conta institucional cadastrada no sistema. O acesso é verificado no banco, não pelo seletor de perfis da demonstração.</p>
 <form id="auto-login-form" class="automation-form">
 <label>E-mail institucional<input id="auto-email" type="email" autocomplete="username" required placeholder="seuemail@nejlondrina.com"></label>
@@ -19,8 +20,8 @@
 <button class="btn red" type="submit">Entrar na Central</button>
 </form><p id="auto-login-message" class="automation-message" role="status"></p><p id="auto-setup-status" class="automation-message" role="status"></p>
 </section>
-<section id="auto-app" hidden>
-<div class="automation-user-bar"><div><span>ACESSO AUTORIZADO</span><strong id="auto-user"></strong></div><button type="button" class="btn" id="auto-logout">Sair</button></div>
+<section id="auto-app">
+<div class="automation-user-bar"><div><span id="auto-access-label">MODO DE EXPLORAÇÃO</span><strong id="auto-user">Prévia da Central · Sem senha</strong></div><div class="automation-actions"><button type="button" class="btn red" id="auto-open-login">Entrar para salvar alterações</button><button type="button" class="btn" id="auto-logout" hidden>Sair</button></div></div>
 <nav class="automation-tabs" aria-label="Áreas da central">
 <button type="button" class="active" data-tab="inicio" aria-current="page">Visão geral</button>
 <button type="button" data-tab="criacao">Criar em minutos</button>
