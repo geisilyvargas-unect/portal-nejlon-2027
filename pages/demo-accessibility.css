@@ -1,0 +1,15 @@
+/* Ajustes transversais de acessibilidade para os fluxos demonstrativos. */
+:where(button,a,input,textarea,select,summary,[tabindex]):focus-visible{outline:3px solid #EA4335!important;outline-offset:3px!important}
+:where(.automation-tabs,.automation-actions,.actions){flex-wrap:wrap}
+:where(.automation-shell,.wrap,.paper,.automation-panel){min-width:0}
+:where(.pf-comparison-chart,.financial-table-wrap,.automation-table-wrap){max-width:100%;overflow-x:auto}
+:where(.option,label,summary,button){touch-action:manipulation}
+:where(input,textarea,select){max-width:100%;box-sizing:border-box}
+:where([hidden]){display:none!important}
+.demo-vote-question{margin:22px 0;padding:18px;border:2px solid #777}
+.demo-vote-question legend{font-size:1.1rem;line-height:1.4;padding:4px}
+.demo-vote-question .option{display:block;padding:10px 4px}
+.demo-vote-question .field{display:block;margin-top:14px}
+.demo-vote-question textarea{width:100%;min-height:92px}
+@media(max-width:640px){.demo-vote-question{padding:12px}.pf-comparison-chart{padding:10px!important}.automation-tabs{display:flex;overflow-x:auto;scrollbar-width:thin}.automation-tabs button{min-height:44px;flex-shrink:0}.wrap{padding-inline:12px}.paper{padding:16px!important}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;transition-duration:.01ms!important}}
