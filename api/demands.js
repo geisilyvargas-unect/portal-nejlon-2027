@@ -16,11 +16,10 @@ async function event({demand,actor,action,note='',details={}}){
  return db('portal_demand_events',{method:'POST',prefer:'return=minimal',data:{demand_id:demand,actor_id:actor.userId,actor_role:actor.role,action,note,details}});
 }
 async function list(user){
- const owner=user.role==='prescon';
- if(!owner&&!canExplain(user.role)&&user.role!=='nucleus_direx')fail(403,'Perfil sem acesso às demandas.');
- if(!owner&&user.role==='nucleus_direx')fail(403,'Acesso de gestão das demandas reservado à PRESCON. Consulte a gestão para permissões.');
- if(!owner&&!user.ej_id)fail(403,'Seu cadastro ainda não está vinculado a uma EJ.');
- const q=owner?'':'&ej_id=eq.'+user.ej_id;
+ const globalReader=['prescon','nucleus_direx'].includes(user.role);
+ if(!globalReader&&!canExplain(user.role))fail(403,'Perfil sem acesso às demandas.');
+ if(!globalReader&&!user.ej_id)fail(403,'Seu cadastro ainda não está vinculado a uma EJ.');
+ const q=globalReader?'':'&ej_id=eq.'+user.ej_id;
  const demands=await db('demands',{query:'select=id,ej_id,title,description,due_at,status,responsible,created_at,created_by,updated_at,completed_at,template_key,severity&order=created_at.desc&limit=1500'+q});
  const justifications=await db('portal_demand_justifications',{query:'select=id,demand_id,ej_id,submitted_by,reason_type,explanation,evidence_url,state,decision_note,decided_by,decided_at,created_at&order=created_at.desc&limit=3000'+q});
  let events=[];
@@ -32,7 +31,7 @@ async function list(user){
    events=events.concat(rows);
   }
  }
- const ejs=owner?await ejIds():[];
+ const ejs=globalReader?await ejIds():[];
  const summary={total:demands.length,
   waiting:demands.filter(d=>d.status==='pendente'||d.status==='em_andamento').length,
   justified:demands.filter(d=>d.status==='justificada').length,
