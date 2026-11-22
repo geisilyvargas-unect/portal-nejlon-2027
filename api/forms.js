@@ -10,8 +10,9 @@ const presetPf=()=>[
  {id:'feedback',label:'Observações finais',type:'text',required:false}
 ];
 function normalizeQuestions(questions,kind){
- const source=kind==='pf'?presetPf():questions;
+ const source=kind==='pf'?(Array.isArray(questions)&&questions.length?questions:presetPf()):questions;
  if(!Array.isArray(source)||source.length<1||source.length>30)fail(400,'Informe de 1 a 30 perguntas.');
+ if(kind==='pf'&&!source.some(q=>q.type==='vote'))fail(400,'Um PF precisa conter ao menos uma pergunta de votação.');
  const ids=new Set();
  return source.map((q,i)=>{
   const id=String(q.id||'q'+(i+1)).trim().replace(/[^a-z0-9_-]/gi,'').slice(0,45);
@@ -82,7 +83,7 @@ async function syncGoogle(user,formId){
    }});created++;}catch(e){if(String(e.message).includes('duplicate')){skipped++;continue}throw e}
   }
   pageToken=response.nextPageToken||'';pages++;
- }while(pageToken&&pages<5);
+ }while(pageToken&&pages<30);
  return {created,skipped,remaining:!!pageToken,note:'Respostas do Google ficam pendentes de validação da PRESCON.'};
 }
 async function handler(req,res){
@@ -245,8 +246,9 @@ async function handler(req,res){
  }
  if(action==='publish'||action==='close'){
   const id=String(data.id||'');if(!uuid(id))fail(400,'Formulário inválido.');
-  const updated=await db('portal_forms',{method:'PATCH',query:'id=eq.'+id,prefer:'return=representation',data:{status:action==='publish'?'open':'closed',updated_at:new Date().toISOString()}});
-  if(!updated.length)fail(404,'Formulário não encontrado.');
+  const expected=action==='publish'?'draft':'open';
+  const updated=await db('portal_forms',{method:'PATCH',query:'id=eq.'+id+'&status=eq.'+expected,prefer:'return=representation',data:{status:action==='publish'?'open':'closed',updated_at:new Date().toISOString()}});
+  if(!updated.length)fail(409,'Transição inválida: publique apenas rascunhos e encerre apenas formulários abertos.');
   return json(res,200,{form:updated[0]});
  }
  if(action==='attach'){

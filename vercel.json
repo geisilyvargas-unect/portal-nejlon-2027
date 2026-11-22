@@ -1,1 +1,10 @@
-{"version":2,"framework":null,"crons":[{"path":"/api/cron-sync","schedule":"0 12 * * *"}]}
+{
+  "version": 2,
+  "framework": null,
+  "crons": [
+    {
+      "path": "/api/cron-sync",
+      "schedule": "0 12 * * *"
+    }
+  ]
+}
