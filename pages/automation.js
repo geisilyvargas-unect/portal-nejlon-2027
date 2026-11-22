@@ -175,6 +175,12 @@ $('auto-forms').addEventListener('click',async e=>{
   }else if(action==='sync'){
    const result=await request('/forms?action=sync',{method:'POST',data:{id}});
    toast('Google sincronizado: '+result.sync.created+' novas respostas; '+result.sync.skipped+' já existentes.');
+  }else if(action==='attach'){
+   const input=article.querySelector('.auto-google-url');const raw=String(input?.value||'').trim();
+   const match=raw.match(/\/forms\/d\/([A-Za-z0-9_-]{12,})(?:\/edit)?/)||raw.match(/^([A-Za-z0-9_-]{12,150})$/);
+   if(!match)throw Error('Cole o link de edição do Google Forms, disponível na barra do navegador quando você edita o formulário.');
+   const result=await request('/forms?action=attach',{method:'POST',data:{id,googleFormId:match[1]}});
+   toast('Google Forms vinculado. '+result.mapped+' perguntas reconhecidas. Confira antes de sincronizar.');await load();
   }else if(action==='report'){tab('relatorios');$('auto-report-form').value=id;await getReport(id)}
  }catch(error){toast(error.message)}
  finally{button.disabled=false}
