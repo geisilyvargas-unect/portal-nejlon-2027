@@ -1,0 +1,574 @@
+[
+  {
+    "slug": "3e",
+    "city": "Londrina",
+    "state": "PR",
+    "university": "UEL",
+    "field": "Engenharia Elétrica",
+    "instagram": "3euel",
+    "services": [
+      "Projetos elétricos",
+      "Projetos fotovoltaicos",
+      "Prototipagem eletrônica"
+    ],
+    "whatsapp": null,
+    "logoIndex": 0,
+    "sourcePage": 4
+  },
+  {
+    "slug": "aprimora",
+    "city": "Londrina",
+    "state": "PR",
+    "university": "UTFPR",
+    "field": "Engenharia de Produção",
+    "instagram": "aprimora.ej",
+    "services": [
+      "Pesquisa de mercado",
+      "Gestão de custos",
+      "Planejamento estratégico",
+      "Cronoanálise",
+      "Mapeamento de processos",
+      "Otimização de processos",
+      "Análise de layout e arranjo físico",
+      "Planejamento e controle da produção (PCP)",
+      "Gestão de estoque",
+      "Gestão de desperdício",
+      "Aplicação do 5S"
+    ],
+    "whatsapp": null,
+    "logoIndex": 1,
+    "sourcePage": 5
+  },
+  {
+    "slug": "artus",
+    "city": "Londrina",
+    "state": "PR",
+    "university": "UEL",
+    "field": "Fisioterapia",
+    "instagram": "artusjr",
+    "services": [
+      "Saúde do trabalhador",
+      "Consultoria em saúde, workshops, cursos e eventos",
+      "Programa Bem+Fisio (HU-UEL)",
+      "Terapia manual",
+      "Fisioterapia esportiva"
+    ],
+    "whatsapp": null,
+    "logoIndex": 2,
+    "sourcePage": 6
+  },
+  {
+    "slug": "bioma",
+    "city": "Londrina",
+    "state": "PR",
+    "university": "UEL",
+    "field": "Ciências Biológicas",
+    "instagram": "biomambiental",
+    "services": [
+      "Licenciamento ambiental",
+      "Projetos de educação ambiental",
+      "Cursos de capacitações para biólogos",
+      "Projetos sustentáveis",
+      "Geoprocessamento"
+    ],
+    "whatsapp": null,
+    "logoIndex": 3,
+    "sourcePage": 7
+  },
+  {
+    "slug": "boson",
+    "city": "Apucarana",
+    "state": "PR",
+    "university": "UTFPR",
+    "field": "Engenharia Química",
+    "instagram": "bosonconsultoria",
+    "services": [
+      "Análise de dados",
+      "Documentações",
+      "Gestão de resíduos - PGRS",
+      "Aplicação de 5S",
+      "Análise de água",
+      "Análise química",
+      "Tratamentos de efluentes",
+      "Tabela e rotulagem nutricional",
+      "Design sprint - gestão visual",
+      "Pesquisa e desenvolvimento",
+      "Gestão de desperdícios - Lean Manufacturing",
+      "Layout"
+    ],
+    "whatsapp": null,
+    "logoIndex": 4,
+    "sourcePage": 8
+  },
+  {
+    "slug": "business",
+    "city": "Londrina",
+    "state": "PR",
+    "university": "UEL",
+    "field": "Economia, Contabilidade e Administração",
+    "instagram": "businessconsultoria",
+    "services": [
+      "Análise e seleção de currículos",
+      "Assessoria de redes",
+      "Descrição de cargos e salários",
+      "Elaboração de edital",
+      "Estudo de mercado",
+      "Pesquisa de clima",
+      "Plano de marketing"
+    ],
+    "whatsapp": null,
+    "logoIndex": 5,
+    "sourcePage": 9
+  },
+  {
+    "slug": "catecz",
+    "city": "Londrina",
+    "state": "PR",
+    "university": "UEL",
+    "field": "Zootecnia",
+    "instagram": "cateczjunior",
+    "services": [
+      "Acompanhamento (visita técnica e assistência)",
+      "Manejo nutricional",
+      "Administração de gestão rural",
+      "Controle zootécnico"
+    ],
+    "whatsapp": null,
+    "logoIndex": 6,
+    "sourcePage": 10
+  },
+  {
+    "slug": "consoagro",
+    "city": "Londrina",
+    "state": "PR",
+    "university": "UEL",
+    "field": "Agronomia",
+    "instagram": "consoagro",
+    "services": [
+      "Montagem de dia de campo",
+      "Condução de dia de campo",
+      "Condução de experimentos",
+      "Coleta e interpretação de análise de solos",
+      "Viabilidade de implantação de culturas",
+      "Acompanhamento técnico de culturas"
+    ],
+    "whatsapp": null,
+    "logoIndex": 7,
+    "sourcePage": 11
+  },
+  {
+    "slug": "cotton",
+    "city": "Apucarana",
+    "state": "PR",
+    "university": "UTFPR",
+    "field": "Engenharia Têxtil",
+    "instagram": "cottonconsultoria",
+    "services": [
+      "Ensaios físicos em fios, tecidos de malha e tecidos planos",
+      "Ensaios em não-tecidos",
+      "Ensaios químicos em fios, tecidos de malha e tecidos planos",
+      "Ensaios de flamabilidade em tecidos",
+      "Ensaios de colorimetria",
+      "Ensaios químico de solidez",
+      "Ensaios de lavação",
+      "Consultoria 5S",
+      "Consultoria em cronoanálise",
+      "Layout de fábrica",
+      "Ficha técnica de produto têxtil",
+      "Análise de defeitos"
+    ],
+    "whatsapp": null,
+    "logoIndex": 8,
+    "sourcePage": 12
+  },
+  {
+    "slug": "ecae",
+    "city": "Londrina",
+    "state": "PR",
+    "university": "UEL",
+    "field": "Economia",
+    "instagram": "ecaeuel",
+    "services": [
+      "Controle financeiro",
+      "Precificação",
+      "Viabilidade econômica",
+      "Pesquisa de mercado"
+    ],
+    "whatsapp": null,
+    "logoIndex": 9,
+    "sourcePage": 13
+  },
+  {
+    "slug": "elo",
+    "city": "Londrina",
+    "state": "PR",
+    "university": "UEL",
+    "field": "Psicologia",
+    "instagram": "eloconsultoria",
+    "services": [
+      "Descrição e análise de cargos",
+      "Investigação psicossocial",
+      "Palestras",
+      "Pesquisa de clima organizacional",
+      "Recrutamento e seleção",
+      "Treinamentos"
+    ],
+    "whatsapp": null,
+    "logoIndex": 10,
+    "sourcePage": 14
+  },
+  {
+    "slug": "fertfield",
+    "city": "Bandeirantes",
+    "state": "PR",
+    "university": "UENP",
+    "field": "Agronomia",
+    "instagram": "fertfield_junior",
+    "services": [
+      "Montagem e condução de campo",
+      "Implantação e condução de experimentos agrícolas",
+      "Pesquisa dos requisitos regulatórios para o registro de novos produtos agrícolas",
+      "Coleta e interpretação de análise de solos",
+      "Soluções de escoamento da produção agrícola",
+      "Implantação de hortas urbanas"
+    ],
+    "whatsapp": null,
+    "logoIndex": 11,
+    "sourcePage": 15
+  },
+  {
+    "slug": "gaia",
+    "city": "Londrina",
+    "state": "PR",
+    "university": "UTFPR",
+    "field": "Engenharia Ambiental",
+    "instagram": "gaiajr_ambiental",
+    "services": [
+      "Licenciamento ambiental",
+      "Gestão ambiental",
+      "Programa de conscientização ambiental",
+      "Relatórios ambientais",
+      "Geoprocessamentos"
+    ],
+    "whatsapp": null,
+    "logoIndex": 12,
+    "sourcePage": 16
+  },
+  {
+    "slug": "kinase",
+    "city": "Londrina",
+    "state": "PR",
+    "university": "UEL",
+    "field": "Farmácia e Nutrição",
+    "instagram": "kinaseconsultoria",
+    "services": [
+      "Marketing em saúde",
+      "Tabela nutricional",
+      "Consultoria em saúde",
+      "BPM e BPF",
+      "Workshop e treinamentos",
+      "Rotulagem nutricional"
+    ],
+    "whatsapp": null,
+    "logoIndex": 13,
+    "sourcePage": 17
+  },
+  {
+    "slug": "lex",
+    "city": "Londrina",
+    "state": "PR",
+    "university": "UEL",
+    "field": "Direito",
+    "instagram": "lexempresajr",
+    "services": [
+      "Registro de marca",
+      "Orientação para empresas",
+      "Notificação extrajudicial",
+      "Análises",
+      "Sites e aplicativos",
+      "Contratos",
+      "Termos",
+      "Acordo de confidencialidade",
+      "LGPD",
+      "Estatuto social",
+      "Orientação em assembleia",
+      "Capacitações",
+      "Regimento interno",
+      "Denúncia e resposta ao Procon"
+    ],
+    "whatsapp": null,
+    "logoIndex": 14,
+    "sourcePage": 18
+  },
+  {
+    "slug": "lion",
+    "city": "Londrina",
+    "state": "PR",
+    "university": "PUCPR",
+    "field": "Administração, Engenharia de Produção, Psicologia e Ciências Contábeis",
+    "instagram": "lionconsultingjr",
+    "services": [
+      "Pesquisa de clima",
+      "Feedback",
+      "Mapeamento de processos",
+      "Planejamento estratégico",
+      "Plano de marketing",
+      "Pesquisa de mercado",
+      "Cliente oculto",
+      "Precificação"
+    ],
+    "whatsapp": null,
+    "logoIndex": 15,
+    "sourcePage": 19
+  },
+  {
+    "slug": "meca",
+    "city": "Londrina",
+    "state": "PR",
+    "university": "UTFPR",
+    "field": "Engenharia Mecânica",
+    "instagram": "meca.jr",
+    "services": [
+      "Desenhos 2D e 3D",
+      "Gestão da manutenção",
+      "Projetos mecânicos",
+      "Ensaios mecânicos",
+      "Climatização"
+    ],
+    "whatsapp": null,
+    "logoIndex": 16,
+    "sourcePage": 20
+  },
+  {
+    "slug": "notton",
+    "city": "Apucarana",
+    "state": "PR",
+    "university": "UTFPR",
+    "field": "Engenharia Elétrica",
+    "instagram": "notton.ej",
+    "services": [
+      "Eficiência energética",
+      "Energia solar",
+      "Desenvolvimento de produtos",
+      "Projetos elétricos"
+    ],
+    "whatsapp": null,
+    "logoIndex": 17,
+    "sourcePage": 21
+  },
+  {
+    "slug": "paracelso",
+    "city": "Londrina",
+    "state": "PR",
+    "university": "UTFPR",
+    "field": "Engenharia Química",
+    "instagram": "paracelsoconsultoria",
+    "services": [
+      "Mapeamento de processos industriais",
+      "Melhoria de eficiência térmica",
+      "Dimensionamento industrial",
+      "Procedimento operacional padrão (POP)",
+      "Tratamento de efluentes",
+      "Manual de boas práticas de fabricação",
+      "Shelf life",
+      "Análises físico-químicas"
+    ],
+    "whatsapp": null,
+    "logoIndex": 18,
+    "sourcePage": 22
+  },
+  {
+    "slug": "pegasus",
+    "city": "Apucarana",
+    "state": "PR",
+    "university": "UNESPAR",
+    "field": "Ciência da Computação",
+    "instagram": "pegasus.ej",
+    "services": [
+      "Websites",
+      "Aplicativos",
+      "Sistemas",
+      "Identidade visual"
+    ],
+    "whatsapp": null,
+    "logoIndex": 19,
+    "sourcePage": 23
+  },
+  {
+    "slug": "select",
+    "city": "Cornélio Procópio",
+    "state": "PR",
+    "university": "UTFPR",
+    "field": "Engenharia Elétrica, Eletrônica e Controle e Automação",
+    "instagram": "select.eng",
+    "services": [
+      "Projeto elétrico e luminotécnico",
+      "Fotovoltaico",
+      "Pesquisa e desenvolvimento (P&D)",
+      "Consultoria elétrica",
+      "Soluções em engenharia eletrônica"
+    ],
+    "whatsapp": null,
+    "logoIndex": 20,
+    "sourcePage": 24
+  },
+  {
+    "slug": "sete",
+    "city": "Apucarana",
+    "state": "PR",
+    "university": "UTFPR",
+    "field": "Design de Moda",
+    "instagram": "sete.consultoria",
+    "services": [
+      "Produção de moda e fotografia",
+      "Criação de arte"
+    ],
+    "whatsapp": null,
+    "logoIndex": 21,
+    "sourcePage": 25
+  },
+  {
+    "slug": "smartmec",
+    "city": "Cornélio Procópio",
+    "state": "PR",
+    "university": "UTFPR",
+    "field": "Engenharia Mecânica",
+    "instagram": "smartmec.ej",
+    "services": [
+      "Modelagem 3D",
+      "Desenho técnico 2D",
+      "Manual descritivo",
+      "Consultoria",
+      "Soluções personalizadas"
+    ],
+    "whatsapp": null,
+    "logoIndex": 22,
+    "sourcePage": 26
+  },
+  {
+    "slug": "smatjr",
+    "city": "Londrina",
+    "state": "PR",
+    "university": "UTFPR",
+    "field": "Engenharia de Materiais",
+    "instagram": "smat.jr",
+    "services": [
+      "Consultoria",
+      "Ensaios mecânicos",
+      "Caracterização de análise térmica",
+      "Seleção de materiais",
+      "Análise de processo e manufatura"
+    ],
+    "whatsapp": null,
+    "logoIndex": 23,
+    "sourcePage": 27
+  },
+  {
+    "slug": "solucao",
+    "city": "Cornélio Procópio",
+    "state": "PR",
+    "university": "UTFPR",
+    "field": "Engenharia Mecânica",
+    "instagram": "solucaojr_ej",
+    "services": [
+      "Modelagem 3D",
+      "Desenho técnico 2D",
+      "Manual descritivo",
+      "Consultoria",
+      "Soluções personalizadas"
+    ],
+    "whatsapp": null,
+    "logoIndex": 24,
+    "sourcePage": 28
+  },
+  {
+    "slug": "tcp",
+    "city": "Londrina",
+    "state": "PR",
+    "university": "UEL",
+    "field": "Engenharia Civil e Arquitetura",
+    "instagram": "tcp_londrina",
+    "services": [
+      "Projeto arquitetônico",
+      "Fachadas",
+      "Projeto de design de interiores",
+      "Projeto paisagístico",
+      "Projeto de ampliação e reforma",
+      "Projeto elétrico",
+      "Projeto hidrossanitário",
+      "Projetos de regularização"
+    ],
+    "whatsapp": null,
+    "logoIndex": 25,
+    "sourcePage": 29
+  },
+  {
+    "slug": "therion",
+    "city": "Apucarana",
+    "state": "PR",
+    "university": "UTFPR",
+    "field": "Engenharia de Computação",
+    "instagram": "therion.ej",
+    "services": [
+      "Modelagem 3D",
+      "Prototipagem 3D",
+      "Desenvolvimento web",
+      "Desenvolvimento mobile",
+      "Power BI",
+      "Consultoria em redes de computadores",
+      "Chatbot",
+      "Automação com microcontroladores",
+      "Formatação e manutenção de computadores"
+    ],
+    "whatsapp": null,
+    "logoIndex": 26,
+    "sourcePage": 30
+  },
+  {
+    "slug": "unect",
+    "city": "Cornélio Procópio",
+    "state": "PR",
+    "university": "UTFPR",
+    "field": "Engenharia de Computação, Software e ADS",
+    "instagram": "unectjr",
+    "services": [
+      "Criação de sites e landing pages",
+      "Desenvolvimento de sistemas",
+      "Desenvolvimento de aplicativos",
+      "Automatização com dashboards",
+      "Agentes de IA e chatbots",
+      "Sistemas microcontrolados"
+    ],
+    "whatsapp": null,
+    "logoIndex": 27,
+    "sourcePage": 31
+  },
+  {
+    "slug": "vetjr",
+    "city": "Londrina",
+    "state": "PR",
+    "university": "UEL",
+    "field": "Medicina Veterinária",
+    "instagram": "vetjrconsultoria",
+    "services": [
+      "Rastreamento de contaminação microbiológica em laticínios",
+      "Análises microbiológicas físico-químicas de leite e derivados",
+      "Treinamento de boas práticas com gado leiteiro",
+      "Manejo sanitário, reprodutivo e nutricional de ruminantes",
+      "Inseminação artificial (IA) e IATF",
+      "Consultoria para controle de mastite",
+      "Acompanhamento gestacional",
+      "Exames reprodutivos",
+      "Visita diagnóstica",
+      "Estruturação da marca",
+      "Consultoria veterinária para canil e gatil",
+      "Manejo nutricional",
+      "Manejo sanitário",
+      "Cartilhas sobre enriquecimento ambiental",
+      "Treinamento de gestão para funcionários"
+    ],
+    "whatsapp": null,
+    "logoIndex": 28,
+    "sourcePage": 32
+  }
+]
