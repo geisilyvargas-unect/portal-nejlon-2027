@@ -40,7 +40,14 @@ html body .quick-actions > .quick-action strong{color:#fff!important;-webkit-tex
 @media(max-width:1050px){html body .quick-actions{grid-template-columns:repeat(2,minmax(0,1fr))!important}}
 @media(max-width:650px){html body .quick-actions{grid-template-columns:1fr!important;gap:20px!important}html body .quick-actions > .quick-action{min-height:245px!important;padding:22px!important}html body .quick-actions > .quick-action b{font-size:32px!important}}
 @media(prefers-reduced-motion:reduce){html body .quick-actions > .quick-action{transition:none!important}}
-</style><link rel="stylesheet" href="./pages/nejlon-editorial-v3.css?v=figma-idv-20261122-2"></head>
+</style><link rel="stylesheet" href="./pages/nejlon-editorial-v3.css?v=figma-idv-20261122-2"><style id="deliberations-hero-title-fix">
+.intro .intro-copy{min-width:0;flex:1 1 auto;width:100%;max-width:100%}
+.intro .delib-hero-title{display:flex!important;flex-direction:column!important;align-items:flex-start!important;gap:0!important;max-width:100%!important;margin:12px 0 22px!important;font-size:clamp(31px,5.2vw,76px)!important;line-height:1.02!important;letter-spacing:-.045em!important;font-weight:900!important;overflow-wrap:normal!important;word-break:normal!important;hyphens:none!important}
+.intro .delib-hero-title>span{display:block!important;max-width:100%!important;white-space:normal!important;overflow-wrap:normal!important;word-break:keep-all!important;hyphens:none!important}
+.intro .delib-hero-title em{font-style:normal!important}
+.intro .delib-hero-title .delib-hero-sub{font-size:.37em!important;letter-spacing:.14em!important;line-height:1.6!important;margin-top:12px!important}
+@media(max-width:650px){.intro .delib-hero-title{font-size:clamp(28px,8.3vw,48px)!important;letter-spacing:-.035em!important}.intro .delib-hero-title .delib-hero-sub{font-size:.43em!important}}
+</style></head>
 <body>
   <div class="layout">
     <aside class="side">
@@ -67,7 +74,7 @@ html body .quick-actions > .quick-action strong{color:#fff!important;-webkit-tex
       <div class="content">
         <section class="intro">
           <div class="intro-copy"><span class="eyebrow">NEJLON · GESTÃO 2027</span>
-            <h1>DELIBERAÇÕES <em>NEJLON.</em><br>DECISÕES COM <em>TRANSPARÊNCIA.</em></h1>
+            <h1 class="delib-hero-title"><span>PORTAL DE</span><span><em>DELIBERAÇÕES.</em></span><span class="delib-hero-sub">NEJLON 2027</span></h1>
             <p>Formulários de votação, planejamentos financeiros, avaliação da PRESCON e relatórios publicados em um único ambiente.</p>
           </div>
           <div class="intro-symbol" aria-hidden="true"><span>29</span><small>EJs CONECTADAS</small></div>
