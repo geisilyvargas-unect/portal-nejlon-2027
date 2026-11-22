@@ -15,6 +15,7 @@ const descriptions={
  abstention:'O(a) conselheiro(a) se abstém e opta por não votar.'
 };
 const states={projection:'realistic',rateio:true,submission:null};
+const votingBlocks=[{scenarioKey:'rateio',title:'Sistema de rateios',label:'SISTEMA DE RATEIOS',description:'Avalie a proposta geral do sistema de rateios por localidade. Consulte os valores financeiros acima antes de votar.'},...P.alternatives.map((a,i)=>({...a,label:'[C'+(i+1)+'] CENÁRIO '+(i+1),description:'Avalie a proposta financeira para '+a.venue+'. As projeções pessimista, realista e otimista são informações de apoio.'}))];
 const stats=(label,value,small)=>'<div class="stat-card"><span class="stat-label">'+escape(label)+'</span><strong>'+escape(value)+'</strong><span class="stat-footer">'+escape(small)+'</span></div>';
 const table=(headers,rows)=>'<div class="idealize-overflow"><table><thead><tr>'+headers.map(x=>'<th>'+escape(x)+'</th>').join('')+'</tr></thead><tbody>'+
  rows.map(row=>'<tr>'+row.map(x=>'<td>'+escape(x)+'</td>').join('')+'</tr>').join('')+'</tbody></table></div>';
@@ -48,10 +49,10 @@ function drawForm(){
   const option=$(''+id);
   option.innerHTML='<option value="">Selecione</option>'+[0,1,2,3,4,5].map(n=>'<option value="'+n+'">'+n+(n===0?(id==='clarity'?' — Nada claro':' — Sem dificuldade'):n===5?(id==='clarity'?' — Muito claro':' — Muita dificuldade'):'')+'</option>').join('');
  }
- $('vote-scenarios').innerHTML=P.alternatives.map((a,index)=>
-  '<section class="idealize-scenario"><span class="eyebrow">[C'+(index+1)+'] CENÁRIO '+(index+1)+'</span>'+
-  '<h3>'+escape(a.title)+'</h3><p class="sub">Após analisar a proposta financeira da '+escape(a.venue)+', escolha uma posição para esta alternativa.</p>'+
-  '<fieldset><legend>Sobre o [C'+(index+1)+'] CENÁRIO '+(index+1)+', você... *</legend>'+
+ $('vote-scenarios').innerHTML=votingBlocks.map((a,index)=>
+  '<section class="idealize-scenario"><span class="eyebrow">'+escape(a.label)+'</span>'+
+  '<h3>'+escape(a.title)+'</h3><p class="sub">'+escape(a.description)+'</p>'+
+  '<fieldset><legend>Sobre '+escape(a.label)+', você... *</legend>'+
    '<div class="idealize-choices">'+Object.entries(choiceNames).map(([k,v])=>
     '<label><input type="radio" name="position_'+a.scenarioKey+'" value="'+k+'" required><span>'+escape(v)+'</span></label>').join('')+
   '</div></fieldset>'+
@@ -73,8 +74,8 @@ function drawResults(){
  $('summary-stats').innerHTML=stats('EJs votantes',V.length,'Registros fictícios')+
   stats('EJs pendentes',D.ejs.length-V.length,'Exemplo aberto')+
   stats('Representatividade',Math.round(V.length/D.ejs.length*100)+'%','Calculada automaticamente')+
-  stats('Locais analisados','2','UEL e AURORA');
- $('results').innerHTML=P.alternatives.map(a=>
+  stats('Blocos deliberáveis','3','Rateios, C1 e C2');
+ $('results').innerHTML='<div class="idealize-result"><h3>Sistema de rateios</h3><p class="note">Sem votos de rateio nos 17 exemplos históricos simulados. Nenhuma contagem foi inventada.</p></div>'+P.alternatives.map(a=>
   '<div class="idealize-result"><h3>'+escape(a.label)+'</h3>'+
   Object.entries(choiceNames).map(([key,label])=>{
    const count=V.filter(v=>v.answers.some(x=>x.scenarioKey===a.scenarioKey&&x.position===key)).length;
@@ -82,38 +83,18 @@ function drawResults(){
   }).join('')+'</div>').join('');
 }
 function field(fd,key){return String(fd.get(key)||'').trim()}
-function csvRows(){
- const headers=['Carimbo de data/hora','Nome Completo','EJ','Sobre o [C1] CENÁRIO 1, você...',
- 'Justifique a sua decisão e insira seus pontos: [C1]','Sugestões [C1]','Ressalvas [C1]',
- 'Sobre o [C2] CENÁRIO 2, você...','Justifique a sua decisão e insira seus pontos: [C2]',
- 'Sugestões [C2]','Ressalvas [C2]','O quão claro ficou as opções e as formas de votação?',
- 'O quanto você sentiu dificuldade na deliberação','Como podemos melhorar?','Tipo de registro'];
- const record=v=>{
-  const a=Object.fromEntries(v.answers.map(x=>[x.scenarioKey,x])),x=a.c1||{},y=a.c2||{};
-  return [v.updatedAt,v.fullName,v.ej,choiceNames[x.position]||'',x.justification,x.suggestions,x.caveats,
-   choiceNames[y.position]||'',y.justification,y.suggestions,y.caveats,v.clarity,v.difficulty,v.improvements,'FICTÍCIO — DEMONSTRAÇÃO'];
- };
- return [headers,...V.map(record),...(states.submission?[record(states.submission)]:[])];
-}
-function exportCsv(){
- const safe=v=>{let s=String(v??'');if(/^[=+\-@\t\r]/.test(s))s="'"+s;return '"'+s.replace(/"/g,'""')+'"';};
- const content='\uFEFF'+csvRows().map(r=>r.map(safe).join(';')).join('\r\n')+'\r\n';
- const url=URL.createObjectURL(new Blob([content],{type:'text/csv;charset=utf-8'}));
- const anchor=document.createElement('a');anchor.download='idealize-2026-respostas-ficticias.csv';anchor.href=url;anchor.click();
- setTimeout(()=>URL.revokeObjectURL(url),1000);
-}
 function submit(ev){
  ev.preventDefault();
  const form=ev.currentTarget,fd=new FormData(form);
  if(!form.reportValidity())return;
- const answers=P.alternatives.map(a=>({scenarioKey:a.scenarioKey,
+ const answers=votingBlocks.map(a=>({scenarioKey:a.scenarioKey,
   position:field(fd,'position_'+a.scenarioKey),
   justification:field(fd,'justification_'+a.scenarioKey),
   suggestions:field(fd,'suggestions_'+a.scenarioKey),caveats:field(fd,'caveats_'+a.scenarioKey)}));
  if(answers.some(x=>!x.position))return;
  states.submission={fullName:field(fd,'full_name'),ej:field(fd,'ej'),updatedAt:new Date().toISOString(),
   answers,clarity:Number(field(fd,'clarity')),difficulty:Number(field(fd,'difficulty')),improvements:field(fd,'improvements')};
- $('submit-status').textContent='Simulação registrada apenas nesta tela. Os dados oficiais não foram alterados. Baixe o CSV para conferir sua resposta junto aos exemplos.';
+ $('submit-status').textContent='Simulação registrada apenas nesta tela. Os dados oficiais não foram alterados. Nenhum dado foi transmitido ou salvo; a resposta permanece apenas nesta página.';
 }
 document.addEventListener('click',e=>{const b=e.target.closest('button[data-projection]');if(b){states.projection=b.dataset.projection;drawFinances();}});
 $('with-rateio').addEventListener('change',e=>{states.rateio=e.target.checked;drawFinances();});
@@ -121,7 +102,5 @@ $('idealize-vote-form').addEventListener('change',e=>{
  if(e.target.matches('input[type="radio"]'))toggleChoice(e.target.name.replace('position_',''));
 });
 $('idealize-vote-form').addEventListener('submit',submit);
-$('export-csv').addEventListener('click',exportCsv);
-$('export-csv-bottom').addEventListener('click',exportCsv);
 drawFinances();drawForm();drawResults();
 })();
