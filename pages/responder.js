@@ -1,7 +1,7 @@
 (()=>{
 'use strict';
 const $=id=>document.getElementById(id);
-const API=(location.hostname.endsWith('github.io')?'https://portal-nejlon-2027.vercel.app':'')+'/api/forms';
+const API='https://imsisbixzkqphooxyfhr.supabase.co/functions/v1/forms';
 const SB='https://imsisbixzkqphooxyfhr.supabase.co';
 const KEY='sb_publishable_mS_TDGKZhUuJi-rxc5Nu1w_IXODeo-_';
 const STORE='nejlon.conselheiro.session.v1';
@@ -22,7 +22,7 @@ async function refresh(){
 }
 async function request(query,options={},retry=true){
  let res;
- try{res=await fetch(API+query,{method:options.method||'GET',headers:{Authorization:'Bearer '+session.access_token,'Content-Type':'application/json'},...(options.data?{body:JSON.stringify(options.data)}:{})})}catch{throw Error('Não foi possível acessar o servidor. Confira a publicação do Portal no Vercel.')}
+ try{res=await fetch(API+query,{method:options.method||'GET',headers:{Authorization:'Bearer '+session.access_token,apikey:KEY,'Content-Type':'application/json'},...(options.data?{body:JSON.stringify(options.data)}:{})})}catch{throw Error('Não foi possível acessar o servidor. Confira a publicação do Portal no Vercel.')}
  if(res.status===401&&retry){await refresh();return request(query,options,false)}
  return parseResponse(res);
 }
