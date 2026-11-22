@@ -111,3 +111,21 @@ html:is([data-theme="light"],[data-theme="dark"]) :is(.intro h1,.i-hero h1,.idea
  text-shadow:2px 2px 0 var(--nejlon-title-shadow),2px 3px 0 var(--nejlon-title-edge)!important;
 }
 @media(max-width:600px){html:is([data-theme="light"],[data-theme="dark"]) :is(.intro h1,.i-hero h1,.idealize-banner h1,.wa-hero h1){text-shadow:1px 2px 0 var(--nejlon-title-shadow)!important}}
+
+
+/* Mesmo tratamento tipográfico aprovado no antigo tema vermelho, agora nos dois temas ativos. */
+html:is([data-theme="light"],[data-theme="dark"]) :is(.intro h1,.i-hero h1,.idealize-banner h1,.wa-hero h1,.workhead h2,.panel h3,.ej-directory-card h3,.wa-panel h2,.idealize-shell h2,.i-section h2){
+ color:#fff!important;
+ -webkit-text-stroke:2px #000!important;
+ paint-order:stroke fill!important;
+ text-shadow:2px 4px 0 #ff0000!important;
+ letter-spacing:.01em!important;
+}
+html:is([data-theme="light"],[data-theme="dark"]) :is(.intro h1,.i-hero h1,.idealize-banner h1,.wa-hero h1){
+ text-shadow:3px 6px 0 #ff0000,4px 8px 0 #050505!important;
+}
+html:is([data-theme="light"],[data-theme="dark"]) :is(.intro h1,.i-hero h1,.idealize-banner h1,.wa-hero h1,.workhead h2,.panel h3,.ej-directory-card h3,.wa-panel h2,.idealize-shell h2,.i-section h2) :is(em,strong,span){color:#fff!important;-webkit-text-stroke:inherit!important}
+@media(max-width:600px){
+ html:is([data-theme="light"],[data-theme="dark"]) :is(.intro h1,.i-hero h1,.idealize-banner h1,.wa-hero h1,.workhead h2,.panel h3,.ej-directory-card h3,.wa-panel h2,.idealize-shell h2,.i-section h2){-webkit-text-stroke:1.5px #000!important}
+ html:is([data-theme="light"],[data-theme="dark"]) :is(.intro h1,.i-hero h1,.idealize-banner h1,.wa-hero h1){text-shadow:2px 4px 0 #ff0000,3px 6px 0 #050505!important}
+}
