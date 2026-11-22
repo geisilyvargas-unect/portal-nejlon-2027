@@ -35,3 +35,13 @@ html[data-theme="dark"],html[data-theme="red"]{--ux-lime:var(--nejlon-lime)}
 :where(.stat-icon,.eyebrow,.top-year)[data-accent="lime"]{color:var(--nejlon-lime)!important}
 :where(.panel,.stat-card,.role-card,.ej-directory-card)[data-accent="lime"]{border-left:4px solid var(--nejlon-lime)!important}
 :where(.nav-button,.filter,.btn)[data-accent="lime"].active{background:var(--nejlon-lime)!important;color:#111!important;border-color:var(--nejlon-lime)!important}
+
+
+/* Recortes editoriais e ondas orgânicas do portfólio, sem imagens externas. */
+:is(.intro,.i-hero,.idealize-banner){isolation:isolate;overflow:hidden}
+:is(.intro,.i-hero,.idealize-banner)::after{content:"";position:absolute;right:-54px;bottom:-74px;width:170px;height:170px;border:27px solid var(--nejlon-lime);border-radius:45% 55% 52% 48%;transform:rotate(-28deg);pointer-events:none;opacity:.88;z-index:0}
+:is(.intro,.i-hero,.idealize-banner)>*{position:relative;z-index:1}
+:is(.intro,.i-hero,.idealize-banner)::before{content:"";position:absolute;top:14px;right:18px;width:20px;height:30px;background:#fff;clip-path:polygon(50% 0,65% 36%,100% 50%,65% 64%,50% 100%,35% 64%,0 50%,35% 36%);pointer-events:none;opacity:.9}
+html[data-theme="light"] :is(.intro,.i-hero,.idealize-banner)::before{background:#111}
+@media(max-width:600px){:is(.intro,.i-hero,.idealize-banner)::after{width:108px;height:108px;border-width:17px;right:-50px;bottom:-48px;opacity:.5}}
+@media print{:is(.intro,.i-hero,.idealize-banner)::before,:is(.intro,.i-hero,.idealize-banner)::after{display:none}}
