@@ -1,0 +1,410 @@
+[
+  {
+    "ej": "unect",
+    "fullName": "PESSOA FICTÍCIA — EXEMPLO 01",
+    "updatedAt": "2026-11-21T21:00:00-03:00",
+    "answers": [
+      {
+        "scenarioKey": "c1",
+        "position": "favorable",
+        "justification": "A proposta foi considerada viável nesta simulação.",
+        "suggestions": "",
+        "caveats": ""
+      },
+      {
+        "scenarioKey": "c2",
+        "position": "qualified",
+        "justification": "Aprova desde que as despesas e condições sejam reavaliadas antes da contratação.",
+        "suggestions": "",
+        "caveats": "Aprova desde que as despesas e condições sejam reavaliadas antes da contratação."
+      }
+    ],
+    "clarity": 1,
+    "difficulty": 1,
+    "improvements": "Apresentar o comparativo financeiro em uma única tela."
+  },
+  {
+    "ej": "3e",
+    "fullName": "PESSOA FICTÍCIA — EXEMPLO 02",
+    "updatedAt": "2026-11-21T21:00:00-03:00",
+    "answers": [
+      {
+        "scenarioKey": "c1",
+        "position": "suggestions",
+        "justification": "Sugere detalhar o acompanhamento da execução financeira.",
+        "suggestions": "Sugere detalhar o acompanhamento da execução financeira.",
+        "caveats": ""
+      },
+      {
+        "scenarioKey": "c2",
+        "position": "against",
+        "justification": "Não aprova nas condições financeiras apresentadas.",
+        "suggestions": "",
+        "caveats": ""
+      }
+    ],
+    "clarity": 2,
+    "difficulty": 2,
+    "improvements": "Sem sugestões"
+  },
+  {
+    "ej": "boson",
+    "fullName": "PESSOA FICTÍCIA — EXEMPLO 03",
+    "updatedAt": "2026-11-21T21:00:00-03:00",
+    "answers": [
+      {
+        "scenarioKey": "c1",
+        "position": "qualified",
+        "justification": "Aprova desde que as despesas e condições sejam reavaliadas antes da contratação.",
+        "suggestions": "",
+        "caveats": "Aprova desde que as despesas e condições sejam reavaliadas antes da contratação."
+      },
+      {
+        "scenarioKey": "c2",
+        "position": "qualified",
+        "justification": "Aprova desde que as despesas e condições sejam reavaliadas antes da contratação.",
+        "suggestions": "",
+        "caveats": "Aprova desde que as despesas e condições sejam reavaliadas antes da contratação."
+      }
+    ],
+    "clarity": 3,
+    "difficulty": 3,
+    "improvements": "Sem sugestões"
+  },
+  {
+    "ej": "aprimora",
+    "fullName": "PESSOA FICTÍCIA — EXEMPLO 04",
+    "updatedAt": "2026-11-21T21:00:00-03:00",
+    "answers": [
+      {
+        "scenarioKey": "c1",
+        "position": "favorable",
+        "justification": "A proposta foi considerada viável nesta simulação.",
+        "suggestions": "",
+        "caveats": ""
+      },
+      {
+        "scenarioKey": "c2",
+        "position": "favorable",
+        "justification": "A proposta foi considerada viável nesta simulação.",
+        "suggestions": "",
+        "caveats": ""
+      }
+    ],
+    "clarity": 4,
+    "difficulty": 4,
+    "improvements": "Apresentar o comparativo financeiro em uma única tela."
+  },
+  {
+    "ej": "lex",
+    "fullName": "PESSOA FICTÍCIA — EXEMPLO 05",
+    "updatedAt": "2026-11-21T21:00:00-03:00",
+    "answers": [
+      {
+        "scenarioKey": "c1",
+        "position": "favorable",
+        "justification": "A proposta foi considerada viável nesta simulação.",
+        "suggestions": "",
+        "caveats": ""
+      },
+      {
+        "scenarioKey": "c2",
+        "position": "qualified",
+        "justification": "Aprova desde que as despesas e condições sejam reavaliadas antes da contratação.",
+        "suggestions": "",
+        "caveats": "Aprova desde que as despesas e condições sejam reavaliadas antes da contratação."
+      }
+    ],
+    "clarity": 5,
+    "difficulty": 1,
+    "improvements": "Sem sugestões"
+  },
+  {
+    "ej": "sete",
+    "fullName": "PESSOA FICTÍCIA — EXEMPLO 06",
+    "updatedAt": "2026-11-21T21:00:00-03:00",
+    "answers": [
+      {
+        "scenarioKey": "c1",
+        "position": "favorable",
+        "justification": "A proposta foi considerada viável nesta simulação.",
+        "suggestions": "",
+        "caveats": ""
+      },
+      {
+        "scenarioKey": "c2",
+        "position": "abstention",
+        "justification": "",
+        "suggestions": "",
+        "caveats": ""
+      }
+    ],
+    "clarity": 1,
+    "difficulty": 2,
+    "improvements": "Sem sugestões"
+  },
+  {
+    "ej": "meca",
+    "fullName": "PESSOA FICTÍCIA — EXEMPLO 07",
+    "updatedAt": "2026-11-21T21:00:00-03:00",
+    "answers": [
+      {
+        "scenarioKey": "c1",
+        "position": "suggestions",
+        "justification": "Sugere detalhar o acompanhamento da execução financeira.",
+        "suggestions": "Sugere detalhar o acompanhamento da execução financeira.",
+        "caveats": ""
+      },
+      {
+        "scenarioKey": "c2",
+        "position": "qualified",
+        "justification": "Aprova desde que as despesas e condições sejam reavaliadas antes da contratação.",
+        "suggestions": "",
+        "caveats": "Aprova desde que as despesas e condições sejam reavaliadas antes da contratação."
+      }
+    ],
+    "clarity": 2,
+    "difficulty": 3,
+    "improvements": "Apresentar o comparativo financeiro em uma única tela."
+  },
+  {
+    "ej": "notton",
+    "fullName": "PESSOA FICTÍCIA — EXEMPLO 08",
+    "updatedAt": "2026-11-21T21:00:00-03:00",
+    "answers": [
+      {
+        "scenarioKey": "c1",
+        "position": "favorable",
+        "justification": "A proposta foi considerada viável nesta simulação.",
+        "suggestions": "",
+        "caveats": ""
+      },
+      {
+        "scenarioKey": "c2",
+        "position": "against",
+        "justification": "Não aprova nas condições financeiras apresentadas.",
+        "suggestions": "",
+        "caveats": ""
+      }
+    ],
+    "clarity": 3,
+    "difficulty": 4,
+    "improvements": "Sem sugestões"
+  },
+  {
+    "ej": "artus",
+    "fullName": "PESSOA FICTÍCIA — EXEMPLO 09",
+    "updatedAt": "2026-11-21T21:00:00-03:00",
+    "answers": [
+      {
+        "scenarioKey": "c1",
+        "position": "favorable",
+        "justification": "A proposta foi considerada viável nesta simulação.",
+        "suggestions": "",
+        "caveats": ""
+      },
+      {
+        "scenarioKey": "c2",
+        "position": "favorable",
+        "justification": "A proposta foi considerada viável nesta simulação.",
+        "suggestions": "",
+        "caveats": ""
+      }
+    ],
+    "clarity": 4,
+    "difficulty": 1,
+    "improvements": "Sem sugestões"
+  },
+  {
+    "ej": "bioma",
+    "fullName": "PESSOA FICTÍCIA — EXEMPLO 10",
+    "updatedAt": "2026-11-21T21:00:00-03:00",
+    "answers": [
+      {
+        "scenarioKey": "c1",
+        "position": "qualified",
+        "justification": "Aprova desde que as despesas e condições sejam reavaliadas antes da contratação.",
+        "suggestions": "",
+        "caveats": "Aprova desde que as despesas e condições sejam reavaliadas antes da contratação."
+      },
+      {
+        "scenarioKey": "c2",
+        "position": "qualified",
+        "justification": "Aprova desde que as despesas e condições sejam reavaliadas antes da contratação.",
+        "suggestions": "",
+        "caveats": "Aprova desde que as despesas e condições sejam reavaliadas antes da contratação."
+      }
+    ],
+    "clarity": 5,
+    "difficulty": 2,
+    "improvements": "Apresentar o comparativo financeiro em uma única tela."
+  },
+  {
+    "ej": "gaia",
+    "fullName": "PESSOA FICTÍCIA — EXEMPLO 11",
+    "updatedAt": "2026-11-21T21:00:00-03:00",
+    "answers": [
+      {
+        "scenarioKey": "c1",
+        "position": "favorable",
+        "justification": "A proposta foi considerada viável nesta simulação.",
+        "suggestions": "",
+        "caveats": ""
+      },
+      {
+        "scenarioKey": "c2",
+        "position": "suggestions",
+        "justification": "Sugere detalhar o acompanhamento da execução financeira.",
+        "suggestions": "Sugere detalhar o acompanhamento da execução financeira.",
+        "caveats": ""
+      }
+    ],
+    "clarity": 1,
+    "difficulty": 3,
+    "improvements": "Sem sugestões"
+  },
+  {
+    "ej": "kinase",
+    "fullName": "PESSOA FICTÍCIA — EXEMPLO 12",
+    "updatedAt": "2026-11-21T21:00:00-03:00",
+    "answers": [
+      {
+        "scenarioKey": "c1",
+        "position": "favorable",
+        "justification": "A proposta foi considerada viável nesta simulação.",
+        "suggestions": "",
+        "caveats": ""
+      },
+      {
+        "scenarioKey": "c2",
+        "position": "favorable",
+        "justification": "A proposta foi considerada viável nesta simulação.",
+        "suggestions": "",
+        "caveats": ""
+      }
+    ],
+    "clarity": 2,
+    "difficulty": 4,
+    "improvements": "Sem sugestões"
+  },
+  {
+    "ej": "lion",
+    "fullName": "PESSOA FICTÍCIA — EXEMPLO 13",
+    "updatedAt": "2026-11-21T21:00:00-03:00",
+    "answers": [
+      {
+        "scenarioKey": "c1",
+        "position": "suggestions",
+        "justification": "Sugere detalhar o acompanhamento da execução financeira.",
+        "suggestions": "Sugere detalhar o acompanhamento da execução financeira.",
+        "caveats": ""
+      },
+      {
+        "scenarioKey": "c2",
+        "position": "qualified",
+        "justification": "Aprova desde que as despesas e condições sejam reavaliadas antes da contratação.",
+        "suggestions": "",
+        "caveats": "Aprova desde que as despesas e condições sejam reavaliadas antes da contratação."
+      }
+    ],
+    "clarity": 3,
+    "difficulty": 1,
+    "improvements": "Apresentar o comparativo financeiro em uma única tela."
+  },
+  {
+    "ej": "select",
+    "fullName": "PESSOA FICTÍCIA — EXEMPLO 14",
+    "updatedAt": "2026-11-21T21:00:00-03:00",
+    "answers": [
+      {
+        "scenarioKey": "c1",
+        "position": "favorable",
+        "justification": "A proposta foi considerada viável nesta simulação.",
+        "suggestions": "",
+        "caveats": ""
+      },
+      {
+        "scenarioKey": "c2",
+        "position": "against",
+        "justification": "Não aprova nas condições financeiras apresentadas.",
+        "suggestions": "",
+        "caveats": ""
+      }
+    ],
+    "clarity": 4,
+    "difficulty": 2,
+    "improvements": "Sem sugestões"
+  },
+  {
+    "ej": "pegasus",
+    "fullName": "PESSOA FICTÍCIA — EXEMPLO 15",
+    "updatedAt": "2026-11-21T21:00:00-03:00",
+    "answers": [
+      {
+        "scenarioKey": "c1",
+        "position": "favorable",
+        "justification": "A proposta foi considerada viável nesta simulação.",
+        "suggestions": "",
+        "caveats": ""
+      },
+      {
+        "scenarioKey": "c2",
+        "position": "favorable",
+        "justification": "A proposta foi considerada viável nesta simulação.",
+        "suggestions": "",
+        "caveats": ""
+      }
+    ],
+    "clarity": 5,
+    "difficulty": 3,
+    "improvements": "Sem sugestões"
+  },
+  {
+    "ej": "tcp",
+    "fullName": "PESSOA FICTÍCIA — EXEMPLO 16",
+    "updatedAt": "2026-11-21T21:00:00-03:00",
+    "answers": [
+      {
+        "scenarioKey": "c1",
+        "position": "qualified",
+        "justification": "Aprova desde que as despesas e condições sejam reavaliadas antes da contratação.",
+        "suggestions": "",
+        "caveats": "Aprova desde que as despesas e condições sejam reavaliadas antes da contratação."
+      },
+      {
+        "scenarioKey": "c2",
+        "position": "favorable",
+        "justification": "A proposta foi considerada viável nesta simulação.",
+        "suggestions": "",
+        "caveats": ""
+      }
+    ],
+    "clarity": 1,
+    "difficulty": 4,
+    "improvements": "Apresentar o comparativo financeiro em uma única tela."
+  },
+  {
+    "ej": "vetjr",
+    "fullName": "PESSOA FICTÍCIA — EXEMPLO 17",
+    "updatedAt": "2026-11-21T21:00:00-03:00",
+    "answers": [
+      {
+        "scenarioKey": "c1",
+        "position": "favorable",
+        "justification": "A proposta foi considerada viável nesta simulação.",
+        "suggestions": "",
+        "caveats": ""
+      },
+      {
+        "scenarioKey": "c2",
+        "position": "abstention",
+        "justification": "",
+        "suggestions": "",
+        "caveats": ""
+      }
+    ],
+    "clarity": 2,
+    "difficulty": 1,
+    "improvements": "Sem sugestões"
+  }
+]
