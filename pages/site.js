@@ -23,6 +23,8 @@ const roleMap={
 };
 const s={role:'prescon',section:'painel',ej:'unect',selected:'unect',filter:'all',search:'',delib:'financeiro',vote:'favorable',positionFilter:'all',calendarMonth:new Date().getMonth(),calendarYear:new Date().getFullYear()};
 const $=id=>document.getElementById(id);
+// Perfis institucionais verificados em fonte universitária; não inferir URLs das demais EJs.
+const ejInstagram=Object.freeze({unect:'https://www.instagram.com/unectjr/',select:'https://www.instagram.com/select.eng/'});
 const esc=x=>String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const fmt=n=>Math.round(n)+'%';
 const role=()=>roleMap[s.role];
@@ -199,7 +201,7 @@ function listPanel(title,sub,items){
 function extras(){
  if(s.section==='demandas')return '<div class="view-grid">'+panel('Demandas reais da Rede','A gestão de demandas funciona com login institucional e decisões registradas, separadamente dos indicadores fictícios desta demonstração.','<a class="btn red" href="./pages/demandas.html">Abrir Sistema de Demandas →</a>')+'</div>';
  if(s.section==='calendario')return calendarView();
- if(s.section==='rede')return panel('Empresas juniores da Rede','Lista de 29 empresas de exemplo.','<div class="heatmap">'+D.ejs.map(x=>'<button class="heat none" type="button" data-select-rede="'+esc(x.slug)+'"><span class="name">'+esc(x.name)+'</span></button>').join('')+'</div>');
+ if(s.section==='rede')return panel('Empresas juniores da Rede','Clique para abrir o Instagram oficial confirmado da EJ. Perfis ainda não verificados ficam identificados, sem redirecionamentos incorretos.','<div class="heatmap">'+D.ejs.map(x=>ejInstagram[x.slug]?'<a class="heat none" href="'+ejInstagram[x.slug]+'" target="_blank" rel="noopener noreferrer" title="Abrir Instagram oficial de '+esc(x.name)+'"><span class="name">'+esc(x.name)+'</span><small style="display:block;font-size:10px">Instagram ↗</small></a>':'<span class="heat none" aria-label="Instagram de '+esc(x.name)+' ainda não confirmado" title="Instagram oficial ainda não confirmado"><span class="name">'+esc(x.name)+'</span><small style="display:block;font-size:10px">A confirmar</small></span>').join('')+'</div>');
  return '';
 }
 function roleLanding(){
