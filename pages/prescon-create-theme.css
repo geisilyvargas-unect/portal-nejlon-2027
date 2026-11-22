@@ -1,0 +1,28 @@
+/* PRESCON • Nova deliberação: contraste e identidade institucional em todos os temas. */
+:root{--pf-red:#ff0000;--pf-black:#000;--pf-white:#fff}
+html[data-theme="light"],html:not([data-theme]):not([data-ux-theme]){--pf-bg:#f5f5f5;--pf-card:#fff;--pf-ink:#080808;--pf-muted:#353535;--pf-field:#fff;--pf-line:#111;--pf-note:#f0f0f0}
+html[data-theme="dark"],html[data-theme="black"],html[data-ux-theme="dark"]{--pf-bg:#000;--pf-card:#101010;--pf-ink:#fff;--pf-muted:#ddd;--pf-field:#181818;--pf-line:#eee;--pf-note:#1d1d1d}
+html[data-theme="red"],html[data-ux-theme="red"]{--pf-bg:#ff0000;--pf-card:#050505;--pf-ink:#fff;--pf-muted:#eee;--pf-field:#171717;--pf-line:#fff;--pf-note:#202020}
+html body{background:var(--pf-bg)!important;color:var(--pf-ink)!important}
+html body .top{background:#000!important;color:#fff!important;border-bottom:5px solid #ff0000!important}
+html body .top a,html body .top strong,html body .top span{color:#fff!important}
+html body .wrap{max-width:1020px}
+html body .hero{background:#ff0000!important;color:#fff!important;border:4px solid #000!important;border-radius:0!important;overflow:visible!important;padding:35px 40px 46px!important}
+html body .hero::after{background:#000!important;border-radius:0!important;width:72px!important;height:72px!important;top:0!important;right:0!important;opacity:1!important;clip-path:polygon(100% 0,100% 100%,0 0)}
+html body .hero span,html body .hero p{color:#fff!important;position:relative;z-index:3}
+html body .hero h1{color:#fff!important;position:relative;z-index:3}
+html body .paper{background:var(--pf-card)!important;color:var(--pf-ink)!important;border:2px solid var(--pf-line)!important;border-top:8px solid #ff0000!important;border-radius:0!important;box-shadow:7px 7px 0 #0002!important;margin:20px 0!important;padding:28px!important}
+html body .paper h2,html body .paper h3,html body .paper p,html body .paper label{color:var(--pf-ink)!important}
+html body .paper h2{font-weight:900!important;text-transform:uppercase!important;letter-spacing:-.025em!important}
+html body .notice{background:var(--pf-note)!important;color:var(--pf-ink)!important;border-left:6px solid #ff0000!important;border-radius:0!important}
+html body :is(input,select,textarea){background:var(--pf-field)!important;color:var(--pf-ink)!important;border:2px solid var(--pf-line)!important;border-radius:0!important;accent-color:#ff0000!important}
+html body input[type=file]{padding:14px!important;width:100%!important;max-width:100%!important}
+html body :is(input,select,textarea):focus-visible{outline:3px solid #ff0000!important;outline-offset:3px!important}
+html body :is(button,.create-primary){background:#ff0000!important;color:#fff!important;border:2px solid #000!important;border-radius:0!important;font-weight:900!important;text-decoration:none!important;display:inline-block!important;padding:12px 18px!important;cursor:pointer!important;box-shadow:4px 4px 0 #000!important}
+html body :is(button,.create-primary):hover{background:#000!important;color:#fff!important;border-color:#ff0000!important}
+html body .section-label{background:#000!important;color:#fff!important}
+html body .manual,html body .rating,html body .option{background:var(--pf-note)!important;color:var(--pf-ink)!important;border-color:var(--pf-line)!important}
+html body .option:has(input:checked){border:3px solid #ff0000!important}
+html body .scale-labels,html body .actions span{color:var(--pf-muted)!important}
+html body #status,html body #copy-status{color:var(--pf-ink)!important}
+@media(max-width:600px){html body .hero{padding:24px 20px 32px!important}html body .paper{padding:18px!important;box-shadow:3px 3px 0 #0002!important}}
