@@ -9,7 +9,7 @@ const esc=x=>String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&
 const validUrl=x=>{try{const u=new URL(x);return u.protocol==='https:'?u.href:null}catch{return null}};
 const formURL=id=>new URL('./responder.html?id='+encodeURIComponent(id),location.href).href;
 let session=null,formRows=[],currentFiles=[],ejs=[],reportRows=[];
-let weeklyData=null;
+let weeklyData=null,demandSummary=null,demandUI=null;
 try{const stored=JSON.parse(sessionStorage.getItem(STORE)||'null');if(stored&&stored.access_token)session=stored}catch{}
 function toast(s){$('auto-toast').textContent=s;clearTimeout(toast.timer);toast.timer=setTimeout(()=>$('auto-toast').textContent='',6500)}
 function tab(which){document.querySelectorAll('.automation-tabs button').forEach(b=>{const yes=b.dataset.tab===which;b.classList.toggle('active',yes);if(yes)b.setAttribute('aria-current','page');else b.removeAttribute('aria-current')});document.querySelectorAll('.auto-tab').forEach(p=>p.hidden=p.dataset.panel!==which);window.scrollTo({top:0,behavior:'smooth'})}
@@ -95,6 +95,7 @@ function weeklyMessage(){
   lines.push('');
  }
  if(!forms.length)lines.push('Não há deliberações abertas para cobrar nesta semana. ❤️');
+ if(demandSummary?.waiting)lines.push('📋 Lembrando também de consultar as demandas pendentes diretamente no Portal NEJLON, onde cada EJ encontra os seus prazos e orientações.','');
  lines.push('Se você já respondeu pelo Google Forms, desconsidere a pendência até a sincronização e conferência da PRESCON.');
  lines.push('Qualquer dúvida, podem me chamar! ❤️');
  return lines.join('\n');
@@ -104,7 +105,8 @@ function overviewText(){
  const w=weeklyData,forms=w.open_forms||[];
  return ['PRESCON · PANORAMA DA REDE','Atualizado: '+new Date(w.generated_at).toLocaleString('pt-BR'),
   'Deliberações abertas: '+w.active_count,'Respostas externas para validar: '+w.pending_review_total,
-  'Prazos nos próximos 7 dias: '+w.due_soon.length,'Prazos ultrapassados: '+w.overdue.length,'',
+  'Prazos nos próximos 7 dias: '+w.due_soon.length,'Prazos ultrapassados: '+w.overdue.length,
+  ...(demandSummary?['Demandas em aberto: '+demandSummary.waiting,'Justificativas esperando decisão da PRESCON: '+demandSummary.pendingReview,'Demandas atrasadas: '+demandSummary.overdue]:[]),'',
   ...forms.flatMap(f=>[f.title+' · '+formatDue(f.due_at),
     'EJs sem resposta válida: '+f.pending_ejs.length+' / '+f.total_ejs,
     'Respostas aguardando validação: '+f.pending_review,
@@ -133,12 +135,28 @@ async function loadWeekly(){
  }catch(e){weeklyData=null;$('auto-weekly-status').textContent='Não foi possível carregar o panorama: '+e.message;$('auto-weekly-stats').innerHTML='';$('auto-weekly-items').innerHTML='';}
 }
 
+async function loadDemands(){
+ if(!demandUI&&window.NEJLON_DemandUI){
+  demandUI=window.NEJLON_DemandUI.mount({containerId:'auto-demands-root',request});
+ }
+ if(demandUI)await demandUI.refresh();
+ try{
+  const data=await request('/demands?action=summary');
+  demandSummary=data.summary;
+  $('auto-weekly-demand').innerHTML='<strong>Demandas da Rede:</strong> '+demandSummary.waiting+' em aberto · '+demandSummary.pendingReview+' justificativa(s) aguardando sua decisão · '+demandSummary.overdue+' com prazo vencido. <button type="button" class="btn" id="auto-open-demandas">Analisar demandas →</button>';
+  $('auto-open-demandas').addEventListener('click',()=>tab('demandas'));
+ }catch(e){
+  demandSummary=null;
+  $('auto-weekly-demand').textContent='Demandas ainda indisponíveis nesta publicação: '+e.message;
+ }
+}
 async function load(){
  const response=await request('/drive?action=status');
  authVisible(true);
  $('auto-user').textContent=session.user?.email||'PRESCON';
  statusNotice(response);formRows=response.forms||[];renderFiles(response.files||[]);renderForms();
  await loadWeekly();
+ await loadDemands();
  const query=new URLSearchParams(location.search);
  if(query.get('google')==='conectado'){toast('Google autorizado. Verifique o status de conexão.');history.replaceState(null,'',location.pathname)}
  else if(query.get('google')==='cancelado'){toast('Conexão Google cancelada.');history.replaceState(null,'',location.pathname)}
