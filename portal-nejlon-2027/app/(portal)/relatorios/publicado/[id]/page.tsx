@@ -12,8 +12,10 @@ export default async function PublishedReport({params}:{params:Promise<{id:strin
  const {id}=await params;
  if(!/^[0-9a-f-]{36}$/i.test(id))notFound();
  const db=await createClient();
- const {data,error}=await db.from('published_deliberation_reports').select('id,title,version,published_at,content').eq('id',id).maybeSingle();
+ const {data,error}=await db.from('published_deliberation_reports').select('id,title,version,published_at,content,deliberation_id').eq('id',id).maybeSingle();
  if(error||!data)notFound();
+ const {data:deliberation}=await db.from('deliberations').select('status').eq('id',data.deliberation_id).maybeSingle();
+ if(!deliberation||deliberation.status!=='closed')notFound();
  const content=data.content as Content;
  const total=Number(content.total_ejs)||0,voters=Number(content.voters)||0;
  return <div className="stack report-document">
