@@ -90,8 +90,8 @@
 .institutional .ej-logo img[src$="/catec-z.svg"],
 .institutional .ej-logo img[src$="/aprimora.svg"],
 .institutional .ej-logo img[src$="/tcp.svg"],
-.institutional .ej-logo img[src$="/paracelso.svg"],
-.institutional .ej-logo img[src$="/smat.svg"]{
+.institutional .ej-logo img[src^="./logos/paracelso.svg"],
+.institutional .ej-logo img[src^="./logos/smat.svg"]{
  transform:scale(1.2);
  filter:drop-shadow(0 0 3px rgba(255,255,255,.75));
 }
