@@ -7,3 +7,7 @@
 .city .city-chevron{font-size:20px;transition:transform .2s}
 .city[open] .city-chevron{transform:rotate(180deg)}
 .city .ej-grid{padding:14px}
+
+/* Melhor leitura das letras grandes nos materiais institucionais. */
+.i-hero h1,.i-section h2{letter-spacing:.035em;line-height:1.18;text-shadow:2px 3px 0 #121212,4px 5px 0 #ce2d32;overflow-wrap:break-word}
+@media(max-width:560px){.i-hero h1,.i-section h2{letter-spacing:.018em;line-height:1.2}}
