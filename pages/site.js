@@ -73,9 +73,11 @@ function heatmap(){
  const filtered=all.filter(e=>(s.filter==='all'||e.status===s.filter)&&e.name.toLocaleLowerCase('pt-BR').includes(s.search.trim().toLocaleLowerCase('pt-BR')));
  const selected=all.find(e=>e.slug===s.selected)||all[0];
  const controls='<div class="toolrow"><input type="search" class="search" id="ej-search" placeholder="Buscar empresa júnior..." aria-label="Buscar EJ" value="'+esc(s.search)+'"/><button type="button" data-filter="all" class="filter '+(s.filter==='all'?'active':'')+'">Todas ('+all.length+')</button>'+[['high','80–100%'],['medium','50–79%'],['low','0–49%']].map(([k,v])=>'<button type="button" data-filter="'+k+'" class="filter '+(s.filter===k?'active':'')+'">'+v+' ('+all.filter(e=>e.status===k).length+')</button>').join('')+'</div>';
- const heat='<div class="heatmap">'+filtered.map(e=>'<button type="button" class="heat '+e.status+(selected.slug===e.slug?' active':'')+'" data-ej="'+esc(e.slug)+'" aria-pressed="'+(selected.slug===e.slug)+'" title="'+esc(e.name+': '+e.pct+'%')+'"><span class="name">'+esc(e.name)+'</span><span class="pct">'+e.pct+'%</span></button>').join('')+'</div>';
+ const heat='<div class="heatmap">'+filtered.map(e=>'<button type="button" class="heat '+e.status+(selected.slug===e.slug?' active':'')+'" data-ej="'+esc(e.slug)+'" aria-pressed="'+(selected.slug===e.slug)+'" title="'+esc(e.name+': '+e.pct+'%')+'"><span class="name">'+logo(e.slug,'ej-logo heat-logo')+esc(e.name)+'</span><span class="pct">'+e.pct+'%</span></button>').join('')+'</div>';
  const legend='<div class="heat-info"><span><i class="swatch high"></i>80–100%</span><span><i class="swatch medium"></i>50–79%</span><span><i class="swatch low"></i>0–49%</span></div>';
- const detail='<div class="profile-head"><div class="avatar">EJ</div><div><span class="small-cap">FICHA DE PARTICIPAÇÃO</span><h3>'+esc(selected.name)+'</h3></div></div><div class="profile-value">'+selected.pct+'%</div><p class="sub">Taxa de resposta nos três exemplos</p><div class="progress" role="progressbar" aria-valuenow="'+selected.pct+'" aria-valuemin="0" aria-valuemax="100"><div class="fill" style="width:'+selected.pct+'%"></div></div><div class="detail-stats"><div><b>'+selected.done+'</b><span>Respondidas</span></div><div><b>'+selected.missing+'</b><span>Pendentes</span></div><div><b>3</b><span>Deliberações</span></div></div><div class="microheading">✓ COM RESPOSTA</div><ul class="bulletlist">'+(selected.answered.map(d=>'<li>'+esc(d.name)+'</li>').join('')||'<li>Nenhuma neste exemplo</li>')+'</ul><div class="microheading">◷ SEM RESPOSTA</div><ul class="bulletlist">'+(selected.pending.map(d=>'<li>'+esc(d.name)+'</li>').join('')||'<li>Todas respondidas</li>')+'</ul>';
+ const detail='<div class="profile-head">'+logo(selected.slug,"ej-logo profile-logo")+'<div><span class="small-cap">FICHA DE PARTICIPAÇÃO</span><h3>'+esc(selected.name)+'</h3></div></div><div class="profile-value">'+selected.pct+'%</div><p class="sub">Taxa de resposta nos três exemplos</p><div class="progress" role="progressbar" aria-valuenow="'+selected.pct+'" aria-valuemin="0" aria-valuemax="100"><div class="fill" style="width:'+selected.pct+'%"></div></div><div class="detail-stats"><div><b>'+selected.done+'</b><span>Respondidas</span></div><div><b>'+selected.missing+'</b><span>Pendentes</span></div><div><b>3</b><span>Deliberações</span></div></div><div class="microheading">✓ COM RESPOSTA</div><ul class="bulletlist">'+(selected.answered.map(d=>'<li>'+esc(d.name)+'</li>').join('')||'<li>Nenhuma neste exemplo</li>')+'</ul><div class="microheading">◷ SEM RESPOSTA</div><ul class="bulletlist">'+(selected.pending.map(d=>'<li>'+esc(d.name)+'</li>').join('')||'<li>Todas respondidas</li>')+'</ul><div class="microheading">SOBRE A EJ</div>'+(
+  profile(selected.slug)?'<p class="note">'+esc(profile(selected.slug).field)+' · '+esc(profile(selected.slug).university)+' · '+esc(profile(selected.slug).city)+'/PR</p>':''
+ )+contactButtons(profile(selected.slug));
  return '<div class="split">'+panel('Mapa de calor · 29 EJs','Clique em cada EJ para conferir sua participação.',controls+heat+(filtered.length?'':'<p class="note">Nenhuma EJ corresponde ao filtro.</p>')+legend+'<p class="note">As cores representam apenas respostas recebidas. Não medem motivação, qualidade ou comprometimento das pessoas.</p>')+panel('Perfil da EJ','Indicadores calculados a partir de exemplos fictícios.',detail)+'</div>';
 }
 function trend(){
@@ -123,7 +125,20 @@ function extras(){
  if(s.section==='demandas')return '<div class="view-grid">'+stats([metric('A acompanhar','3','Demandas ilustrativas','☷'),metric('Em andamento','1','Execução simulada','◷'),metric('Concluída','1','Exemplo','✓'),metric('Próximo prazo','12/03','2027','▦')])+listPanel('Demandas de exemplo','Exibição visual de responsáveis e status.',[['Atualizar cadastro institucional','Prazo: 12/03/2027 · Responsável: DIREX da EJ','Em andamento'],['Confirmar reunião do Conselho','Prazo: 15/03/2027 · Responsável: Conselho','Pendente'],['Enviar relatório mensal','Prazo: 25/03/2027 · Responsável: EJ','Concluída']])+'</div>';
  if(s.section==='calendario')return listPanel('Compromissos de exemplo','Datas inventadas apenas para apresentação.',[['15 MAR · 19h','Reunião interna do Conselho','Conselho'],['20 MAR · 18h','Encontro da Rede NEJLON','Institucional'],['27 MAR · 14h','Imersão de Lideranças','Formação']]);
  if(s.section==='jornada')return listPanel('Trilha do Conselheiro','Materiais e formações sem exigência de registro extra.',[['Introdução à Governança','Material e atividade introdutória','Concluída'],['Como analisar uma deliberação','Trilha de formação','Em andamento'],['Boas práticas de participação','Encontro formativo','A iniciar']]);
- if(s.section==='rede')return panel('Empresas juniores da Rede','Lista de 29 empresas de exemplo.','<div class="heatmap">'+D.ejs.map(x=>'<button class="heat none" type="button" data-select-rede="'+esc(x.slug)+'"><span class="name">'+esc(x.name)+'</span><span class="pct">EJ</span></button>').join('')+'</div>');
+ if(s.section==='rede'){
+ const cards=D.ejs.map(x=>{
+  const e=profile(x.slug);if(!e)return '';
+  return '<article class="ej-directory-card">'+logo(x.slug,'ej-logo directory-logo')+
+   '<h3>'+esc(x.name)+'</h3><p class="note">'+esc(e.city)+'/PR · '+esc(e.university)+'</p>'+
+   '<p class="ej-area">'+esc(e.field)+'</p>'+
+   '<details><summary>Ver serviços ('+e.services.length+')</summary><ul class="bulletlist">'+
+   e.services.map(v=>'<li>'+esc(v)+'</li>').join('')+'</ul></details>'+
+   contactButtons(e)+'</article>';
+ }).join('');
+ return panel('Diretório institucional · '+D.ejs.length+' EJs',
+  'Logos e dados do Portfólio Unificado NEJLON. Contatos pessoais não são compartilhados.',
+  '<div class="directory-grid">'+cards+'</div>');
+}
  return '';
 }
 function render(){
