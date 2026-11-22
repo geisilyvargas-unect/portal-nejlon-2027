@@ -1,10 +1,8 @@
 'use server';
-import { randomBytes } from 'node:crypto';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { requireRole, requireViewer } from '@/lib/auth';
 import { createClient } from '@/lib/supabase/server';
-import { adminClient } from '@/lib/supabase/admin';
 import { safeText, type Role, type Position, type Deliberation, type ScenarioAnswer } from '@/lib/constants';
 import { scenariosOf } from '@/lib/deliberation-form';
 
@@ -217,106 +215,83 @@ export async function saveJourneyFeedback(form:FormData) {
 }
 
 export type AccessResult = { ok: boolean; message: string; password?: string };
-function canonicalEmail(role:Role,slug:string|null):string {
-  const domain='@nejlondrina.com';
-  if(role==='prescon')return `prescon${domain}`;
-  if(role==='nucleus_direx')return `direx${domain}`;
-  if(!slug)fail('Selecione uma EJ.');
-  return `${role==='counselor'?'conselho':'direx'}${slug}${domain}`;
-}
-async function getCanonical(role:Role,ejId:string|null) {
-  const admin=adminClient();
-  if(role==='prescon'||role==='nucleus_direx')return {email:canonicalEmail(role,null),ej_id:null};
-  if(!ejId)fail('Selecione uma EJ para este perfil.');
-  const {data,error}=await admin.from('ejs').select('id,slug').eq('id',ejId).single();
-  checkError(error);
-  return {email:canonicalEmail(role,data!.slug),ej_id:ejId};
-}
-export async function createPortalUser(_previous:AccessResult, form:FormData):Promise<AccessResult> {
-  try {
-    await requireRole(['prescon']);
-    const roleRaw=required(form,'role');
-    if(!isOneOf<Role>(roleRaw,validRoles))fail('Perfil inválido.');
-    const {email,ej_id}=await getCanonical(roleRaw,safeText(form.get('ej_id'))||null);
-    const phone=maybe(form,'phone',40);
-    const password=required(form,'password',72);
-    if(password.length<6)fail('A senha precisa ter pelo menos 6 caracteres.');
-    if(roleRaw==='prescon' && password==='123456')fail('A senha compartilhada de testes não pode ser usada em uma conta PRESCON.');
-    const admin=adminClient();
-    // Cada e-mail é uma conta Auth independente. A senha escolhida é definida
-    // somente pelo servidor e NUNCA retorna para o navegador na resposta.
-    const {data:ejData,error:ejError}=ej_id
-      ?await admin.from('ejs').select('name').eq('id',ej_id).single()
-      :{data:null,error:null};
-    checkError(ejError);
-    const generatedName=roleRaw==='counselor'
-      ?'Conselho — '+(ejData?.name||'EJ')
-      :roleRaw==='ej_direx'?'DIREX — '+(ejData?.name||'EJ')
-      :roleRaw==='nucleus_direx'?'DIREX do Núcleo NEJLON'
-      :'Presidência do Conselho NEJLON';
-    const name=maybe(form,'full_name',150)||generatedName;
-    const {data,error}=await admin.auth.admin.createUser({email,password,email_confirm:true});
-    checkError(error);
-    if(!data.user)fail('Supabase não retornou o usuário.');
-    const {error:profileError}=await admin.from('profiles').insert({
-      id:data.user.id,email,full_name:name,role:roleRaw,ej_id,phone,active:true,must_change_password:false,
-    });
-    if(profileError){await admin.auth.admin.deleteUser(data.user.id);fail(profileError.message);}
-    revalidatePath('/acessos');
-    return {ok:true,message:`Conta ${email} criada e vinculada ao perfil correto. A senha foi definida conforme informada no formulário.`};
-  } catch(error) {return {ok:false,message:error instanceof Error?error.message:'Falha ao criar usuário.'};}
-}
-export async function updatePortalUser(_previous:AccessResult,form:FormData):Promise<AccessResult> {
-  try {
-    const viewer=await requireRole(['prescon']);
-    const id=required(form,'id',50);
-    const name=required(form,'full_name',150);
-    const roleRaw=required(form,'role');
-    if(!isOneOf<Role>(roleRaw,validRoles))fail('Perfil inválido.');
-    const {email,ej_id}=await getCanonical(roleRaw,safeText(form.get('ej_id'))||null);
-    const active=form.get('active')==='on';
-    if(viewer.id===id && (!active || roleRaw!=='prescon'))fail('Você não pode desativar ou remover seu próprio acesso administrativo.');
-    const admin=adminClient();
-    const {data:old,error:oldError}=await admin.from('profiles').select('email').eq('id',id).single();
-    checkError(oldError);
-    const {error:profileError}=await admin.from('profiles').update({full_name:name,role:roleRaw,ej_id,active,email,phone:maybe(form,'phone',40)}).eq('id',id);
-    checkError(profileError);
-    if(old!.email!==email) {
-      const {error:authError}=await admin.auth.admin.updateUserById(id,{email,email_confirm:true});
-      if(authError) {
-        // Evita divergência permanente de e-mails caso o Auth rejeite a alteração.
-        await admin.from('profiles').update({email:old!.email}).eq('id',id);
-        fail(`O e-mail no Auth não foi atualizado: ${authError.message}`);
-      }
+async function callAccessFunction<T extends Record<string, unknown>>(payload:Record<string,unknown>):Promise<T>{
+  const db=await createClient();
+  // A sessão já é verificada no servidor por requireRole/requireViewer antes desta chamada.
+  const {data:{session},error:sessionError}=await db.auth.getSession();
+  if(sessionError||!session?.access_token)fail('Sessão expirada. Entre novamente para continuar.');
+  const {data,error}=await db.functions.invoke('portal-manage-access',{
+    body:payload,
+    headers:{Authorization:'Bearer '+session.access_token}
+  });
+  if(error){
+    let reason=error.message||'Não foi possível concluir a operação.';
+    const context=(error as {context?:{json?:()=>Promise<unknown>}}).context;
+    if(context&&typeof context.json==='function'){
+      try{
+        const detail=await context.json();
+        if(detail&&typeof detail==='object'&&'error' in detail&&typeof detail.error==='string')reason=detail.error;
+      }catch{/* retorno do gateway pode não ser JSON */}
     }
-    revalidatePath('/acessos');
-    return {ok:true,message:'Usuário atualizado com sucesso.'};
-  } catch(error) {return {ok:false,message:error instanceof Error?error.message:'Falha ao atualizar.'};}
-}
-export async function changeMyPassword(_previous:AccessResult,form:FormData):Promise<AccessResult> {
-  try {
-    const viewer=await requireViewer();
-    const password=required(form,'password',150);
-    if(password.length<12)fail('Use uma senha com pelo menos 12 caracteres.');
-    if(password!==required(form,'confirmation',150))fail('As senhas não coincidem.');
-    const supabase=await createClient();
-    const {error}=await supabase.auth.updateUser({password});checkError(error);
-    const {error:profileError}=await adminClient().from('profiles').update({must_change_password:false}).eq('id',viewer.id);checkError(profileError);
-    revalidatePath('/');
-    return {ok:true,message:'Senha atualizada. Você já pode acessar o portal.'};
-  } catch(error) {return {ok:false,message:error instanceof Error?error.message:'Falha ao alterar senha.'};}
+    fail(reason);
+  }
+  if(!data||typeof data!=='object')fail('O servidor de acessos não retornou uma confirmação.');
+  if('error' in data&&typeof data.error==='string')fail(data.error);
+  return data as T;
 }
 
-export async function resetPortalPassword(_previous:AccessResult,form:FormData):Promise<AccessResult> {
-  try {
-    const viewer=await requireRole(['prescon']);
-    const id=required(form,'id',50);
-    if(id===viewer.id) fail('Para alterar sua senha, use a página Alterar senha.');
-    const admin=adminClient();
-    const password=randomBytes(24).toString('base64url');
-    const {error}=await admin.auth.admin.updateUserById(id,{password});checkError(error);
-    const {error:profileError}=await admin.from('profiles').update({must_change_password:true}).eq('id',id);checkError(profileError);
+export async function createPortalUser(_previous:AccessResult,form:FormData):Promise<AccessResult>{
+  try{
+    await requireRole(['prescon']);
+    const role=required(form,'role',20);
+    if(!isOneOf<Role>(role,validRoles))fail('Perfil inválido.');
+    const ej_id=maybe(form,'ej_id',50);
+    const full_name=maybe(form,'full_name',150);
+    const phone=maybe(form,'phone',40);
+    const password=required(form,'password',72);
+    if(password.length<6)fail('Use uma senha de no mínimo 6 caracteres.');
+    const created=await callAccessFunction<{ok:boolean;email:string;message:string}>({
+      mode:'create',role,ej_id,full_name,phone,password
+    });
     revalidatePath('/acessos');
-    return {ok:true,message:'Senha temporária recriada. Copie e compartilhe por canal seguro.',password};
-  } catch(error){return {ok:false,message:error instanceof Error?error.message:'Falha ao redefinir senha.'};}
+    return {ok:true,message:created.email+' — cadastro concluído. Cada usuário possui login independente.'};
+  }catch(e){return {ok:false,message:e instanceof Error?e.message:'Falha ao criar usuário.'};}
+}
+
+export async function updatePortalUser(_previous:AccessResult,form:FormData):Promise<AccessResult>{
+  try{
+    await requireRole(['prescon']);
+    const id=required(form,'id',50);
+    const role=required(form,'role',20);
+    if(!isOneOf<Role>(role,validRoles))fail('Perfil inválido.');
+    const result=await callAccessFunction<{ok:boolean;message:string}>({
+      mode:'update',id,role,ej_id:maybe(form,'ej_id',50),
+      full_name:required(form,'full_name',150),
+      phone:maybe(form,'phone',40),active:form.get('active')==='on'
+    });
+    revalidatePath('/acessos');
+    return {ok:true,message:result.message};
+  }catch(e){return {ok:false,message:e instanceof Error?e.message:'Falha ao atualizar usuário.'};}
+}
+
+export async function changeMyPassword(_previous:AccessResult,form:FormData):Promise<AccessResult>{
+  try{
+    await requireViewer();
+    const password=required(form,'password',72);
+    if(password.length<12)fail('Use uma senha com pelo menos 12 caracteres.');
+    if(password!==required(form,'confirmation',72))fail('As senhas não coincidem.');
+    await callAccessFunction<{ok:boolean;message:string}>({mode:'self_change',password});
+    revalidatePath('/');
+    return {ok:true,message:'Senha atualizada. Você já pode acessar o portal.'};
+  }catch(e){return {ok:false,message:e instanceof Error?e.message:'Falha ao alterar senha.'};}
+}
+
+export async function resetPortalPassword(_previous:AccessResult,form:FormData):Promise<AccessResult>{
+  try{
+    await requireRole(['prescon']);
+    const id=required(form,'id',50);
+    const result=await callAccessFunction<{ok:boolean;message:string;password:string}>({mode:'reset',id});
+    revalidatePath('/acessos');
+    return {ok:true,message:result.message,password:result.password};
+  }catch(e){return {ok:false,message:e instanceof Error?e.message:'Falha ao redefinir senha.'};}
 }
