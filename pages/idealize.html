@@ -2,25 +2,28 @@
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#1a1a1a">
 <title>IDEALIZE 2026 • Deliberação de demonstração — NEJLON 2027</title>
-<link rel="stylesheet" href="./site.css"><link rel="stylesheet" href="./idealize.css">
+<link rel="stylesheet" href="./site.css"><link rel="stylesheet" href="./visual-identity.css"><link rel="stylesheet" href="./idealize.css"><link rel="stylesheet" href="./pf-import.css">
 <script defer src="./demo-data.js"></script>
 <script defer src="./idealize-financial.js"></script>
 <script defer src="./idealize-responses.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<script defer src="./pf-import.js"></script>
 <script defer src="./idealize.js"></script>
 </head><body><main class="idealize-shell">
-<nav class="idealize-top"><a href="../index.html">← Voltar ao Portal NEJLON 2027</a><span class="tag green">ABERTA · SIMULAÇÃO</span></nav>
+<nav class="idealize-top"><a href="../index.html">← Voltar ao Portal NEJLON 2027</a><span class="tag yellow">DEMONSTRAÇÃO · NÃO É VOTAÇÃO REAL</span></nav>
 <header class="idealize-banner"><span class="eyebrow">DELIBERAÇÃO DEMONSTRATIVA · CONSELHO NEJLON</span>
 <h1>PLANEJAMENTO FINANCEIRO<br><em>IDEALIZE 2026</em></h1>
 <p>Compare as propostas de realização do evento, analise os valores e simule o voto do Conselho de forma simples e visual.</p></header>
-<div class="demo-alert"><span class="alert-icon">ⓘ</span><p><strong>Atenção:</strong> esta é uma demonstração baseada na planilha enviada. Os <strong>17 votos são fictícios</strong>, a votação não está oficialmente aberta, não há envio ao Supabase e não existem cobranças reais.</p></div>
+<div class="demo-alert"><span class="alert-icon">ⓘ</span><p><strong>Atenção:</strong> esta é uma demonstração baseada na planilha enviada. Os <strong>17 votos são fictícios</strong> e cobrem apenas C1 e C2. Os valores de referência foram transcritos do planejamento fornecido; uma importação nova exige conferência. Esta página não registra votos oficiais nem acessa o Supabase.</p></div>
+<section class="panel pf-import" aria-labelledby="pf-import-title"><div class="section-row"><div><span class="eyebrow">ENTRADA DE DADOS · SOMENTE FINANCEIRO</span><h2 id="pf-import-title">Importar planejamento financeiro</h2><p class="sub">CSV ou XLSX → conferir rateios, C1 e C2 → consultar os dados no formulário. Nenhuma linha da planilha vira voto separado.</p></div></div><label class="pf-drop" for="pf-upload">Selecionar arquivo CSV ou XLSX<input id="pf-upload" type="file" accept=".csv,.xlsx,.xls,text/csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"></label><p class="pf-disclaimer">A leitura ocorre no navegador. CSV contém uma tabela; XLSX pode conter várias abas. Valores e classificações identificados automaticamente devem ser conferidos antes de qualquer uso institucional.</p><div id="pf-import-status" role="status" aria-live="polite"></div><div id="pf-import-preview"></div></section>
 <section class="panel"><div class="section-row"><div><span class="eyebrow">PAINEL DE PROJEÇÕES FINANCEIRAS</span>
 <h2>Comparativo de locais</h2><p class="sub">C1: UEL • C2: AURORA. Cada local tem projeções pessimista, realista e otimista.</p></div>
-<a class="btn" href="./idealize-financial.csv" download>↓ Baixar valores em CSV</a></div>
+<span class="tag yellow">REFERÊNCIA FINANCEIRA DO EXEMPLO</span></div>
 <div class="idealize-controls"><div class="idealize-projections" id="projections" role="group" aria-label="Projeção financeira"></div>
 <label class="idealize-rateio"><input type="checkbox" id="with-rateio" checked> Considerar rateio por localidade</label></div>
 <div class="idealize-financial-grid" id="financial-grid"></div></section>
 <section class="panel"><div class="section-row"><div><span class="eyebrow">MODELO DE DELIBERAÇÃO 2026</span><h2>Formulário do Conselho</h2>
-<p class="sub">Falaaaa conselheiro pé vermelho! 👣❤️ Você analisará C1 e C2 antes de registrar os dois posicionamentos.</p></div>
+<p class="sub">Falaaaa conselheiro pé vermelho! 👣❤️ Você irá deliberar sobre o sistema de rateios, o C1 e o C2. As projeções pessimista, realista e otimista são dados de consulta, não opções de voto.</p></div>
 <span class="tag yellow">DEMONSTRAÇÃO</span></div>
 <section class="idealize-manual-visual" aria-label="Manual integrado de deliberação">
   <div class="idealize-manual-art">
@@ -30,8 +33,8 @@
     <a class="idealize-manual-link" href="https://canva.link/r1ejljffrfu6xu2" target="_blank" rel="noopener noreferrer">Ler o manual original ↗</a>
   </div>
   <div class="idealize-manual-steps">
-    <div><b>01</b><span>Analise C1 e C2</span></div>
-    <div><b>02</b><span>Escolha uma opção por cenário</span></div>
+    <div><b>01</b><span>Confira o rateio, C1 e C2</span></div>
+    <div><b>02</b><span>Registre um voto em cada um dos três blocos</span></div>
     <div><b>03</b><span>Ressalvas seguem para a PRESCON</span></div>
   </div>
   <details class="idealize-guide" open><summary>Conheça as cinco possibilidades de votação</summary><div id="vote-guide"></div></details>
@@ -46,8 +49,8 @@
 <label>O quanto você sentiu dificuldade na deliberação *<select name="difficulty" required id="difficulty"><option value="">Selecione</option></select></label></div>
 <label>Como podemos melhorar? *<textarea name="improvements" required placeholder="Escreva uma sugestão ou Sem sugestões" rows="3" maxlength="2000"></textarea></label>
 </fieldset><div class="idealize-buttons"><button class="btn red" type="submit">✓ Enviar voto de demonstração</button>
-<button class="btn" type="button" id="export-csv">↓ Exportar respostas CSV</button></div><p id="submit-status" role="status" aria-live="polite" class="note"></p>
+</div><p id="submit-status" role="status" aria-live="polite" class="note"></p>
 </form></section>
-<section class="panel"><div class="section-row"><div><span class="eyebrow">DADOS FICTÍCIOS PARA PRESCON</span><h2>Acompanhamento da deliberação</h2><p class="sub">17 EJs registraram respostas ilustrativas. Compare o posicionamento em C1 e C2.</p></div><button class="btn" type="button" id="export-csv-bottom">↓ Respostas CSV</button></div>
+<section class="panel"><div class="section-row"><div><span class="eyebrow">DADOS FICTÍCIOS PARA PRESCON</span><h2>Acompanhamento da deliberação</h2><p class="sub">17 respostas inteiramente fictícias em C1 e C2. Não existem votos históricos simulados para o rateio.</p></div></div>
 <div class="stats" id="summary-stats"></div><div class="idealize-results" id="results"></div>
-</section><footer class="footer"><span>NEJLON 2027 • IDEALIZE (DEMONSTRAÇÃO)</span><span>Dados financeiros da planilha fornecida • Votos 100% fictícios</span></footer></main></body></html>
+</section><footer class="footer"><span>NEJLON 2027 • IDEALIZE (DEMONSTRAÇÃO)</span><span>Dados financeiros de referência; votos e indicadores demonstrativos não são registros oficiais</span></footer></main></body></html>
