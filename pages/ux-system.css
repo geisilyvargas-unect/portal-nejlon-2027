@@ -383,3 +383,19 @@ html[data-theme="dark"] .intro h1 em,html[data-theme="dark"] .intro .eyebrow{col
 html[data-theme="red"] .intro{background:#b32239!important}
 html[data-theme="red"] .intro :is(h1,p){color:#ffffff!important;text-shadow:none!important}
 html[data-theme="red"] .intro h1 em,html[data-theme="red"] .intro .eyebrow{color:#171717!important}
+
+/* Tema vermelho institucional: superfícies pretas e conteúdo branco. */
+html[data-theme="red"]{
+ color-scheme:dark;
+ --ux-bg:#ff0000;--ux-side:#000;--ux-surface:#090909;--ux-raised:#191919;
+ --ux-input:#171717;--ux-border:#fff;--ux-text:#fff;--ux-muted:#e8e8e8;
+ --ux-subtle:#dedede;--ux-hover:#282828;--ux-red:#ff0000;--ux-red-hover:#e00000;
+ --ux-petrol:#ff0000;--ux-petrol-hover:#dc0000;--ux-lime:#fff;
+ --ux-focus:#fff;--ux-alert:#202020;--ux-warning:#242424;
+ --bg:var(--ux-bg);--side:var(--ux-side);--panel:var(--ux-surface);--panel2:var(--ux-raised);
+ --border:var(--ux-border);--text:var(--ux-text);--muted:var(--ux-muted)
+}
+html[data-theme="red"] :is(.paper,.panel,.role-card,.stat-card,.comparison-card,.wa-panel,.modal,.card,.notice){color:#fff}
+html[data-theme="red"] :is(input,select,textarea){background:#171717;color:#fff;border-color:#fff}
+html[data-theme="red"] :is(.ux-theme-picker,.ux-theme-switch){background:#000;color:#fff;border-color:#fff}
+html[data-theme="red"] :is(.ux-theme-choice){color:#fff}
