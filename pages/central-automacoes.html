@@ -2,8 +2,8 @@
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#19191b">
 <title>Central de Automações · PRESCON NEJLON</title>
 <meta name="description" content="Crie deliberações, integre Google Drive e Forms, acompanhe respostas e prepare comunicados em um único lugar.">
-<link rel="stylesheet" href="./site.css"><link rel="stylesheet" href="./visual-identity.css"><link rel="stylesheet" href="./automation.css"><link rel="stylesheet" href="./ux-system.css">
-<script defer src="./ux-theme.js"></script><script defer src="./automation.js"></script></head>
+<link rel="stylesheet" href="./site.css"><link rel="stylesheet" href="./visual-identity.css"><link rel="stylesheet" href="./automation.css"><link rel="stylesheet" href="./demandas.css"><link rel="stylesheet" href="./ux-system.css">
+<script defer src="./ux-theme.js"></script><script defer src="./demandas-ui.js"></script><script defer src="./automation.js"></script></head>
 <body class="automation-page">
 <a class="ux-skip" href="#conteudo">Pular para o conteúdo</a>
 <nav class="automation-top"><a href="../index.html">← Voltar ao Portal</a><span>NEJLON 2027 · GESTÃO PRESCON</span></nav>
@@ -26,6 +26,7 @@
 <button type="button" data-tab="criacao">Criar em minutos</button>
 <button type="button" data-tab="drive">Google Drive</button>
 <button type="button" data-tab="formularios">Formulários</button>
+<button type="button" data-tab="demandas">Demandas</button>
 <button type="button" data-tab="relatorios">Resultados</button>
 </nav>
 <section class="auto-tab" data-panel="inicio">
@@ -35,7 +36,7 @@
 <div id="auto-weekly-status" class="automation-muted" role="status" aria-live="polite">Carregando prioridades…</div>
 <div class="automation-stat-grid" id="auto-weekly-stats"></div>
 <div id="auto-weekly-items" class="automation-week-list"></div>
-<p class="automation-muted">Resumo limitado a formulários reais criados na Central. Demandas e calendário ainda não entram nesse cálculo. Lembretes de WhatsApp não são enviados automaticamente.</p>
+<p class="automation-muted">Resumo limitado a formulários reais criados na Central. Demandas e justificativas são consultadas em seção própria. Calendário ainda não entra nesse cálculo. Lembretes de WhatsApp não são enviados automaticamente.</p>
 </section>
 <div class="automation-stat-grid">
 <article><span>CONEXÃO GOOGLE</span><strong id="auto-google-state">Verificando</strong><small>Drive, Forms e Sheets</small></article>
@@ -43,7 +44,7 @@
 <article><span>ARQUIVOS</span><strong id="auto-file-total">—</strong><small>No histórico da Central</small></article>
 </div>
 <div class="automation-panel"><div class="automation-panel-title"><div><span class="eyebrow">PRÓXIMA AÇÃO</span><h2>O que vamos fazer hoje?</h2></div></div>
-<div class="automation-shortcuts"><button type="button" data-go="criacao"><b>Nova deliberação</b><small>Formulário + organização + WhatsApp</small><span>Abrir criação →</span></button><button type="button" data-go="drive"><b>Guardar documento</b><small>Importe o arquivo para a pasta institucional</small><span>Enviar arquivo →</span></button><button type="button" data-go="relatorios"><b>Conferir respostas</b><small>Google + Portal no mesmo acompanhamento</small><span>Ver resultados →</span></button><a href="./whatsapp.html#biblioteca"><b>Biblioteca de mensagens</b><small>Modelos prontos para o Conselho</small><span>Preparar comunicado →</span></a></div>
+<div class="automation-shortcuts"><button type="button" data-go="criacao"><b>Nova deliberação</b><small>Formulário + organização + WhatsApp</small><span>Abrir criação →</span></button><button type="button" data-go="drive"><b>Guardar documento</b><small>Importe o arquivo para a pasta institucional</small><span>Enviar arquivo →</span></button><button type="button" data-go="demandas"><b>Demandas da Rede</b><small>Justificativas, prazos e decisões</small><span>Acompanhar demandas →</span></button><button type="button" data-go="relatorios"><b>Conferir respostas</b><small>Google + Portal no mesmo acompanhamento</small><span>Ver resultados →</span></button><a href="./whatsapp.html#biblioteca"><b>Biblioteca de mensagens</b><small>Modelos prontos para o Conselho</small><span>Preparar comunicado →</span></a></div>
 </div>
 <div class="automation-panel"><h2>Pontos que precisam da sua decisão</h2><div class="automation-checks"><p><strong>Segurança:</strong> respostas Google sem vínculo validado ficam para conferência antes de contar como voto aceito.</p><p><strong>Publicação:</strong> rascunhos só são disponibilizados após você publicar.</p><p><strong>WhatsApp:</strong> o texto é preparado automaticamente, mas você escolhe o grupo e confirma o envio.</p></div></div>
 </section>
@@ -72,6 +73,7 @@
 <section class="auto-tab" data-panel="formularios" hidden>
 <div class="automation-panel"><h2>Seus formulários</h2><p>Crie rascunhos, publique para os conselheiros, acompanhe o Google Forms e prepare os convites para o grupo.</p><div id="auto-forms" class="automation-forms"><p>Nenhum formulário encontrado.</p></div></div>
 </section>
+<section class="auto-tab" data-panel="demandas" hidden><div id="auto-demands-root"></div></section>
 <section class="auto-tab" data-panel="relatorios" hidden>
 <div class="automation-panel"><h2>Resultados e documentos</h2><div class="automation-form automation-inline"><label>Deliberação<select id="auto-report-form"></select></label><label>Exportar como<select id="auto-report-format"><option value="sheets">Google Sheets</option><option value="csv">CSV no Google Drive</option></select></label><button type="button" id="auto-report-export" class="btn red">Gerar e salvar relatório</button><button type="button" id="auto-report-refresh" class="btn">Atualizar respostas</button></div>
 <div id="auto-report-overview" class="automation-stat-grid"></div>
