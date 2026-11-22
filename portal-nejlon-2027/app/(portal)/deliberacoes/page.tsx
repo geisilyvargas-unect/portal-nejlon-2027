@@ -4,6 +4,7 @@ import {requireViewer} from '@/lib/auth';
 import {createDeliberation} from '@/app/actions';
 import {formatDate} from '@/lib/constants';
 import {ScenarioBuilder} from '@/components/scenario-builder';
+import {PfDeliberationWizard} from '@/components/pf-deliberation-wizard';
 
 const brDate=(date:string)=>date.split('-').reverse().join('/');
 export default async function Deliberations(){
@@ -15,6 +16,7 @@ export default async function Deliberations(){
     <div><div className="eyebrow">Governança • Conselho</div><h1>Deliberações</h1>
       <p className="muted">Votações atuais, demonstrações e acervo histórico de decisões da Rede.</p>
     </div>
+    {viewer.role==='prescon'&&<details className="panel" open><summary>+ Criar deliberação automaticamente a partir do PF</summary><PfDeliberationWizard/></details>}
     {viewer.role==='prescon'&&<details className="panel">
       <summary>+ Criar nova deliberação</summary>
       <form action={createDeliberation} className="fieldset" style={{marginTop:20}}>
