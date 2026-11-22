@@ -43,3 +43,29 @@ test('Trocar para perfil restrito remove abas administrativas da navegação',()
  app.change('role','prescon');
  assert.match(app.element('tabs').innerHTML,/Acompanhamento/);
 });
+
+test('Conselheiro de EJ sem cadastro não herda progresso de outra EJ',()=>{
+ const app=boot();
+ app.change('role','counselor');
+ app.change('ej','unect');
+ app.element('tabs').listeners.click({target:{closest:()=>({dataset:{tab:'learning'}})}});
+ assert.match(app.element('screen').innerHTML,/Conselheiro A/);
+ app.change('ej','boson');
+ assert.match(app.element('screen').innerHTML,/Conselheiro B/);
+ assert.doesNotMatch(app.element('screen').innerHTML,/Conselheiro A/);
+});
+test('Conselheiro de EJ sem ações não vê encaminhamentos de outras EJs',()=>{
+ const app=boot();
+ app.change('role','counselor');
+ app.change('ej','boson');
+ app.element('tabs').listeners.click({target:{closest:()=>({dataset:{tab:'actions'}})}});
+ assert.doesNotMatch(app.element('screen').innerHTML,/Revisar materiais de formação/);
+ assert.doesNotMatch(app.element('screen').innerHTML,/Criar encaminhamento/);
+});
+test('Conselheiro não consegue acessar acompanhamento individual pela navegação',()=>{
+ const app=boot();
+ app.change('role','counselor');
+ app.element('tabs').listeners.click({target:{closest:()=>({dataset:{tab:'checkins'}})}});
+ assert.doesNotMatch(app.element('screen').innerHTML,/Registrar acompanhamento fictício/);
+ assert.match(app.element('screen').innerHTML,/Próximos compromissos/);
+});
