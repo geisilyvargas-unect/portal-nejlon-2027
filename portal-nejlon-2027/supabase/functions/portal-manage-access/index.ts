@@ -1,16 +1,18 @@
 import {createClient} from 'npm:@supabase/supabase-js@2.95.0';
+import {corsHeaders} from 'npm:@supabase/supabase-js@2.95.0/cors';
 
 type PortalRole='prescon'|'nucleus_direx'|'ej_direx'|'counselor';
 type Target={email:string;role:PortalRole;ej_id:string|null;full_name:string};
 const domain='@nejlondrina.com';
 const allowedRoles=new Set<PortalRole>(['prescon','nucleus_direx','ej_direx','counselor']);
 const response=(body:unknown,status=200)=>new Response(JSON.stringify(body),{
-  status,headers:{'Content-Type':'application/json; charset=utf-8','Cache-Control':'no-store'}
+  status,headers:{...corsHeaders,'Content-Type':'application/json; charset=utf-8','Cache-Control':'no-store'}
 });
 const string=(value:unknown,max:number)=>typeof value==='string'&&value.trim().length<=max?value.trim():'';
 const errorMessage=(error:unknown)=>error instanceof Error?error.message:'Erro interno.';
 
 Deno.serve(async(req:Request)=>{
+ if(req.method==='OPTIONS')return new Response('ok',{status:200,headers:corsHeaders});
  try{
   if(req.method!=='POST')return response({error:'Método não permitido.'},405);
   const url=Deno.env.get('SUPABASE_URL');
