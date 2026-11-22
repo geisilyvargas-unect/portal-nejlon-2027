@@ -906,3 +906,91 @@ html[data-theme='light'] .network-bar-fill{background:linear-gradient(to top,#08
  .manual-accounting-grid>div{padding:10px}
  .manual-accounting-grid strong{font-size:1.45rem}
 }
+
+/* NEJLON | IDENTIDADE DO PORTFÓLIO UNIFICADO 2027
+   Inspirado nas páginas 1–4: fundo quase preto, verde-lima, vermelho,
+   ondas orgânicas, silhueta do esquilo e prisma triangular.
+   Elementos são decorativos: jamais interceptam ações do sistema.
+*/
+:root{--nej-black:#191919;--nej-red:#d12d32;--nej-lime:#9dc710;--nej-teal:#00616b;--nej-grey:#a5a5a5}
+.hero{
+ position:relative;
+ overflow:hidden;
+ isolation:isolate;
+ min-height:212px;
+ padding:31px clamp(26px,3vw,45px) 39px;
+ background:linear-gradient(125deg,#181818 0%,#1f1f1f 63%,#242424 100%);
+ border:1px solid #474747;
+ border-radius:17px;
+}
+.hero::before{
+ content:"";position:absolute;bottom:-17px;left:-35px;width:220px;height:120px;
+ background:url('/nejlon-waves.svg') left bottom/contain no-repeat;
+ z-index:-1;opacity:.9;pointer-events:none;
+}
+.hero::after{
+ content:"";position:absolute;right:-27px;bottom:-65px;
+ width:200px;height:195px;opacity:.32;
+ background:url('/nejlon-squirrel.svg') center/contain no-repeat;
+ pointer-events:none;z-index:-1;
+}
+.hero>*,.hero h1,.hero h2,.hero p{position:relative}
+.hero h1,.hero h2{
+ font-family:'Arial Black',Impact,'Inter',system-ui,sans-serif;
+ font-weight:950;letter-spacing:-.055em;line-height:1.08;
+ text-transform:uppercase;
+ text-shadow:3px 3px 0 #ab2730, 5px 5px 0 #111;
+ max-width:85%;
+}
+.hero .eyebrow,.demo-brand .eyebrow{color:var(--nej-lime)}
+.hero .muted{color:#e2e2e2}
+.hero:has(h1),.hero:has(h2){border-bottom:8px solid transparent;
+ border-image:linear-gradient(90deg,var(--nej-red) 0% 14%,var(--nej-lime) 14% 33%,var(--nej-teal) 33% 56%,var(--nej-red) 56% 75%,var(--nej-lime) 75% 88%,var(--nej-teal) 88%) 1}
+.sidebar,.demo-preview-sidebar{background:#1a1a1a}
+.sidebar::before,.demo-preview-sidebar::before{content:"";position:absolute;pointer-events:none;right:5px;bottom:83px;width:66px;height:90px;opacity:.15;background:url('/nejlon-squirrel.svg') center/contain no-repeat}
+.sidebar .brand span,.demo-brand strong span{color:var(--nej-red)}
+.brand small{color:var(--nej-lime)}
+.nav-link.active,.demo-nav-item.active{border-left-color:var(--nej-red)}
+.main .panel,.demo-preview-main .panel{position:relative}
+.main .panel.highlight{overflow:hidden;background:linear-gradient(120deg,#191919,#242525 95%);border-color:#545f40}
+.main .panel.highlight::after{content:"";position:absolute;pointer-events:none;top:-30px;right:-40px;width:160px;height:180px;background:url('/nejlon-prism.svg') center/contain no-repeat;opacity:.26}
+.main .panel.highlight>*{position:relative;z-index:1}
+.eyebrow{color:var(--nej-lime)}
+/* Títulos mais institucionais; iconografia origami no diretório. */
+.ej-directory-top h2,.network-heading h2{font-family:'Arial Black',Impact,system-ui,sans-serif;text-transform:uppercase;letter-spacing:-.03em}
+.ej-directory-card{position:relative;isolation:isolate;overflow:hidden}
+.ej-directory-card::before{
+ content:"";z-index:-1;position:absolute;top:-12px;right:-17px;width:105px;height:125px;
+ opacity:.15;background:url('/nejlon-prism.svg') center/contain no-repeat;pointer-events:none
+}
+.ej-directory-card .ej-identity-icon{position:relative;z-index:1}
+.ej-directory-card h3{font-family:'Arial Black',Impact,system-ui,sans-serif;text-transform:uppercase}
+.network-engagement .network-heatmap-panel{position:relative;overflow:hidden}
+.network-engagement .network-heatmap-panel::before{
+ content:"";pointer-events:none;position:absolute;right:0;top:0;width:82px;height:70px;
+ background:url('/nejlon-sparkles.svg') center/contain no-repeat;opacity:.15
+}
+.network-engagement .network-metric{border-top:3px solid var(--nej-lime)}
+.network-engagement .network-metric:nth-child(2){border-top-color:var(--nej-red)}
+.network-engagement .network-metric:nth-child(3){border-top-color:var(--nej-teal)}
+.network-engagement .network-metric:nth-child(4){border-top-color:var(--nej-lime)}
+.demo-welcome{position:relative;isolation:isolate;overflow:hidden}
+.demo-welcome::after{
+ content:"";position:absolute;right:-22px;bottom:-59px;width:180px;height:190px;
+ background:url('/nejlon-squirrel.svg') center/contain no-repeat;opacity:.18;pointer-events:none;z-index:-1
+}
+.demo-welcome::before{
+ content:"";position:absolute;right:13%;top:-22px;width:66px;height:70px;
+ background:url('/nejlon-sparkles.svg') center/contain no-repeat;opacity:.42;pointer-events:none;z-index:-1
+}
+@media(max-width:760px){
+ .hero{padding:25px 20px 34px;min-height:190px}
+ .hero h1,.hero h2{max-width:100%;font-size:clamp(1.6rem,7vw,2.3rem);text-shadow:2px 2px 0 #ad3037,3px 3px 0 #111}
+ .hero::after{width:125px;height:125px;opacity:.15}
+ .hero::before{width:150px;height:100px;opacity:.65}
+ .sidebar::before,.demo-preview-sidebar::before{display:none}
+ .demo-welcome::after{width:120px;height:140px;opacity:.12}
+}
+@media(prefers-reduced-motion:reduce){
+ .hero::before,.hero::after,.ej-directory-card::before{transition:none}
+}
