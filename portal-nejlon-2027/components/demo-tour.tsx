@@ -1,8 +1,7 @@
 'use client';
 import {useState} from 'react';
-import Link from 'next/link';
 import {
-  BookOpen,Building2,CalendarDays,CheckCircle2,ChevronRight,
+  BookOpen,Building2,CalendarDays,CheckCircle2,
   ClipboardList,FileText,LayoutDashboard,ListTodo,LockKeyhole,
   ShieldCheck,Users
 } from 'lucide-react';
@@ -77,12 +76,12 @@ export function DemoTour(){
  return <div className="demo-landing">
    <div className="demo-top">
     <div className="demo-brand"><span className="eyebrow">PROPOSTA • 2027</span><strong>NEJ<span>LON</span></strong></div>
-    <div className="demo-top-actions"><ThemeToggle/><Link href="/login" className="button outline">Entrar com e-mail <ChevronRight size={16} aria-hidden/></Link></div>
+    <div className="demo-top-actions"><ThemeToggle/></div>
    </div>
    <div className="demo-welcome">
     <div>
      <span className="demo-tag"><ShieldCheck size={15}/> APRESENTAÇÃO INTERATIVA</span>
-     <h1>Explore o portal sem precisar entrar.</h1>
+     <h1>Conheça o Portal NEJLON 2027.</h1>
      <p>Escolha uma visão e conheça as funcionalidades previstas para cada perfil. É uma <strong>simulação com informações fictícias</strong>: nada aqui registra votos, cria contas ou altera dados do NEJLON.</p>
     </div>
     <div className="demo-selector">
@@ -99,7 +98,7 @@ export function DemoTour(){
         {EJS_DEMO.map(x=><option value={x.slug} key={x.slug}>{x.name}</option>)}
        </select>
       </label>}
-     <div className="demo-access-example"><span>O e-mail individual deste perfil seria:</span><code>{email}</code></div>
+     <div className="demo-access-example"><span>E-mail institucional previsto para este perfil:</span><code>{email}</code></div>
     </div>
    </div>
    <div className="demo-preview-frame">
@@ -269,8 +268,8 @@ export function DemoTour(){
     </div>
    </div>
    <div className="demo-bottom">
-    <div><strong>Gostou de conhecer o portal?</strong><p className="muted">Na operação real, cada pessoa entra com seu e-mail e vê somente o que seu perfil permite.</p></div>
-    <Link href="/login" className="button primary">Ir para login institucional <ChevronRight size={18} aria-hidden/></Link>
+    <div><strong>Gostou de conhecer o portal?</strong><p className="muted">O ambiente institucional permanece separado e exige autorização da PRESCON. Os e-mails das EJs continuam vinculados a seus próprios perfis.</p></div>
+    <span className="badge lime">Explore sem cadastro</span>
    </div>
  </div>;
 }

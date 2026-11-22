@@ -15,7 +15,7 @@ export async function getViewer(): Promise<Profile | null> {
 }
 export async function requireViewer(): Promise<Profile> {
   const viewer = await getViewer();
-  if (!viewer) redirect('/login');
+  if (!viewer) redirect('/acesso-institucional');
   return viewer;
 }
 export async function requireRole(allowed: Role[]): Promise<Profile> {
