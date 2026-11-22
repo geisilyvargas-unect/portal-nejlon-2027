@@ -11,3 +11,12 @@
 /* Melhor leitura das letras grandes nos materiais institucionais. */
 .i-hero h1,.i-section h2{letter-spacing:.035em;line-height:1.18;text-shadow:2px 3px 0 #121212,4px 5px 0 #ce2d32;overflow-wrap:break-word}
 @media(max-width:560px){.i-hero h1,.i-section h2{letter-spacing:.018em;line-height:1.2}}
+
+/* Hero institucional simplificado: sem ondas, recortes, sombras ou prisma decorativo. */
+.institutional .i-hero{background:#1c1a1a;min-height:0;padding:48px clamp(24px,5vw,64px);border-radius:14px;overflow:visible}
+.institutional .i-hero::after{content:none;display:none}
+.institutional .i-hero .i-prism,.institutional .i-hero .slogan{display:none}
+.institutional .i-hero .i-tag{color:#d8d8d8;font-size:11px;letter-spacing:1.1px}
+.institutional .i-hero h1{font-family:Arial,Helvetica,sans-serif;font-size:clamp(30px,4vw,48px);font-weight:750;line-height:1.15;letter-spacing:-.035em;text-transform:none;text-shadow:none;margin:18px 0 16px;max-width:760px;overflow-wrap:normal}
+.institutional .i-hero p{max-width:700px;color:#d4d4d4;font-size:15px;line-height:1.65}
+@media(max-width:560px){.institutional .i-hero{padding:32px 22px}.institutional .i-hero h1{font-size:clamp(29px,8vw,38px)}}
