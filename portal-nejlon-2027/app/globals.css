@@ -780,3 +780,13 @@ html[data-theme='light'] .network-bar-fill{background:linear-gradient(to top,#08
 .idealize-result-row>div>span{display:block;background:linear-gradient(90deg,#ca3540,#a8cd5c);height:100%;border-radius:99px}
 @media(max-width:830px){.idealize-comparison,.idealize-results-grid{grid-template-columns:1fr}}
 @media(max-width:540px){.idealize-form-grid{grid-template-columns:1fr}.idealize-panel{padding:12px}.idealize-alternative{padding:12px}.idealize-metrics>div{padding:10px}.idealize-choice-grid{grid-template-columns:1fr}.idealize-vote-section{padding:12px}.idealize-sample-metrics>div{padding:8px}.idealize-result-row{grid-template-columns:1fr 1fr 20px}}
+
+
+/* Formulário de voto por cenário: cinco escolhas à vista, como no Forms de 2026. */
+.vote-position-group{border:0;padding:0;margin:0;min-width:0}
+.vote-position-group legend{font-weight:850;font-size:.92rem;margin-bottom:11px}
+.vote-position-options{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:8px}
+.vote-position-options label{display:flex;align-items:center;gap:10px;padding:12px;border:1px solid var(--border);border-radius:10px;background:var(--surface2);cursor:pointer;font-size:.79rem;line-height:1.4;font-weight:700}
+.vote-position-options label.active{border-color:#9fc552;background:rgba(159,197,82,.09)}
+.vote-position-options input{width:17px;height:17px;flex:0 0 auto;accent-color:#9fc552}
+@media(max-width:530px){.vote-position-options{grid-template-columns:1fr}}
