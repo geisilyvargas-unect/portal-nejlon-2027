@@ -185,9 +185,9 @@ function extras(){
  return '';
 }
 function roleLanding(){
- if(s.role==='ej_direx')return '<div class="view-grid">'+panel('Demandas da sua EJ','A DIREX da EJ consulta apenas título, classificação, prazo e situação das próprias demandas. Não acessa documentos ou formulários.','<a class="btn red" href="./pages/demandas.html">Consultar minhas demandas →</a>')+'</div>';
- if(s.role==='nucleus_direx')return '<div class="view-grid">'+panel('Fiscalização da Rede','Acompanhe demandas, deliberações e formulários, sem editar registros ou consultar votos individuais.','<a class="btn red" href="./pages/fiscalizacao.html">Abrir fiscalização →</a>')+'</div>';
- return '<div class="view-grid">'+panel('Painel do Conselho','As dez áreas históricas num só lugar. Consulte demandas de todas as EJs apenas em visão geral.','<div class="toolrow"><a class="btn red" href="./pages/painel-conselho.html">Painel do Conselho →</a><a class="btn" href="./pages/demandas.html">Panorama de demandas →</a></div>')+'</div>';
+ if(s.role==='ej_direx')return '<div class="view-grid">'+panel('Demandas da sua EJ','Consulte título, classificação, prazo e situação na área Demandas do menu. O perfil não acessa formulários nem documentos internos.','<p class="note">Use a navegação principal para abrir suas demandas.</p>')+'</div>';
+ if(s.role==='nucleus_direx')return '<div class="view-grid">'+panel('Fiscalização da Rede','Acompanhe demandas, deliberações e formulários sem editar registros ou consultar votos individuais.','<p class="note">A fiscalização está disponível no menu do seu perfil.</p>')+'</div>';
+ return '<div class="view-grid">'+panel('Painel do Conselho','Consulte deliberações, demandas e informações da Rede pelas áreas do menu.','<p class="note">O acesso à votação é feito pelo link autenticado de cada deliberação.</p>')+'</div>';
 }
 function render(){
  if(s.role!=='prescon'&&!role().nav.includes(s.section))s.section='painel';
