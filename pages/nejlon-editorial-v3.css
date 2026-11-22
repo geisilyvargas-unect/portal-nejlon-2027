@@ -47,3 +47,67 @@ html[data-theme="dark"] body .quick-actions>.quick-action:nth-child(2),html[data
 @media(max-width:1120px){html body .quick-actions{grid-template-columns:repeat(2,minmax(0,1fr))!important}}
 @media(max-width:670px){html body .quick-actions{grid-template-columns:1fr!important;gap:18px!important}html body .quick-actions>.quick-action{min-height:220px!important;padding:22px!important}html body .quick-actions>.quick-action b{font-size:clamp(27px,7vw,37px)!important}}
 @media(prefers-reduced-motion:reduce){html body .quick-actions>.quick-action{transition:none!important}}
+
+/* Figma → GitHub · Identidade NEJLON 2027 · 2 temas
+   Aplicação de tokens, tipografia, formulários, indicadores e gráficos.
+   Dados e interações não são modificados por esta folha de estilos. */
+:root{
+ --nejlon-brand-red:#EA4335;--nejlon-brand-red-deep:#CC2C2E;
+ --nejlon-brand-lime:#97BF1E;--nejlon-brand-teal:#0C535E;
+ --nejlon-brand-gray:#BCBCBA;--nejlon-brand-black:#101010;
+ --poster-red:var(--nejlon-brand-red);--poster-accent:var(--nejlon-brand-lime);
+ --nejlon-page:#fff;--nejlon-surface:#f4f4f2;--nejlon-field:#fff;
+ --nejlon-text:#101010;--nejlon-muted:#424242;--nejlon-border:#101010;
+ color-scheme:light;
+}
+html[data-theme="dark"]{
+ --nejlon-page:#101010;--nejlon-surface:#202020;--nejlon-field:#181818;
+ --nejlon-text:#fff;--nejlon-muted:#dedede;--nejlon-border:#777;
+ color-scheme:dark;
+}
+html[data-theme="light"]{color-scheme:light}
+html body :is(.quick-actions>.quick-action:nth-child(1),.quick-actions>.quick-action:nth-child(3)){background:var(--nejlon-brand-red)!important}
+html body .quick-actions>.quick-action:nth-child(2){background:var(--nejlon-brand-lime)!important;color:#101010!important}
+html body .quick-actions>.quick-action:nth-child(3){background:var(--nejlon-brand-teal)!important;color:#fff!important}
+html body .quick-actions>.quick-action:nth-child(4){background:var(--nejlon-brand-gray)!important;color:#101010!important}
+html[data-theme="dark"] body .quick-actions>.quick-action:nth-child(2),
+html[data-theme="dark"] body .quick-actions>.quick-action:nth-child(4){color:#101010!important}
+html body .quick-actions>.quick-action strong{background:var(--nejlon-brand-red)!important;color:#fff!important;-webkit-text-fill-color:#fff!important;border:2px solid #101010!important;box-shadow:5px 5px 0 var(--nejlon-brand-lime)!important}
+html body :is(.contact,.prescon-create-cta,.btn.red,button.primary,.button.primary,.create-primary){background:var(--nejlon-brand-red)!important;color:#fff!important;-webkit-text-fill-color:#fff!important;border-color:#101010!important;box-shadow:5px 5px 0 var(--nejlon-brand-lime)!important}
+html body :is(.contact,.prescon-create-cta,.btn.red,button.primary,.button.primary,.create-primary):is(:hover,:focus-visible){background:var(--nejlon-brand-red-deep)!important}
+html body :is(.panel,.card,.role-card,.stat-card,.record,.paper,.scenario-editor){border-radius:3px!important}
+html body :is(.panel,.card,.role-card,.stat-card,.record) :is(p,small,.sub,.muted){line-height:1.55!important}
+html[data-theme="light"] body :is(.panel,.card,.role-card,.stat-card,.paper,.scenario-editor) :is(h1,h2,h3,h4,label){color:#101010!important;-webkit-text-fill-color:#101010!important}
+html[data-theme="dark"] body :is(.panel,.card,.role-card,.stat-card,.paper,.scenario-editor) :is(h1,h2,h3,h4,label){color:#fff!important;-webkit-text-fill-color:#fff!important}
+html body :is(input:not([type=checkbox]):not([type=radio]),select,textarea){
+ border-radius:2px!important;min-height:42px;line-height:1.4!important;
+ border:1.5px solid var(--nejlon-border)!important;
+ background:var(--nejlon-field)!important;color:var(--nejlon-text)!important;
+ -webkit-text-fill-color:var(--nejlon-text)!important;
+}
+html body textarea{min-height:90px}
+html body :is(input,select,textarea)::placeholder{color:var(--nejlon-muted)!important;opacity:.8!important}
+html body :is(input,select,textarea):focus-visible{outline:3px solid var(--nejlon-brand-lime)!important;outline-offset:2px!important}
+html body :is(input[type=radio],input[type=checkbox]){accent-color:var(--nejlon-brand-teal)}
+html body :is(label,.form label,.toolbar label){line-height:1.55}
+html body :is(.analytics-track,.comparison-bar-track,.barplot){border-radius:1px!important;overflow:hidden}
+html body .analytics-track i,html body .comparison-bar-track>span,html body .barplot .bar{border-radius:1px!important}
+html body .analytics-bar{border-radius:2px!important}
+html body .analytics-bar:is(:hover,:focus-visible){outline:2px solid var(--nejlon-brand-lime)!important;outline-offset:2px}
+html body .analytics-bar.selected{border-color:var(--nejlon-brand-teal)!important}
+html body .comparison-card{border-radius:2px!important}
+html body .stat-card{border-top:4px solid var(--nejlon-brand-teal)!important}
+html body .stat-card:nth-child(3n+2){border-top-color:var(--nejlon-brand-lime)!important}
+html body .stat-card:nth-child(3n){border-top-color:var(--nejlon-brand-red)!important}
+html body :is(table,.financial-table){border-collapse:collapse;width:100%}
+html body :is(table,.financial-table) th{
+ background:var(--nejlon-brand-teal)!important;color:#fff!important;
+ -webkit-text-fill-color:#fff!important;text-align:left;font-weight:800!important;
+}
+html body :is(table,.financial-table) :is(td,th){padding:10px 12px;border-bottom:1px solid var(--nejlon-brand-gray)}
+html[data-theme="light"] body :is(table,.financial-table) td{color:#101010!important;background:#fff!important}
+html[data-theme="dark"] body :is(table,.financial-table) td{color:#fff!important;background:#202020!important}
+html body :is(.tabs button[aria-selected=true],.nav-button.active){background:var(--nejlon-brand-teal)!important;color:#fff!important;border-color:var(--nejlon-brand-teal)!important}
+html body :is(.btn,button,.button){transition:transform .15s ease,filter .15s ease}
+@media(max-width:700px){html body :is(table,.financial-table){font-size:12px}html body :is(table,.financial-table) :is(td,th){padding:8px}html body .quick-actions>.quick-action{min-height:205px!important}}
+@media(prefers-reduced-motion:reduce){html body :is(.btn,button,.button){transition:none!important}}
