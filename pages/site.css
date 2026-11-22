@@ -88,3 +88,9 @@ body{background:var(--bg)}
  .intro .intro-symbol{display:none}
  .side::after{display:none}
 }
+
+.heatmap .ej-network-logo{display:block;width:100%;height:78px;max-width:125px;object-fit:contain;object-position:center;margin:auto;flex:1;min-height:0}
+.heatmap .ej-network-link{display:block;width:100%;text-align:center;font-size:10px;font-weight:700;opacity:.9;margin-top:6px}
+.heatmap a.heat{cursor:pointer;text-decoration:none;align-items:center;justify-content:center;min-height:112px;gap:6px}
+.heatmap a.heat:focus-visible{outline:3px solid #ff0000;outline-offset:3px}
+@media(max-width:640px){.heatmap .ej-network-logo{height:60px;max-width:95px}.heatmap a.heat{min-height:96px}}
