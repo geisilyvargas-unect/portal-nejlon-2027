@@ -14,7 +14,7 @@ export default async function Access({searchParams}:{searchParams:Promise<{role?
  ]);
  if(error)throw Error(error.message);
  const profiles=(data||[]) as Profile[];
- const configured=!!process.env.SUPABASE_SERVICE_ROLE_KEY;
+ const configured=true; // A função Supabase Edge guarda a credencial administrativa.
  const params=await searchParams;
  const defaultRole:Role=params?.role==='ej_direx'?'ej_direx'
    :params?.role==='nucleus_direx'?'nucleus_direx'
@@ -46,13 +46,9 @@ export default async function Access({searchParams}:{searchParams:Promise<{role?
    <div className="panel"><span className="muted small">Todas as contas com perfil</span><div className="stat">{profiles.length}</div></div>
   </div>
 
-  {!configured&&<div className="error" role="alert">
-   <strong>É necessário concluir a conexão administrativa para criar usuários.</strong>
-   <p style={{marginTop:8,marginBottom:8}}>Falta configurar a variável <code>SUPABASE_SERVICE_ROLE_KEY</code> no servidor da Vercel. O formulário ficará desativado até a configuração ser concluída.</p>
-   <p className="small" style={{marginBottom:0}}>
-    Em <strong>Supabase → Project Settings → API Keys</strong>, obtenha a chave <code>service_role</code>. Em <strong>Vercel → Project → Settings → Environment Variables</strong>, adicione-a com o nome indicado, apenas no servidor, e faça um novo deploy. Não coloque essa chave no GitHub nem em mensagens.
-   </p>
-  </div>}
+  <div className="notice" role="status">
+   <strong>Cadastro integrado ao Supabase.</strong> Os novos usuários serão criados pela função administrativa protegida do Supabase, usando sua sessão PRESCON. Não é necessário copiar a chave secreta para a Vercel.
+  </div>
   <div className="panel" id="novo-acesso">
    <h2>Criar um novo acesso</h2>
    <p className="muted small">
@@ -114,7 +110,7 @@ export default async function Access({searchParams}:{searchParams:Promise<{role?
      </tbody>
     </table>
    </div>
-   <p className="muted small" style={{margin:0}}>Pendente significa que o perfil ainda não existe na lista de acessos do portal. O formulário acima só cria uma conta após a configuração administrativa do servidor.</p>
+   <p className="muted small" style={{margin:0}}>Pendente significa que o perfil ainda não existe na lista de acessos do portal. Clique em Preparar cadastro e confirme o formulário no topo da página para ativar a conta no Supabase.</p>
   </section>
   <div className="panel stack">
    <div className="toolbar"><h2>Contas com perfil cadastrado ({profiles.length})</h2><span className="badge lime">{profiles.filter(p=>p.active).length} ativas</span></div>

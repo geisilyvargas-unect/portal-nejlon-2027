@@ -173,3 +173,111 @@ hr { border:none; border-top:1px solid var(--border); margin:22px 0; } details {
 .access-roster-cell .badge{font-size:.69rem}
 .access-roster-cell .link{font-size:.77rem;}
 #novo-acesso{scroll-margin-top:28px}
+
+
+/* Aparência acessível persistida por dispositivo */
+.theme-toggle{white-space:nowrap;font-size:.82rem;gap:7px;padding:8px 11px}
+.sidebar-theme{margin-top:auto}
+.login-theme{display:flex;justify-content:flex-end;margin-bottom:12px}
+.calendar-visibility-form{display:grid;gap:7px;margin-top:12px;padding:10px;border:1px solid var(--border);border-radius:8px}
+.calendar-visibility-form button{font-size:.75rem;padding:6px 9px;justify-self:start}
+html[data-theme='light'] {
+ color-scheme:light;--bg:#f4f6f7;--surface:#ffffff;--surface2:#edf1f3;
+ --border:#d4dde2;--text:#202a31;--muted:#51616d;
+ --red:#b4232b;--lime:#476400;--petrol:#00626e
+}
+html[data-theme='light'] body{background:var(--bg)}
+html[data-theme='light'] input,
+html[data-theme='light'] select,
+html[data-theme='light'] textarea{background:#fff;color:var(--text);border-color:#b9c7ce;color-scheme:light}
+html[data-theme='light'] label{color:#33424b}
+html[data-theme='light'] button:not(.primary):not(.lime):not(.calendar-selected),
+html[data-theme='light'] .button:not(.primary):not(.lime){background:#fff;color:#243038;border-color:#c8d2d8}
+html[data-theme='light'] button:not(.primary):not(.lime):hover,
+html[data-theme='light'] .button:not(.primary):not(.lime):hover{background:#e9f0f2}
+html[data-theme='light'] .sidebar,html[data-theme='light'] .mobile-header,
+html[data-theme='light'] .mobile-nav{background:#fff}
+html[data-theme='light'] .nav-link{color:#344955}
+html[data-theme='light'] .nav-link:hover,html[data-theme='light'] .nav-link.active{background:#e8f0f2;color:#1b303c}
+html[data-theme='light'] .profile-box{background:#edf2f5}
+html[data-theme='light'] .hero{background:linear-gradient(110deg,#fbe5e6,#f5f8fa 60%,#ddecf1);border-color:#e0c3c5}
+html[data-theme='light'] .notice{background:#eff8e9;border-color:#b7cba5;color:#2f5525}
+html[data-theme='light'] .error{background:#fff0f0;border-color:#e8a3a3;color:#923039}
+html[data-theme='light'] .badge{background:#e7edf0;color:#31424f}
+html[data-theme='light'] .badge.red{background:#fae4e6;color:#9c2630}
+html[data-theme='light'] .badge.lime{background:#eaf3db;color:#455f08}
+html[data-theme='light'] .badge.blue{background:#dfedf1;color:#005b66}
+html[data-theme='light'] .link{color:#005b66}
+html[data-theme='light'] .login-wrap{background:radial-gradient(circle at 75% 25%,#fae3e5,transparent 35%),radial-gradient(circle at 5% 80%,#dceff2,transparent 35%),var(--bg)}
+html[data-theme='light'] .login-card{background:#fff;border-color:#d4dde2;box-shadow:0 20px 65px #25333b1e}
+html[data-theme='light'] .calendar-weekday{background:#eef2f4}
+html[data-theme='light'] .calendar-day{background:#fff;color:#283740}
+html[data-theme='light'] .calendar-day:hover{background:#f2f6f7}
+html[data-theme='light'] .calendar-day.outside{background:#f4f6f8}
+html[data-theme='light'] .calendar-day.selected{background:#eef5e3}
+html[data-theme='light'] .calendar-switch{background:#f2f5f7}
+html[data-theme='light'] .calendar-switch .calendar-selected{background:#005b66;color:#fff}
+html[data-theme='light'] .calendar-chip.gray{background:#e7edf0;color:#394a56}
+html[data-theme='light'] .calendar-chip.red{background:#fae2e5;color:#8c252c}
+html[data-theme='light'] .calendar-chip.petrol{background:#d4eef0;color:#004e58}
+html[data-theme='light'] .calendar-chip.lime{background:#e3efca;color:#3e5600}
+html[data-theme='light'] .calendar-chip.orange{background:#faebd6;color:#7b4a12}
+html[data-theme='light'] .calendar-agenda-day h3{color:#30434e}
+html[data-theme='light'] .scenario-editor,
+html[data-theme='light'] .vote-scenario{background:#fcfdff;border-color:#d4dde2}
+html[data-theme='light'] .vote-instructions,
+html[data-theme='light'] .review-ej{background:#f0f5f7}
+html[data-theme='light'] .report-heading{background:#f3f7f9}
+html[data-theme='light'] .report-heading h1{color:#26333b}
+html[data-theme='light'] .report-heading h2{color:#a3272f}
+html[data-theme='light'] .report-kpi{background:#f7f9fa}
+html[data-theme='light'] .report-pie-core{background:#fff;border-color:#fff}
+html[data-theme='light'] .report-result-note{background:#edf6f4}
+html[data-theme='light'] .report-review{background:#ecf5f7}
+html[data-theme='light'] .history-report-text{background:#f3f6f8;color:#202a31}
+html[data-theme='light'] .history-rate-track{background:#dce5e9}
+html[data-theme='light'] .secret{background:#f3f8ee;color:#3f5906;border-color:#729936}
+html[data-theme='light'] .access-guide-card{background:#fff}
+html[data-theme='light'] .access-guide-account{background:#edf5f6;color:#00515a}
+@media print{.theme-toggle{display:none!important}}
+
+/* Espaço do seletor em cabeçalhos estreitos */
+@media(max-width:760px){
+  .mobile-header{gap:8px}
+  .mobile-header .theme-toggle{padding:8px;min-width:38px}
+  .mobile-header .theme-toggle span{display:none}
+  .mobile-header strong{font-size:.94rem}
+}
+html[data-theme='light'] .login-demo-note{background:#fff8eb;color:#57391b;border-color:#c8aa70}
+html[data-theme='light'] .login-demo-note code{color:#7b351a}
+html[data-theme='light'] .access-email-preview{background:#f1f5f7}
+
+
+/* Botão flutuante de contato oficial da PRESCON via WhatsApp */
+.contact-prescon{
+ position:fixed;
+ z-index:120;
+ right:max(18px,env(safe-area-inset-right));
+ bottom:max(18px,env(safe-area-inset-bottom));
+ display:inline-flex;
+ align-items:center;
+ justify-content:center;
+ gap:9px;
+ background:#168b50;
+ border:1px solid #107c45;
+ border-radius:999px;
+ box-shadow:0 8px 26px #0005;
+ color:white;
+ font-size:.86rem;
+ font-weight:800;
+ text-decoration:none;
+ padding:13px 19px;
+ transition:background .2s,transform .2s;
+}
+.contact-prescon:hover{background:#0f7140;transform:translateY(-2px);color:#fff}
+.contact-prescon:focus-visible{outline:3px solid #fff;outline-offset:3px}
+@media(max-width:760px){
+ .contact-prescon{right:12px;bottom:12px;padding:12px 14px;font-size:.76rem;gap:7px}
+ .contact-prescon svg{width:20px;height:20px}
+}
+@media print{.contact-prescon{display:none!important}}
