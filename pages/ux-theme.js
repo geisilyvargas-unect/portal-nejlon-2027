@@ -5,22 +5,22 @@ const storageKey='nejlon.ui.theme.v1';
 const root=document.documentElement;
 const query=window.matchMedia?.('(prefers-color-scheme: dark)');
 let preference='dark';
-try {const v=localStorage.getItem(storageKey);if(['light','dark','system'].includes(v))preference=v;}catch{}
-const resolved=()=>preference==='system'?(query?.matches?'dark':'light'):preference;
-const names={light:'Claro',dark:'Escuro',system:'Sistema'};
+try {const v=localStorage.getItem(storageKey);if(['light','dark','red'].includes(v))preference=v;}catch{}
+const resolved=()=>preference;
+const names={light:'Claro',dark:'Escuro',red:'Vermelho'};
 function apply(){
  const theme=resolved();root.dataset.theme=theme;
  root.style.colorScheme=theme;
- document.querySelector('meta[name="theme-color"]')?.setAttribute('content',theme==='dark'?'#19191b':'#f7f5f2');
+ document.querySelector('meta[name="theme-color"]')?.setAttribute('content',theme==='dark'?'#19191b':theme==='red'?'#4d101b':'#f7f5f2');
  document.querySelectorAll('.ux-theme-switch').forEach(b=>{
-  b.innerHTML='<span class="ux-theme-icon" aria-hidden="true">'+(theme==='dark'?'☾':'☀')+'</span><span>Tema '+names[preference]+'</span>';
-  b.setAttribute('aria-label','Aparência: '+names[preference]+'. Clique para alternar entre claro e escuro.');
+  b.innerHTML='<span class="ux-theme-icon" aria-hidden="true">'+(theme==='dark'?'☾':theme==='red'?'♥':'☀')+'</span><span>Tema '+names[preference]+'</span>';
+  b.setAttribute('aria-label','Aparência: '+names[preference]+'. Clique para alternar entre claro, escuro e vermelho.');
   b.setAttribute('title','Alterar tema; preferência atual: '+names[preference]);
   b.setAttribute('aria-pressed',String(theme==='dark'));
  });
 }
 function toggle(){
- preference=resolved()==='dark'?'light':'dark';
+ preference=preference==='light'?'dark':preference==='dark'?'red':'light';
  try{localStorage.setItem(storageKey,preference);}catch{}
  apply();
 }
@@ -46,6 +46,6 @@ function mount(){
 }
 apply();
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',mount,{once:true});else mount();
-query?.addEventListener?.('change',()=>{if(preference==='system')apply()});
-window.addEventListener('storage',event=>{if(event.key===storageKey){preference=['light','dark','system'].includes(event.newValue)?event.newValue:'dark';apply()}});
+
+window.addEventListener('storage',event=>{if(event.key===storageKey){preference=['light','dark','red'].includes(event.newValue)?event.newValue:'dark';apply()}});
 })();
