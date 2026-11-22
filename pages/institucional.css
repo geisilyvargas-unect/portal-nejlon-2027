@@ -104,3 +104,39 @@
 @media(max-width:650px){
  .institutional .ej-logo{height:104px;flex-basis:104px}
 }
+
+/* Revisão das logos (2026-11-22): sem painel preto, com área visível uniforme.
+   Não altera nenhum SVG original. */
+.institutional .ej-grid .ej .ej-logo{
+ background:transparent !important;
+ border:0 !important;
+ box-shadow:none !important;
+ border-radius:0 !important;
+ width:100%;
+ height:118px;
+ flex:0 0 118px;
+ padding:4px 0;
+ margin:0 0 8px;
+ overflow:visible;
+ display:flex;
+ justify-content:center;
+ align-items:center;
+}
+.institutional .ej-grid .ej .ej-logo > img{
+ display:block;
+ width:100%;
+ height:100%;
+ max-width:none;
+ max-height:none;
+ object-fit:contain;
+ object-position:center;
+}
+/* Contraste e dimensão das duas marcas que apareciam quase invisíveis. */
+.institutional .ej-grid .ej .ej-logo > img[src*="/paracelso.svg"],
+.institutional .ej-grid .ej .ej-logo > img[src*="/smat.svg"]{
+ transform:scale(1.45);
+ filter:drop-shadow(0 0 3px rgba(255,255,255,.3));
+}
+@media(max-width:650px){
+ .institutional .ej-grid .ej .ej-logo{height:108px;flex-basis:108px}
+}
