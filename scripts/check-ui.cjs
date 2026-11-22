@@ -4,8 +4,8 @@
 const fs=require('node:fs');
 const path=require('node:path');
 const vm=require('node:vm');
-const pages=['index.html','pages/idealize.html','pages/institucional.html','pages/whatsapp.html'];
-const scripts=['pages/site.js','pages/idealize.js','pages/visual-analytics.js','pages/ux-theme.js','pages/whatsapp.js','pages/message-library.js','pages/pf-import.js'];
+const pages=['index.html','pages/idealize.html','pages/institucional.html','pages/whatsapp.html','pages/central-automacoes.html','pages/responder.html'];
+const scripts=['pages/site.js','pages/idealize.js','pages/visual-analytics.js','pages/ux-theme.js','pages/whatsapp.js','pages/message-library.js','pages/pf-import.js','pages/automation.js','pages/responder.js','api/_shared.js','api/drive.js','api/forms.js','api/google-callback.js','api/cron-sync.js'];
 const css=['pages/ux-system.css'];
 let failures=0;
 function fail(message){console.error('FAIL: '+message);failures++;}
@@ -52,4 +52,4 @@ const pairs=[
 ];
 for(const [fg,bg,label] of pairs){if(contrastRatio(fg,bg)<4.5)fail('low contrast '+label+' '+contrastRatio(fg,bg).toFixed(2)+':1')}
 if(failures){console.error(failures+' UI smoke check(s) failed');process.exit(1)}
-console.log('UI smoke checks passed: 4 pages, assets, JS syntax and theme stylesheet.');
+console.log('UI smoke checks passed: '+pages.length+' pages, assets, JS syntax and theme stylesheet.');
