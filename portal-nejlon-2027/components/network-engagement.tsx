@@ -1,15 +1,29 @@
 'use client';
-import {useMemo,useState} from 'react';
+import {useEffect,useMemo,useState} from 'react';
+import {useRouter} from 'next/navigation';
+import {createClient} from '@/lib/supabase/browser';
 import {BarChart3,Building2,CheckCircle2,Clock3,Search,TrendingUp} from 'lucide-react';
 import type {EngagementSnapshot,EngagementStatus} from '@/lib/engagement';
 
-const LABELS:Record<EngagementStatus,string>={
- high:'80–100%',medium:'50–79%',low:'0–49%',none:'Sem dados'
-};
 type Filter='all'|EngagementStatus;
 export function NetworkEngagement({snapshot,demo=false}:{
  snapshot:EngagementSnapshot;demo?:boolean
 }){
+ const router=useRouter();
+ useEffect(()=>{
+  if(demo)return;
+  const db=createClient();
+  const channel=db.channel('prescon-network-live').on('postgres_changes',
+   {event:'*',schema:'public',table:'responses'},()=>router.refresh()).subscribe();
+  const onFocus=()=>router.refresh();
+  window.addEventListener('focus',onFocus);
+  const poll=window.setInterval(()=>router.refresh(),60000);
+  return ()=>{
+   window.removeEventListener('focus',onFocus);
+   window.clearInterval(poll);
+   void db.removeChannel(channel);
+  };
+ },[demo,router]);
  const [query,setQuery]=useState('');
  const [filter,setFilter]=useState<Filter>('all');
  const [selectedId,setSelectedId]=useState<string|null>(
@@ -155,7 +169,7 @@ export function NetworkEngagement({snapshot,demo=false}:{
     <div className="network-chart" role="group" aria-label="Gráfico de participação por deliberação">
      <div className="network-chart-lines" aria-hidden="true"><span>100%</span><span>50%</span><span>0%</span></div>
      <div className="network-bars">
-      {snapshot.trend.map((point,i)=><div className="network-bar-item" key={point.id}>
+      {snapshot.trend.map(point=><div className="network-bar-item" key={point.id}>
        <strong className="network-bar-value">{point.rate}%</strong>
        <div className="network-bar-track">
         <span className="network-bar-fill" style={{height:point.rate+'%'}}/>
