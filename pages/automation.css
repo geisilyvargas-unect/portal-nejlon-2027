@@ -76,3 +76,8 @@
 @media(max-width:700px){.automation-grid,.automation-stat-grid{grid-template-columns:1fr}.automation-hero{background-size:90%;min-height:260px;padding:27px 18px}.automation-tabs{display:flex;flex-wrap:nowrap;overflow-x:auto;scroll-snap-type:x proximity}.automation-tabs button{white-space:nowrap;flex:0 0 auto;scroll-snap-align:start}.automation-file{grid-template-columns:1fr}.automation-top{flex-wrap:wrap}.automation-form button{width:100%}.automation-form-card .btn{width:auto}}
 @media(max-width:475px){.automation-shortcuts{grid-template-columns:1fr}.automation-shortcuts button,.automation-shortcuts a{min-height:126px}.automation-hero h1{font-size:38px}}
 @media(prefers-reduced-motion:reduce){.automation-page *{scroll-behavior:auto!important;transition:none!important}}
+/* Integração de Forms existente: campos claros em ambos os temas */
+.automation-form-card .auto-google-attach{display:flex;align-items:center;gap:8px;flex-wrap:wrap;background:var(--ux-surface);padding:10px;border-radius:9px;color:var(--ux-muted);font-size:11px}
+.automation-form-card .auto-google-attach input{min-width:195px;max-width:100%;flex:1;padding:10px;border:1px solid var(--ux-border);border-radius:7px;background:var(--ux-input);color:var(--ux-text);font-size:12px}
+.automation-form-card .auto-google-attach button{min-height:41px}
+@media(max-width:500px){.automation-form-card .auto-google-attach input{flex:1 1 100%;min-width:0}}
