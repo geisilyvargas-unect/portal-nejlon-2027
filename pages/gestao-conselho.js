@@ -22,7 +22,7 @@ ejPicker.value=state.ej;
 const tabs=[['overview','Visão geral'],['calendar','Agenda e reuniões'],['learning','Jornada'],['engagement','Engajamento'],['checkins','Acompanhamento'],['resources','Biblioteca'],['actions','Encaminhamentos']];
 const isAdmin=()=>state.role==='prescon',isCouncil=()=>state.role==='counselor'||isAdmin();
 const own=()=>data.members.find(m=>m.ej===state.ej)||null;
-const visibleTabs=()=>tabs.filter(([id])=>isCouncil()||['overview','calendar','resources'].includes(id));
+const visibleTabs=()=>tabs.filter(([id])=>isAdmin()||(state.role==='counselor'&&id!=='checkins')||['overview','calendar','resources'].includes(id));
 const date=d=>{if(!d)return 'Sem prazo';const parts=d.split('-');return parts.length===3?parts.reverse().join('/'):d};
 const card=(title,body)=>'<article class="card"><h3>'+esc(title)+'</h3>'+body+'</article>';
 const note=()=>'<p class="notice"><strong>Simulação:</strong> alterações feitas aqui permanecem somente nesta aba do navegador. Nenhum dado oficial é alterado.</p>';
