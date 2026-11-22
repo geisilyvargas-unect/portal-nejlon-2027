@@ -305,6 +305,7 @@ export async function publishDeliberationReport(form:FormData) {
  const {data:d,error:de}=await db.from('deliberations').select('id,title,description,scenarios,status,is_demo,is_historical,due_at').eq('id',id).maybeSingle();
  checkError(de);
  if(!d||d.is_demo||d.is_historical)fail('Publicação disponível apenas para deliberações atuais não demonstrativas.');
+ if(d.status!=='closed')fail('O relatório só pode ser publicado depois que o formulário da deliberação estiver encerrado.');
  const {data:rows,error:re}=await db.from('responses').select('id,position,scenario_answers').eq('deliberation_id',id);
  checkError(re);
  const {data:ejs,error:ee}=await db.from('ejs').select('id');
