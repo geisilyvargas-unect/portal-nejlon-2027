@@ -25,3 +25,90 @@
 .ej-contact-actions .outline{background:transparent}
 @media(max-width:760px){.directory-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.ej-directory-card{padding:11px}.heat{min-height:99px}.heat-logo{width:50px;height:36px}}
 @media(max-width:420px){.directory-grid{grid-template-columns:1fr}.ej-directory-card{padding:13px}}
+
+
+/* NEJLON | Estética do Portfólio Unificado.
+   Ondas orgânicas, esquilo, estrelas e prismas geométricos. */
+:root{--bg:#171717;--side:#191919;--panel:#202020;--panel2:#292929;--border:#494949;--text:#fff;--muted:#cbcbcb;--red:#d12d32;--lime:#9dc710;--green:#9dc710;--yellow:#e7c561}
+body{background:var(--bg)}
+.side{background:#191919}
+.side::after{content:"";position:absolute;pointer-events:none;right:4px;bottom:90px;width:100px;height:112px;background:url('./nejlon-squirrel.svg') center/contain no-repeat;opacity:.12}
+.brand-mark{background:linear-gradient(135deg,#d02d32 0%,#861e27 90%)}
+.brand-mark span{color:var(--lime)}
+.side-section,.mini-heading,.eyebrow{color:var(--lime)}
+.nav-button.active{background:#362a2a;border-color:#834145;border-left:4px solid var(--red)}
+.topbar{background:#1c1c1c}
+.top-sparkle{color:var(--lime)}
+.top-label{color:#eaeaea}
+.intro{
+ position:relative;isolation:isolate;overflow:hidden;min-height:270px;
+ background:#1c1c1c;border:1px solid #515151;
+ border-bottom:11px solid transparent;
+ border-image:linear-gradient(90deg,#d12d32 0% 14%,#9dc710 14% 33%,#00616b 33% 55%,#d12d32 55% 77%,#9dc710 77% 87%,#00616b 87% 100%) 1;
+}
+.intro::before{
+ content:"";pointer-events:none;position:absolute;z-index:-1;
+ left:-35px;bottom:-40px;width:240px;height:180px;
+ background:url('./nejlon-waves.svg') left bottom/contain no-repeat;opacity:.9
+}
+.intro::after{
+ content:"";pointer-events:none;position:absolute;z-index:-1;
+ right:-12px;bottom:-85px;width:260px;height:260px;
+ background:url('./nejlon-squirrel.svg') center/contain no-repeat;opacity:.35
+}
+.intro-copy{position:relative;z-index:1}
+.intro h1{
+ font-family:'Arial Black',Impact,'Space Grotesk',system-ui,sans-serif;
+ text-transform:uppercase;font-weight:950;letter-spacing:-.045em;
+ text-shadow:3px 3px 0 #b52831,5px 5px 0 #101010;
+ max-width:790px
+}
+.intro h1 em{color:var(--lime);font-style:normal}
+.intro .eyebrow{color:var(--lime)}
+.intro .intro-symbol{position:relative;z-index:1;border:2px solid var(--lime);background:#151f16}
+.intro-symbol span{color:var(--lime)}
+.role-card{position:relative;overflow:hidden;background:#242424;border-color:#414141}
+.role-card::before{
+ content:"";pointer-events:none;position:absolute;top:-40px;right:-30px;width:150px;height:150px;
+ background:url('./nejlon-prism.svg') center/contain no-repeat;opacity:.16
+}
+.role-card>*{position:relative;z-index:1}
+.role-option.active{background:var(--red);border-color:var(--red)}
+.stat-card{position:relative;overflow:hidden;border-top:4px solid var(--lime);background:#202020}
+.stat-card:nth-child(2){border-top-color:var(--red)}
+.stat-card:nth-child(3){border-top-color:#00616b}
+.stat-card:nth-child(4){border-top-color:var(--lime)}
+.panel{background:#202020;border-color:#464646}
+.panel h3,.ej-directory-card h3{font-family:'Arial Black',Impact,'Space Grotesk',system-ui,sans-serif;text-transform:uppercase;letter-spacing:-.035em}
+.ej-directory-card{background:#202020;position:relative;isolation:isolate;overflow:hidden}
+.ej-directory-card::before{
+ content:"";position:absolute;z-index:-1;pointer-events:none;top:-35px;right:-30px;width:138px;height:150px;
+ background:url('./nejlon-prism.svg') center/contain no-repeat;opacity:.21
+}
+.ej-directory-card>*{position:relative;z-index:1}
+.heat{border-width:2px}
+.heat.high{background:#143b29;border-color:#497e62}
+.heat.medium{background:#4d3c1a;border-color:#9f7b34}
+.heat.low{background:#4d242b;border-color:#904a55}
+.heat.none{background:#313131;border-color:#555}
+.heat.active{outline-color:var(--lime)}
+.heat-info .swatch.high{background:var(--lime)}
+.workhead{position:relative}
+.workhead::after{
+ content:"";pointer-events:none;position:absolute;right:0;top:-25px;width:80px;height:80px;
+ background:url('./nejlon-sparkles.svg') center/contain no-repeat;opacity:.18
+}
+.workhead>*{position:relative;z-index:1}
+.demo-alert{background:#202820;border-color:#5a6843}
+.demo-alert .alert-icon{color:var(--lime)}
+.contact{background:var(--lime)}
+.date-chip{background:#2a2a2a}
+.footer{border-top:7px solid transparent;border-image:linear-gradient(90deg,#d12d32 0% 20%,#9dc710 20% 40%,#00616b 40% 60%,#d12d32 60% 80%,#9dc710 80%) 1}
+@media(max-width:760px){
+ .intro{min-height:230px}
+ .intro h1{font-size:clamp(26px,6.5vw,36px);text-shadow:2px 2px 0 #b52831,3px 3px 0 #101010}
+ .intro::after{width:170px;height:170px;bottom:-40px;opacity:.18}
+ .intro::before{width:165px;height:120px;opacity:.65}
+ .intro .intro-symbol{display:none}
+ .side::after{display:none}
+}
