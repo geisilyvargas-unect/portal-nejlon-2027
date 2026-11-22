@@ -10,6 +10,7 @@ import {ReportActions} from '@/components/clipboard';
 import {CsvExport} from '@/components/csv-export';
 import {saveReportNotes,saveResponseReview} from '@/app/actions';
 import {HistoricalReport} from '@/components/historical-deliberation';
+import {summarizeManualVotes,effectivePosition} from '@/lib/vote-rules';
 
 type Review={
   id:string;response_id:string;scenario_key:string;aspect:'rejection'|'suggestion'|'caveat';
@@ -89,10 +90,18 @@ export default async function ReportDetail({params}:{params:Promise<{id:string}>
     const positions=voters.map(x=>x.answer.position);
     const direct=voters.filter(x=>x.answer.position==='favorable'||x.answer.position==='suggestions').length;
     const conditional=voters.filter(x=>x.answer.position==='qualified').length;
+    const manual=summarizeManualVotes(voters.map(({r,answer})=>({
+      position:answer.position,caveatDecision:reviewFor(r,scenario,'caveat')?.decision
+    })));
     textLines.push('',(index+2)+'. '+scenario.title.toUpperCase(),
       ...Object.entries(POSITIONS).map(([key,label])=>label+': '+positions.filter(v=>v===key).length),
       'Aprovação direta (sem ressalvas): '+(positions.length?Math.round(direct/positions.length*10000)/100:0)+'% dos votos recebidos',
-      'Aprovação condicionada a análise: '+conditional);
+      'Votos com ressalvas: '+conditional,
+      'Manual aplicado — aprovações confirmadas: '+manual.approved,
+      'Manual aplicado — reprovações confirmadas: '+manual.rejected,
+      'Manual aplicado — ressalvas ainda pendentes: '+manual.pending,
+      'Manual aplicado — abstenções: '+manual.abstentions,
+      'A situação final continua sujeita à validação institucional.');
     for(const aspect of aspects){
       textLines.push('',aspect.title);
       let found=false;
@@ -123,14 +132,19 @@ export default async function ReportDetail({params}:{params:Promise<{id:string}>
     ['Data da resposta','EJ',...scenarios.flatMap((sc,index)=>[
       'Sobre o [C'+(index+1)+'] '+sc.title+', você...',
       'Justificativa ['+sc.key+']','Sugestões ['+sc.key+']','Ressalvas ['+sc.key+']',
-      'Parecer da PRESCON — sugestões ['+sc.key+']','Parecer da PRESCON — ressalvas ['+sc.key+']'
+      'Parecer da PRESCON — sugestões ['+sc.key+']','Parecer da PRESCON — ressalvas ['+sc.key+']',
+      'Situação das ressalvas ['+sc.key+']','Contagem após análise ['+sc.key+']'
     ]),'Clareza (0–5)','Dificuldade (0–5)','Como podemos melhorar?'],
     ...responses.map(r=>[
       r.updated_at,ejName(r),
       ...answersOf(r,scenarios).flatMap((a,i)=>[
         POSITIONS[a.position],a.justification,a.suggestions,a.caveats,
         reviewFor(r,scenarios[i],'suggestion')?.comment||'',
-        reviewFor(r,scenarios[i],'caveat')?.comment||''
+        reviewFor(r,scenarios[i],'caveat')?.comment||'',
+        a.position==='qualified'?(reviewFor(r,scenarios[i],'caveat')?.decision||'under_review'):'',
+        ({approved:'Aprovação',rejected:'Reprovação',pending:'Aguardando PRESCON',abstention:'Abstenção'} as const)[
+          effectivePosition(a.position,reviewFor(r,scenarios[i],'caveat')?.decision)
+        ]
       ]),
       r.final_feedback?.clarity,r.final_feedback?.difficulty,r.final_feedback?.improvements
     ])
@@ -162,6 +176,9 @@ export default async function ReportDetail({params}:{params:Promise<{id:string}>
       const positions=entries.map(e=>e.answer.position);
       const direct=positions.filter(p=>p==='favorable'||p==='suggestions').length;
       const conditional=positions.filter(p=>p==='qualified').length;
+      const manual=summarizeManualVotes(entries.map(({r,answer})=>({
+        position:answer.position,caveatDecision:reviewFor(r,scenario,'caveat')?.decision
+      })));
       return <section className="panel report-scenario" key={scenario.key}>
         <div className="eyebrow">Cenário {index+1}</div>
         <h2 style={{marginTop:8}}>{index+2}. {scenario.title}</h2>
@@ -170,7 +187,19 @@ export default async function ReportDetail({params}:{params:Promise<{id:string}>
         <VotingChart votes={positions}/>
         <div className="report-result-note">
           <strong>Aprovação direta: {positions.length?(direct/positions.length*100).toFixed(2):'0,00'}% dos votos recebidos</strong>
-          <span className="muted small">{conditional} aprovação(ões) com ressalvas aguardando eventual análise; resultado institucional sujeito ao Regimento.</span>
+          <span className="muted small">{conditional} voto(s) com ressalvas. O resultado abaixo se atualiza após a manifestação da PRESCON.</span>
+        </div>
+        <div className="manual-accounting" aria-label="Consolidação automática segundo as opções do formulário">
+          <div className="eyebrow">MANUAL APLICADO • APÓS A ANÁLISE DAS RESSALVAS</div>
+          <div className="manual-accounting-grid">
+            <div className="approved"><span>Aprovações confirmadas</span><strong>{manual.approved}</strong></div>
+            <div className="rejected"><span>Reprovações confirmadas</span><strong>{manual.rejected}</strong></div>
+            <div className="waiting"><span>Ressalvas em análise</span><strong>{manual.pending}</strong></div>
+            <div className="abstentions"><span>Abstenções</span><strong>{manual.abstentions}</strong></div>
+          </div>
+          <p className="muted small">{manual.pending>0
+            ?'Ainda há ressalvas aguardando a decisão da PRESCON; não é possível considerar a contagem consolidada.'
+            :'Todas as ressalvas registradas receberam encaminhamento, mas a aprovação formal depende da análise institucional.'}</p>
         </div>
         {aspects.map((aspect,aspectIndex)=>{
           const notes=entries.map(({r,answer})=>({
