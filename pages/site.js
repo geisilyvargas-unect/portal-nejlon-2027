@@ -194,7 +194,7 @@ function liveDeliberations(){
  return '<div class="view-grid">'+panel('Deliberações publicadas pela PRESCON','Dados reais, atualizados pelo sistema.',info+(liveError?'<p class="note" role="status">'+esc(liveError)+'</p>':'')+(liveLoading?'<p>Atualizando deliberações...</p>':liveForms===null?login:rows||'<p>Nenhuma deliberação disponível para este perfil.</p>')+(liveForms!==null?'<div class="toolrow"><button class="btn" type="button" data-refresh-live>Atualizar lista ↻</button></div>':''))+'</div>';
 }
 function deliberations(){
- if(liveSession?.access_token||findLiveSession())return liveDeliberations();
+ return liveDeliberations();
  const cards=D.delibs.filter(d=>s.role!=='ej_direx'||d.visibility!=='Conselho');
  const id=s.delib,selected=delib(id);
  const stateOf=d=>{const status=String(d.status||'').toLocaleLowerCase('pt-BR');if(/avalia|análise|analise|pendente/.test(status))return 'review';if(/encerrad|fechad|concluíd|concluid|finalizad/.test(status))return 'closed';return 'open';};
