@@ -62,3 +62,26 @@ body{background:#191919}
 @media(max-width:540px){.idealize-identity{grid-template-columns:1fr}.idealize-financial-stats{grid-template-columns:1fr 1fr}.idealize-shell .panel{padding:13px}.idealize-choices{grid-template-columns:1fr}.idealize-result-row{grid-template-columns:1fr 1fr 20px}}
 
 #idealize-vote-form [hidden]{display:none!important}
+
+
+/* Manual ilustrado do NEJLON integrado ao formulário da apresentação. */
+.idealize-manual-visual{position:relative;overflow:hidden;isolation:isolate;border:1px solid #585858;border-radius:13px;background:#202020;color:#fff}
+.idealize-manual-art{position:relative;overflow:hidden;isolation:isolate;padding:25px clamp(17px,3vw,31px);min-height:175px;background:linear-gradient(110deg,#191919,#303030);border-bottom:8px solid transparent;border-image:linear-gradient(90deg,#d12d32 0% 20%,#9dc710 20% 42%,#00616b 42% 59%,#d12d32 59% 81%,#9dc710 81%) 1}
+.idealize-manual-art::before{content:"";position:absolute;z-index:-1;bottom:-62px;left:-17px;width:185px;height:133px;background:url('./nejlon-waves.svg') center/contain no-repeat;opacity:.45;pointer-events:none}
+.idealize-manual-art::after{content:"";position:absolute;z-index:-1;bottom:-54px;right:4px;width:188px;height:199px;background:url('./nejlon-squirrel.svg') center/contain no-repeat;opacity:.3;pointer-events:none}
+.idealize-manual-art h3{font:900 clamp(24px,4vw,35px)/1.05 'Arial Black',Impact,sans-serif;margin:11px 0;text-shadow:3px 3px #bb2830;max-width:640px}
+.idealize-manual-art h3 em{font-style:normal;color:#c0e27e}
+.idealize-manual-art p{font-size:12px;max-width:540px;color:#e4e4e4;margin:0 0 14px}
+.idealize-manual-link{display:inline-flex;gap:8px;font-size:11px;font-weight:850;padding:9px 12px;background:#b3da6e;color:#182115;border-radius:8px}
+.idealize-manual-steps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px;padding:15px}
+.idealize-manual-steps>div{display:flex;gap:10px;align-items:center;background:#303030;border:1px solid #515151;padding:12px;border-radius:9px}
+.idealize-manual-steps b{background:#9dc710;color:#141414;flex:0 0 auto;display:grid;place-items:center;width:26px;height:26px;border-radius:100%}
+.idealize-manual-steps span{font-size:11px;font-weight:800}
+.idealize-manual-visual .idealize-guide{margin:0;padding:0 15px 13px}
+.idealize-guide>div{grid-template-columns:repeat(2,minmax(0,1fr))}
+.idealize-guide-item{background:#303030;border-left-color:#b7de79;border-radius:9px;padding:12px}
+.idealize-guide-item:nth-child(3){border-left-color:#e5b45f}
+.idealize-guide-item:nth-child(4){border-left-color:#d3515b}
+.idealize-guide-item:nth-child(5){border-left-color:#a9a0cb}
+.idealize-manual-note{font-size:11px;color:#e1ebc4;line-height:1.65;margin:0 15px 15px;padding:12px;background:#283227;border:1px solid #5d7243;border-radius:8px}
+@media(max-width:600px){.idealize-manual-steps{grid-template-columns:1fr}.idealize-guide>div{grid-template-columns:1fr}.idealize-manual-art::after{opacity:.14;width:115px;height:125px}.idealize-manual-art{padding:20px}}
