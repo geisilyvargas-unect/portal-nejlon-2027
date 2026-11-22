@@ -32,8 +32,9 @@ async function makeReport(userId,token,formId,asSheet){
 async function handle(req,res){
  const action=String(req.query?.action||'status');
  if(action==='callback'){
+  const returnTo=process.env.PORTAL_UI_URL||'https://geisilyvargas-unect.github.io/portal-nejlon-2027/pages/central-automacoes.html';
   const state=req.query?.state;
-  if(!state||!req.query?.code)return res.redirect(302,'/pages/central-automacoes.html?google=cancelado');
+  if(!state||!req.query?.code)return res.redirect(302,returnTo+'?google=cancelado');
   if(!ready())fail(503,'Integração Google ainda não configurada no servidor.');
   const userId=G.verifyState(state);
   const profiles=await db('profiles',{query:'select=id,role,active&id=eq.'+userId+'&limit=1'});
@@ -43,7 +44,7 @@ async function handle(req,res){
   let email=null;
   try{const u=await google('https://www.googleapis.com/oauth2/v3/userinfo',tokens.access_token);email=u.email||null;}catch{}
   await db('portal_google_connections',{method:'POST',query:'on_conflict=owner_user_id',prefer:'resolution=merge-duplicates',data:{owner_user_id:userId,email,encrypted_refresh_token:G.encrypt(tokens.refresh_token),connected_at:new Date().toISOString()}});
-  return res.redirect(302,'/pages/central-automacoes.html?google=conectado');
+  return res.redirect(302,returnTo+'?google=conectado');
  }
  if(req.method==='GET'&&action==='health')return json(res,200,{configured:ready(),missing:envCheck(),service:'PRESCON integrations'});
  const user=await prescon(req);
