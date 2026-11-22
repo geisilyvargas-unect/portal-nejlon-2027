@@ -103,19 +103,11 @@ async function handler(req,res){
   if(!decision)fail(400,'Escolha aceitar ou recusar.');
   const note=clean(data.note,3000);
   if(note.length<8)fail(400,'Registre o motivo da decisão com pelo menos 8 caracteres.');
-  const rows=await db('portal_demand_justifications',{query:'select=id,demand_id,ej_id,state&id=eq.'+id+'&limit=1'});
-  const j=rows[0];if(!j)fail(404,'Justificativa não encontrada.');
-  if(j.state!=='pending_review')fail(409,'Esta justificativa já recebeu uma decisão.');
-  const update=await db('portal_demand_justifications',{method:'PATCH',query:'id=eq.'+id+'&state=eq.pending_review',prefer:'return=representation',data:{
-   state:decision,decision_note:note,decided_by:user.userId,decided_at:new Date().toISOString()
+  // Transação única no Postgres: decisão, situação e histórico sempre ficam consistentes.
+  const decided=await db('rpc/portal_decide_demand_justification',{method:'POST',data:{
+   p_justification_id:id,p_actor_id:user.userId,p_decision:decision,p_note:note
   }});
-  if(!update.length)fail(409,'A justificativa foi analisada por outra sessão. Atualize a lista.');
-  if(decision==='accepted'){
-   const d=await findDemand(j.demand_id);
-   if(['pendente','em_andamento'].includes(d.status))await db('demands',{method:'PATCH',query:'id=eq.'+d.id,data:{status:'justificada',updated_at:new Date().toISOString()}});
-  }
-  await event({demand:j.demand_id,actor:user,action:decision==='accepted'?'justification_accepted':'justification_rejected',note,details:{justification_id:j.id,decision}});
-  return json(res,200,{ok:true,justification:update[0],message:decision==='accepted'?'Justificativa aceita. Demanda marcada como justificada.':'Justificativa recusada. Demanda permanece pendente.'});
+  return json(res,200,{ok:true,justification:decided,message:decision==='accepted'?'Justificativa aceita. Demanda marcada como justificada.':'Justificativa recusada. Demanda permanece pendente.'});
  }
  if(action==='status'){
   const d=await findDemand(data.demandId);
