@@ -4,6 +4,7 @@ import {useRouter} from 'next/navigation';
 import {createClient} from '@/lib/supabase/browser';
 import {BarChart3,Building2,CheckCircle2,Clock3,Search,TrendingUp} from 'lucide-react';
 import type {EngagementSnapshot,EngagementStatus} from '@/lib/engagement';
+import {EjBrand} from '@/components/ej-brand';
 
 type Filter='all'|EngagementStatus;
 export function NetworkEngagement({snapshot,demo=false}:{
@@ -107,6 +108,7 @@ export function NetworkEngagement({snapshot,demo=false}:{
        onClick={()=>setSelectedId(e.id)}
        aria-pressed={selected?.id===e.id}
        title={e.name+': '+(e.rate===null?'sem dados':e.rate+'% de respostas')}>
+       <EjBrand slug={e.slug} name={e.name}/>
        <span className="network-cell-name">{e.name}</span>
        <span className="network-cell-score">{e.rate===null?'—':e.rate+'%'}</span>
       </button>)}
@@ -122,7 +124,7 @@ export function NetworkEngagement({snapshot,demo=false}:{
    </div>
    <div className="panel network-ej-profile">
     <div className="network-profile-title">
-     <div className="network-profile-icon"><Building2 size={25}/></div>
+     <EjBrand slug={selected?.slug||''} name={selected?.name||'EJ'} large/>
      <div><div className="eyebrow">Ficha da EJ</div><h3>{selected?.name||'Selecione uma EJ'}</h3></div>
     </div>
     {selected&&<>
