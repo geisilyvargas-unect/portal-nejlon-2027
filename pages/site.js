@@ -332,7 +332,7 @@ document.addEventListener('input',e=>{
 $('current-date').textContent=new Intl.DateTimeFormat('pt-BR',{dateStyle:'long',timeZone:'America/Sao_Paulo'}).format(new Date());
 render();
 if(findLiveSession())loadLiveForms();
-setInterval(()=>{if(s.section==='deliberacoes'&&!document.hidden)loadLiveForms()},15000);
-document.addEventListener('visibilitychange',()=>{if(!document.hidden&&s.section==='deliberacoes')loadLiveForms()});
-window.addEventListener('focus',()=>{if(s.section==='deliberacoes'&&!liveLoading)loadLiveForms()});
+setInterval(()=>{if(s.section==='deliberacoes'&&!document.hidden&&!document.querySelector('.live-report-publish[open]'))loadLiveForms()},15000);
+document.addEventListener('visibilitychange',()=>{if(!document.hidden&&s.section==='deliberacoes'&&!document.querySelector('.live-report-publish[open]'))loadLiveForms()});
+window.addEventListener('focus',()=>{if(s.section==='deliberacoes'&&!liveLoading&&!document.querySelector('.live-report-publish[open]'))loadLiveForms()});
 })();
