@@ -103,3 +103,21 @@ html:is([data-theme="light"],[data-theme="dark"]) .hero h1{
  text-shadow:2px 2px 0 #ff0000,2px 3px 0 var(--nejlon-title-edge)!important;
 }
 @media(max-width:600px){html:is([data-theme="light"],[data-theme="dark"]) .hero h1{text-shadow:1px 2px 0 #ff0000!important}}
+
+
+/* Unificação com a tipografia da versão vermelha anteriormente aprovada. */
+html:is([data-theme="light"],[data-theme="dark"]) :is(.hero h1,.panel h2,.panel h3,.main h1,.main h2,.main h3){
+ color:#fff!important;
+ -webkit-text-stroke:2px #000!important;
+ paint-order:stroke fill!important;
+ text-shadow:2px 4px 0 #ff0000!important;
+ letter-spacing:.01em!important;
+}
+html:is([data-theme="light"],[data-theme="dark"]) .hero h1{
+ text-shadow:3px 6px 0 #ff0000,4px 8px 0 #050505!important;
+}
+html:is([data-theme="light"],[data-theme="dark"]) :is(.hero h1,.panel h2,.panel h3,.main h1,.main h2,.main h3) :is(em,strong,span){color:#fff!important}
+@media(max-width:600px){
+ html:is([data-theme="light"],[data-theme="dark"]) :is(.hero h1,.panel h2,.panel h3,.main h1,.main h2,.main h3){-webkit-text-stroke:1.5px #000!important}
+ html:is([data-theme="light"],[data-theme="dark"]) .hero h1{text-shadow:2px 4px 0 #ff0000,3px 6px 0 #050505!important}
+}
