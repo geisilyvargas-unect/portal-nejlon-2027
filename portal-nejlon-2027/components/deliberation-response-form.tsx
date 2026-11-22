@@ -1,5 +1,5 @@
-import './vote-rating.css';
 'use client';
+import './vote-rating.css';
 import {useState} from 'react';
 import {submitResponse} from '@/app/actions';
 import {POSITIONS,type DeliberationScenario,type Position,type ResponseRow,type ScenarioAnswer} from '@/lib/constants';
