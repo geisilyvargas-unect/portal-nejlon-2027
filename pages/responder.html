@@ -1,0 +1,27 @@
+<!doctype html><html lang="pt-BR"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#19191b">
+<title>Responder formulário · Portal NEJLON</title>
+<link rel="stylesheet" href="./site.css"><link rel="stylesheet" href="./visual-identity.css"><link rel="stylesheet" href="./automation.css"><link rel="stylesheet" href="./responder.css"><link rel="stylesheet" href="./ux-system.css">
+<script defer src="./ux-theme.js"></script><script defer src="./responder.js"></script></head>
+<body class="automation-page respond-page">
+<nav class="automation-top"><a href="../index.html">← Voltar ao Portal</a><span>CONSELHO DELIBERATIVO · NEJLON</span></nav>
+<main class="automation-shell" id="conteudo">
+<header class="automation-hero"><span class="eyebrow">CONSELHO · FORMULÁRIO OFICIAL QUANDO PUBLICADO</span><h1>PARTICIPE DA <em>DELIBERAÇÃO</em></h1><p>Responda diretamente pelo Portal NEJLON. Cada EJ tem direito a uma resposta válida por deliberação.</p></header>
+<div class="automation-note"><strong>Atenção:</strong> esta página usa autenticação individual. As deliberações fictícias da demonstração não registram votos. Um formulário só aceita respostas após publicação pela PRESCON.</div>
+<section class="automation-panel" id="respond-login">
+<h2>Entrar como conselheiro(a)</h2>
+<p>Use o e-mail e a senha cadastrados pela gestão do NEJLON.</p>
+<form class="automation-form" id="respond-login-form"><label>E-mail<input required id="respond-email" type="email" autocomplete="username" placeholder="seuemail@nejlondrina.com"></label><label>Senha<input required id="respond-password" type="password" autocomplete="current-password"></label><button class="btn red" type="submit">Entrar e carregar formulário</button></form>
+<p id="respond-login-error" class="automation-message" role="status"></p>
+</section>
+<section id="respond-app" hidden>
+<div class="automation-user-bar"><div><span>IDENTIFICAÇÃO DO CONSELHEIRO</span><strong id="respond-user"></strong></div><button class="btn" id="respond-logout" type="button">Sair</button></div>
+<section class="automation-panel"><div id="respond-form-header"><h2>Carregando formulário…</h2></div>
+<div id="respond-question-list"></div>
+<form id="respond-answer-form" class="automation-form" hidden><div id="respond-questions"></div><button class="btn red" type="submit">Registrar resposta da EJ</button></form>
+<p id="respond-submit-feedback" class="automation-message" role="status"></p>
+<div id="respond-google-link"></div>
+</section>
+</section>
+<footer class="automation-footer">Pelo Google Forms ou pelo Portal: responda apenas uma vez. Caso já tenha respondido, procure a PRESCON antes de reenviar.</footer>
+</main></body></html>
