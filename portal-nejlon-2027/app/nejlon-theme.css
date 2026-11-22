@@ -65,3 +65,25 @@ html:is([data-theme="light"],[data-theme="dark"],[data-theme="red"]) .hero h1{
  -webkit-text-stroke:1px var(--nejlon-poster-outline);
  text-shadow:3px 4px 0 var(--nejlon-graphic-red),4px 5px 0 var(--nejlon-poster-outline);
 }
+
+
+/* Hierarquia editorial consistente em ambos os temas; legibilidade antes do efeito. */
+html[data-theme="light"]{--nejlon-title-face:#111;--nejlon-title-edge:#fff}
+html[data-theme="dark"]{--nejlon-title-face:#fff;--nejlon-title-edge:#000}
+html:is([data-theme="light"],[data-theme="dark"]) :is(.hero h1,.panel h2,.panel h3,.main h1,.main h2,.main h3){
+ font-family:var(--nejlon-title-font)!important;
+ font-weight:900!important;
+ font-style:normal!important;
+ text-transform:uppercase!important;
+ letter-spacing:.005em!important;
+ line-height:1.17!important;
+ color:var(--nejlon-title-face)!important;
+ -webkit-text-stroke:1px var(--nejlon-title-edge)!important;
+ paint-order:stroke fill;
+ text-shadow:2px 3px 0 #ff0000,3px 4px 0 var(--nejlon-title-edge)!important;
+ overflow-wrap:break-word;word-break:normal;
+}
+html:is([data-theme="light"],[data-theme="dark"]) :is(.hero h1,.panel h2,.panel h3,.main h1,.main h2,.main h3) :is(span,em,strong){color:inherit!important;font-style:inherit}
+html:is([data-theme="light"],[data-theme="dark"]) .hero h1{text-shadow:3px 5px 0 #ff0000,4px 6px 0 var(--nejlon-title-edge)!important}
+@media(max-width:600px){html:is([data-theme="light"],[data-theme="dark"]) .hero h1{-webkit-text-stroke:.7px var(--nejlon-title-edge)!important;text-shadow:2px 3px 0 #ff0000!important}}
+@media print{html:is([data-theme="light"],[data-theme="dark"]) :is(h1,h2,h3){text-shadow:none!important;-webkit-text-stroke:0!important}}
