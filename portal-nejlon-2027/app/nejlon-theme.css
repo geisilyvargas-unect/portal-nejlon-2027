@@ -121,3 +121,23 @@ html:is([data-theme="light"],[data-theme="dark"]) :is(.hero h1,.panel h2,.panel 
  html:is([data-theme="light"],[data-theme="dark"]) :is(.hero h1,.panel h2,.panel h3,.main h1,.main h2,.main h3){-webkit-text-stroke:1.5px #000!important}
  html:is([data-theme="light"],[data-theme="dark"]) .hero h1{text-shadow:2px 4px 0 #ff0000,3px 6px 0 #050505!important}
 }
+
+
+/* PADRÃO ÚNICO DE TÍTULOS — home, módulos, cards e páginas internas. */
+html:is([data-theme="light"],[data-theme="dark"]) :is(
+ .hero h1,.main h1,.main h2,.main h3,.main h4,.panel h2,.panel h3,
+ .page-title,.section-title,.nejlon-layer-title
+):not(.sr-only){
+ font-family:var(--nejlon-title-font,"Arial Black",Impact,sans-serif)!important;
+ font-weight:900!important;font-style:normal!important;text-transform:uppercase!important;
+ color:#fff!important;-webkit-text-stroke:2px #000!important;paint-order:stroke fill!important;
+ text-shadow:2px 3px 0 #ff0000,3px 4px 0 #000!important;
+ letter-spacing:.01em!important;line-height:1.14!important;overflow-wrap:anywhere;
+}
+html:is([data-theme="light"],[data-theme="dark"]) :is(.hero h1,.main h1,.main h2,.main h3,.main h4,.panel h2,.panel h3,.page-title,.section-title,.nejlon-layer-title) :is(span,em,strong){color:inherit!important;font-style:inherit!important}
+@media(max-width:600px){
+ html:is([data-theme="light"],[data-theme="dark"]) :is(.hero h1,.main h1,.main h2,.main h3,.panel h2,.panel h3){
+ -webkit-text-stroke:1.5px #000!important;text-shadow:1px 2px 0 #ff0000,2px 3px 0 #000!important;
+ }
+}
+@media print{html:is([data-theme="light"],[data-theme="dark"]) :is(.main h1,.main h2,.main h3){color:#111!important;-webkit-text-stroke:0!important;text-shadow:none!important}}
