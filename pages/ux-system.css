@@ -297,3 +297,26 @@ html[data-theme="light"] .idealize-rateio{color:var(--ux-text)}
  .ux-theme-switch{padding-inline:10px}
 }
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{transition-duration:.01ms!important;animation-duration:.01ms!important;scroll-behavior:auto!important}}
+
+/* Correções finais de contraste e navegação — revisão QA. */
+.i-section h2 em{color:var(--ux-text)!important}
+html[data-theme="light"] .i-section h2,
+html[data-theme="light"] .i-section h2 em{
+ text-shadow:1px 2px 0 rgba(169,39,50,.13)!important
+}
+html[data-theme="light"] .wa-template-card .wa-template-meta b{color:var(--ux-red)}
+html[data-theme="light"] .wa-library .wa-counter{color:var(--ux-text)}
+html[data-theme="light"] .idealize-financial-card .tag{color:#fff}
+html[data-theme="light"] .idealize-financial-stats span{color:var(--ux-muted)}
+html[data-theme="light"] .comparison-card>strong{color:var(--ux-text)}
+html[data-theme="light"] .voting-graph .vote-graph-row b{color:var(--ux-text)}
+html[data-theme="light"] .idealize-manual-art .eyebrow{color:#f4d5d5}
+html[data-theme="light"] .wa-info strong{color:var(--ux-text)}
+/* Em celular, todas as áreas acessíveis por rolagem horizontal simples. */
+@media(max-width:760px){
+ .mobile-nav{overscroll-behavior-inline:contain;scroll-padding-inline:12px}
+ .mobile-nav .nav-more{display:contents}
+ .mobile-nav .nav-more summary{display:none}
+ .mobile-nav .nav-more .nav-button{margin:0;display:flex}
+ .mobile-nav .nav-button{flex:0 0 auto}
+}
