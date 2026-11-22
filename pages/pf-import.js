@@ -26,11 +26,23 @@ input.addEventListener('change',async()=>{
   if(/\.csv$/i.test(file.name)){sheets=[{name:'Tabela CSV',rows:csv(new TextDecoder().decode(buffer))}]}
   else {if(!window.XLSX)throw Error('Biblioteca XLSX não carregou. Use CSV ou verifique a conexão.');const w=XLSX.read(buffer,{type:'array'});sheets=w.SheetNames.map(name=>({name,rows:XLSX.utils.sheet_to_json(w.Sheets[name],{header:1,defval:'',raw:false})}))}
   if(!sheets.some(s=>s.rows.some(r=>r.some(x=>String(x).trim()))))throw Error('Planilha sem conteúdo legível.');
-  const categories=[['rateio','Sistema de rateios'],['c1','C1'],['c2','C2']];
-  const summary=categories.map(([key,label])=>'<article class="pf-group"><strong>'+label+'</strong><span>'+esc(sheets.filter(sh=>classify(sh)[key]).map(sh=>sh.name).join(', ')||'Não identificado automaticamente')+'</span></article>').join('');
-  const tables=sheets.map(sh=>'<details class="pf-sheet"><summary>'+esc(sh.name)+' · '+sh.rows.length+' linhas</summary><div class="pf-table-wrap"><table><tbody>'+sh.rows.slice(0,20).map(row=>'<tr>'+row.slice(0,14).map(cell=>'<td>'+esc(cell)+'</td>').join('')+'</tr>').join('')+'</tbody></table></div></details>').join('');
-  preview.innerHTML='<div class="pf-group-grid">'+summary+'</div>'+tables+'<p class="pf-disclaimer"><b>Conferência necessária:</b> este importador lê e identifica possíveis abas de rateio, C1 e C2, mas não substitui os valores de demonstração pelos valores importados sem validar seu mapeamento. A importação não gera votos.</p>';
-  status.textContent='Arquivo lido localmente. Confira os grupos e as tabelas antes do uso institucional.';
+  const letter=n=>{let out='';for(n++;n;n=Math.floor((n-1)/26))out=String.fromCharCode(65+(n-1)%26)+out;return out};
+  // Keep every row/column of the imported workbook; never replace with extracted financial summaries.
+  const renderSheet=index=>{
+   const sh=sheets[index],rows=sh.rows;
+   const maxCols=Math.max(1,...rows.map(row=>row.length));
+   const headers=Array.from({length:maxCols},(_,i)=>'<th scope="col">'+letter(i)+'</th>').join('');
+   const body=rows.map((row,i)=>'<tr><th scope="row">'+(i+1)+'</th>'+Array.from({length:maxCols},(_,k)=>'<td>'+esc(row[k]??'')+'</td>').join('')+'</tr>').join('');
+   const table='<div class="pf-grid-scroll" role="region" aria-label="Planilha '+esc(sh.name)+'" tabindex="0"><table class="pf-grid"><thead><tr><th aria-label="Linha e coluna"></th>'+headers+'</tr></thead><tbody>'+body+'</tbody></table></div>';
+   preview.querySelector('#pf-sheet-view').innerHTML=table;
+   preview.querySelectorAll('[data-pf-sheet]').forEach((button,i)=>{button.setAttribute('aria-selected',String(i===index));button.classList.toggle('active',i===index)});
+   preview.querySelector('#pf-active-sheet').textContent=sh.name+' · '+rows.length+' linhas · '+maxCols+' colunas';
+  };
+  preview.innerHTML='<div class="pf-viewer"><div class="pf-viewer-heading"><strong>Visualização da planilha original</strong><span id="pf-active-sheet"></span></div><div class="pf-tabs" role="tablist" aria-label="Abas do planejamento financeiro">'+sheets.map((sh,i)=>'<button type="button" role="tab" data-pf-sheet="'+i+'" aria-selected="false">'+esc(sh.name)+'</button>').join('')+'</div><div id="pf-sheet-view"></div><p class="pf-disclaimer">Consulta somente leitura. Todas as linhas e colunas importadas ficam disponíveis, com rolagem horizontal e vertical. A grade preserva os valores exibidos das células, mas não reproduz fielmente cores, mesclagens, gráficos ou fórmulas do Excel. A planilha permanece no navegador e não é enviada ao servidor.</p></div>';
+  preview.querySelectorAll('[data-pf-sheet]').forEach(button=>button.addEventListener('click',()=>renderSheet(Number(button.dataset.pfSheet))));
+  renderSheet(0);
+  status.textContent='Planilha carregada para consulta. Selecione uma aba e navegue pela grade.';
+
  }catch(e){status.textContent='Não foi possível importar: '+String(e.message||e)}
 });
 })();
