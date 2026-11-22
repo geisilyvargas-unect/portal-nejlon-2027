@@ -199,6 +199,7 @@ $('auto-report-list').addEventListener('click',async e=>{
  try{await review(article.dataset.responseId,b.dataset.review,article.querySelector('.auto-ej')?.value||'')}
  catch(err){toast(err.message)}finally{b.disabled=false}
 });
+fetch(API+'/drive?action=health').then(r=>r.ok?r.json():Promise.reject()).then(x=>{$('auto-setup-status').textContent=x.configured?'Integração de servidor configurada. Faça login para continuar.':'A integração está preparada no GitHub, mas ainda falta configurar as credenciais de acesso Google/Supabase na Vercel.'}).catch(()=>{$('auto-setup-status').textContent='A nova versão do servidor ainda não está disponível no Vercel. A publicação precisa ser concluída.'});
 if(session)load().catch(e=>{authVisible(false);$('auto-login-message').textContent=e.message||'Não foi possível validar a sessão. Verifique o servidor.'});
 else authVisible(false);
 })();
