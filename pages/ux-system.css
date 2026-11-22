@@ -320,3 +320,10 @@ html[data-theme="light"] .wa-info strong{color:var(--ux-text)}
  .mobile-nav .nav-more .nav-button{margin:0;display:flex}
  .mobile-nav .nav-button{flex:0 0 auto}
 }
+
+/* Terceiro modo global: vermelho institucional */
+html[data-theme="red"]{color-scheme:dark;--ux-bg:#340d16;--ux-side:#260b12;--ux-surface:#4d1824;--ux-raised:#652534;--ux-input:#2d0e17;--ux-border:#955264;--ux-text:#fff7f7;--ux-muted:#f1cdd3;--ux-subtle:#e7b8c1;--ux-hover:#783044;--ux-red:#ff6375;--ux-red-hover:#ff8291;--ux-petrol:#57c5c7;--ux-petrol-hover:#77dadd;--ux-lime:#e2f294;--ux-focus:#ffe49d;--ux-alert:#55212e;--ux-warning:#664029;--ux-shadow:0 8px 24px rgba(20,0,6,.24);--bg:var(--ux-bg);--side:var(--ux-side);--panel:var(--ux-surface);--panel2:var(--ux-raised);--border:var(--ux-border);--text:var(--ux-text);--muted:var(--ux-muted)}
+html[data-theme="red"] .side,html[data-theme="red"] .main,html[data-theme="red"] .panel,html[data-theme="red"] .role-card{background-color:var(--ux-side);color:var(--ux-text)}
+html[data-theme="red"] .nav-button{color:#ffe6e9}html[data-theme="red"] .nav-button.active{background:#922e47;color:#fff}
+html[data-theme="red"] .intro{background:linear-gradient(125deg,#601d2c,#8c263f 65%,#3e1424)}
+html[data-theme="red"] .ux-theme-switch{background:var(--ux-raised);color:var(--ux-text)}
