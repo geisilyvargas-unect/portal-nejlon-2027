@@ -1,0 +1,12 @@
+/* NEJLON — títulos em camada única, em todas as páginas e temas. */
+html body :is(h1,h2,h3,h4,h5,h6,.page-title,.section-title,.nejlon-layer-title,.nejlon-title-front){
+ text-shadow:none!important;
+ filter:none;
+}
+html body :is(h1,h2,h3,h4,h5,h6,.page-title,.section-title,.nejlon-layer-title)::before{
+ /* Somente desliga a duplicata tipográfica; ornamentos de contêiner continuam. */
+}
+html body .nejlon-title-back{display:none!important}
+html body .nejlon-layer-title::before{content:none!important;display:none!important}
+html body .nejlon-title-front{text-shadow:none!important}
+html body :is(h1,h2,h3,h4,h5,h6) {paint-order:normal}
