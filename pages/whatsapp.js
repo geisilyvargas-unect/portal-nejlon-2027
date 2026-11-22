@@ -3,7 +3,7 @@
 const $=id=>document.getElementById(id);
 const esc=x=>String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 let people=[];
-const defaultTemplate="Olá, {nome}! ❤️🖤\n\nTudo bem? Passando para compartilhar com a *{ej}* o formulário *{formulario}* do Conselho do NEJ Londrina.\n\n📅 *Prazo:* {prazo}\n\nVocê pode escolher como prefere responder:\n🔴 *Pelo Portal NEJLON:* {link_portal}\n🟢 *Pelo Google Forms:* {link_google}\n\nÉ necessário preencher apenas uma vez. As respostas serão acompanhadas pelo Conselho.\n\nQualquer dúvida, estou à disposição!\n\n*Juntos pela excelência!*";
+const defaultTemplate="Olá, {nome}! ❤️🖤\n\nTudo bem? Passando para compartilhar com a *{ej}* o formulário *{formulario}* do Conselho do NEJ Londrina.\n\n📅 *Prazo:* {prazo}\n\nVocê pode escolher como prefere responder:\n🔴 *Pelo Portal NEJLON:* {link_portal}\n🟢 *Pelo Google Forms:* {link_google}\n\nÉ necessário preencher apenas uma vez. Guarde o comprovante da resposta, se houver.\n\nQualquer dúvida, estou à disposição!\n\n*Juntos pela excelência!*";
 $('wa-template').value=defaultTemplate;
 const toast=msg=>{$('wa-toast').textContent=msg};
 const normalizePhone=input=>{
@@ -72,6 +72,8 @@ $('wa-list').addEventListener('click',async e=>{
  }
  if(button.dataset.open!==undefined){
   const p=people[Number(button.dataset.open)];if(!p)return;
+  const portal=$('wa-portal-link').value.trim(),google=$('wa-google-link').value.trim();
+  if(!/^https:\/\//i.test(portal)||!/^https:\/\//i.test(google)){toast('Informe os dois links HTTPS do formulário (Portal e Google Forms) antes de preparar o convite.');return;}
   const url='https://wa.me/'+p.telefone+'?text='+encodeURIComponent(makeMessage(p));
   const opened=window.open(url,'_blank','noopener,noreferrer');
   if(!opened){toast('O navegador bloqueou a nova aba; permita pop-ups para abrir o WhatsApp.');return;}
