@@ -95,7 +95,7 @@ function weeklyMessage(){
   lines.push('');
  }
  if(!forms.length)lines.push('Não há deliberações abertas para cobrar nesta semana. ❤️');
- if(demandSummary?.waiting)lines.push('📋 Lembrando também de consultar as demandas pendentes diretamente no Portal NEJLON, onde cada EJ encontra os seus prazos e orientações.','');
+ if(demandSummary?.waiting)lines.push('📋 Lembrando também de consultar as demandas pendentes diretamente no Portal NEJLON, onde cada EJ encontra os seus prazos e orientações.','🔗 '+new URL('./demandas.html',location.href).href,'');
  lines.push('Se você já respondeu pelo Google Forms, desconsidere a pendência até a sincronização e conferência da PRESCON.');
  lines.push('Qualquer dúvida, podem me chamar! ❤️');
  return lines.join('\n');
