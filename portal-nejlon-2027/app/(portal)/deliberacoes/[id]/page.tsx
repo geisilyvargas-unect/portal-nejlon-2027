@@ -23,7 +23,7 @@ export default async function DelibDetail({params}:{params:Promise<{id:string}>}
   if(error)throw Error(error.message);
   const responses=(rawResponses||[]) as ResponseRow[];
   const ejs=await getEjs();
-  const {data:pfFile}=await db.from('deliberation_pf_files').select('file_name,uploaded_at').eq('deliberation_id',id).maybeSingle();
+  const {data:pfFile}=await db.from('deliberation_pf_files').select('file_name,uploaded_at,file_size').eq('deliberation_id',id).maybeSingle();
   const myVote=viewer.ej_id?responses.find(r=>r.ej_id===viewer.ej_id):undefined;
   const mayVote=viewer.role==='counselor'&&!deliberation.is_demo&&deliberation.status==='open'&&new Date(deliberation.due_at).getTime()>Date.now();
 
@@ -36,7 +36,7 @@ export default async function DelibDetail({params}:{params:Promise<{id:string}>}
     {viewer.role==='prescon'&&<section className="panel no-print"><h2>Link próprio do formulário</h2><p className="muted">Compartilhe este endereço com os conselheiros. O acesso exige autenticação, e o voto só é permitido durante o período aberto.</p><DeliberationLink id={id}/></section>}
     <div className="panel"><h2>Orientações gerais</h2><p className="whitespace">{deliberation.description||'Analise os documentos de cada cenário e registre seu posicionamento.'}</p></div>
     {(viewer.role==='prescon'||viewer.role==='counselor')&&<section className="panel"><h2>Planejamento Financeiro · Documento da deliberação</h2>
-      {pfFile?<><p>Planilha disponibilizada pela PRESCON: <strong>{pfFile.file_name}</strong></p><div className="action-row"><Link className="button outline" href={'/deliberacoes/'+id+'/planejamento-financeiro'} target="_blank" rel="noopener noreferrer">Visualizar PF em nova aba ↗</Link><a className="button outline" href={'/deliberacoes/'+id+'/planejamento-financeiro/arquivo'}>Baixar planilha original</a></div></>:<p className="muted">A PRESCON ainda não disponibilizou uma planilha para esta deliberação.</p>}
+      {pfFile?<><p>Planilha original enviada pela PRESCON: <strong>{pfFile.file_name}</strong> <span className="muted small">({(Number(pfFile.file_size)/1024/1024).toFixed(2)} MB)</span></p><div className="action-row"><Link className="button outline" href={'/deliberacoes/'+id+'/planejamento-financeiro'} target="_blank" rel="noopener noreferrer">Visualizar planilha enviada pela PRESCON ↗</Link><a className="button outline" href={'/deliberacoes/'+id+'/planejamento-financeiro/arquivo'}>Baixar planilha original</a></div></>:<p className="muted">A PRESCON ainda não disponibilizou uma planilha para esta deliberação.</p>}
       {viewer.role==='prescon'&&!deliberation.is_demo&&!deliberation.is_historical&&<form action={uploadDeliberationPf} className="fieldset" encType="multipart/form-data"><input type="hidden" name="deliberation_id" value={id}/><label>Adicionar ou substituir o PF (XLSX, XLS ou CSV, até 15 MB)<input type="file" name="pf_file" accept=".xlsx,.xls,.csv" required/></label><button type="submit">Publicar planilha para os conselheiros</button></form>}
     </section>}
     {deliberation.is_demo&&<div className="notice">Simulação: respostas fictícias não contam para pendências nem relatórios oficiais.</div>}
