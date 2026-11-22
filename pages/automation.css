@@ -81,3 +81,20 @@
 .automation-form-card .auto-google-attach input{min-width:195px;max-width:100%;flex:1;padding:10px;border:1px solid var(--ux-border);border-radius:7px;background:var(--ux-input);color:var(--ux-text);font-size:12px}
 .automation-form-card .auto-google-attach button{min-height:41px}
 @media(max-width:500px){.automation-form-card .auto-google-attach input{flex:1 1 100%;min-width:0}}
+
+/* PRESCON — panorama semanal: informações essenciais sem sobrecarregar a página */
+.automation-week-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.automation-week-item{background:var(--ux-raised,#302f32);border:1px solid var(--ux-border,#535054);border-radius:13px;padding:18px;display:flex;flex-direction:column;gap:12px;min-width:0}
+.automation-week-top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap}
+.automation-week-top>div{display:grid;gap:5px;min-width:0}
+.automation-week-top strong{font-size:14px;color:var(--ux-text,#fff);overflow-wrap:anywhere}
+.automation-week-top span{font-size:11px;color:var(--ux-muted,#ddd)}
+.automation-week-count{display:flex;align-items:baseline;gap:10px}
+.automation-week-count strong{font:900 31px/1 'Arial Black',sans-serif;color:var(--ux-text,#fff)}
+.automation-week-count span{font-size:12px;color:var(--ux-muted,#ddd)}
+.automation-week-alert{background:var(--ux-alert,#25363a);border-left:4px solid var(--ux-petrol,#00616d);padding:10px 12px;font-size:11px;color:var(--ux-text,#fff);margin:0}
+.automation-week-item details{border-top:1px solid var(--ux-border,#535054);padding-top:10px}
+.automation-week-item summary{font-size:12px;font-weight:800;cursor:pointer;padding-block:8px;min-height:44px}
+.automation-week-item details p{font-size:12px;color:var(--ux-muted,#ddd);line-height:1.65;margin-top:6px}
+.automation-week-item>.btn{align-self:flex-start;margin-top:auto}
+@media(max-width:860px){.automation-week-list{grid-template-columns:1fr}}
