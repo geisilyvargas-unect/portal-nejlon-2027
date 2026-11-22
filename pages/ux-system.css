@@ -330,3 +330,56 @@ html[data-theme="red"] .ux-theme-switch{background:var(--ux-raised);color:var(--
 
 /* Seletor explícito de três bases cromáticas, responsivo e com foco visível */
 .ux-theme-container{position:relative;display:inline-flex;z-index:40}.ux-theme-picker{position:absolute;top:calc(100% + 7px);right:0;min-width:185px;max-width:calc(100vw - 24px);padding:8px;display:grid;gap:5px;border:1px solid var(--ux-border);border-radius:12px;background:var(--ux-surface);color:var(--ux-text);box-shadow:0 12px 28px #0005}.ux-theme-picker[hidden]{display:none!important}.ux-theme-choice{display:block;width:100%;padding:11px 14px;border:1px solid var(--ux-border);border-radius:8px;background:var(--ux-raised);color:var(--ux-text);text-align:left;cursor:pointer;font-weight:750}.ux-theme-choice:hover,.ux-theme-choice.selected{background:var(--ux-hover);outline:1px solid var(--ux-focus)}.ux-theme-choice[data-theme-choice="red"].selected{border-color:#ff7388}.ux-theme-choice[data-theme-choice="light"].selected{border-color:#7d7d7d}.ux-theme-choice[data-theme-choice="dark"].selected{border-color:#c4d2d2}
+
+
+/* Contrato cromático: branco -> preto/vermelho; preto -> branco/vermelho;
+   vermelho -> branco/preto. Também aplicado às páginas auxiliares. */
+html[data-theme="light"]{
+ --ux-bg:#ffffff;--ux-side:#faf8f7;--ux-surface:#ffffff;--ux-raised:#f5f2f1;
+ --ux-input:#ffffff;--ux-text:#171717;--ux-muted:#353035;--ux-subtle:#51494c;
+ --ux-red:#ae2034;--ux-red-hover:#901a2b;--ux-petrol:#a92135;
+}
+html[data-theme="dark"]{
+ --ux-bg:#101012;--ux-side:#0c0c0e;--ux-surface:#202023;--ux-raised:#2b292c;
+ --ux-text:#ffffff;--ux-muted:#e8e5e6;--ux-subtle:#d3cbce;
+ --ux-red:#ff6679;--ux-red-hover:#ff8795;--ux-petrol:#f36b7c;
+}
+html[data-theme="red"]{
+ --ux-bg:#b32239;--ux-side:#8f1b30;--ux-surface:#a51e35;--ux-raised:#8d1c31;
+ --ux-input:#fff8f8;--ux-border:#f4b9c1;--ux-text:#ffffff;--ux-muted:#fff0f1;
+ --ux-subtle:#ffe3e6;--ux-hover:#761528;--ux-red:#ffffff;--ux-red-hover:#fff1f2;
+ --ux-petrol:#ffffff;--ux-petrol-hover:#f5e8e9;--ux-alert:#83192e;--ux-warning:#75162a;
+ --ux-focus:#ffffff;
+}
+html[data-theme="red"] input:not([type="checkbox"]):not([type="radio"]),html[data-theme="red"] textarea,html[data-theme="red"] select{
+ background:#fff8f8!important;color:#171717!important;border-color:#601022!important;
+}
+html[data-theme="red"] input::placeholder,html[data-theme="red"] textarea::placeholder{color:#514349!important}
+html[data-theme="red"] .side-section,html[data-theme="red"] .mini-heading,
+html[data-theme="red"] .eyebrow,html[data-theme="red"] .top-year,
+html[data-theme="red"] .stat-icon{color:#ffffff!important}
+html[data-theme="red"] .nav-button,html[data-theme="red"] .nav-button.active,
+html[data-theme="red"] .nav-more summary{color:#ffffff!important}
+html[data-theme="red"] .nav-button.active{background:#5b1020!important;border-color:#ffffff!important}
+html[data-theme="red"] .prescon-create-cta{background:#ffffff!important;color:#171717!important;border-color:#ffffff!important}
+html[data-theme="red"] .prescon-create-cta:hover{background:#f6e6e8!important;color:#171717!important}
+html[data-theme="red"] .role-option.active,html[data-theme="red"] .filter.active,
+html[data-theme="red"] .comparison-toggle button.active,
+html[data-theme="red"] .btn.red{background:#ffffff!important;border-color:#ffffff!important;color:#171717!important}
+html[data-theme="red"] .btn,html[data-theme="red"] .contact,
+html[data-theme="red"] .tag{background:#ffffff!important;color:#171717!important;border-color:#ffffff!important}
+html[data-theme="red"] .btn:hover,html[data-theme="red"] .contact:hover{background:#f5e5e8!important;color:#171717!important}
+html[data-theme="red"] .stat-card strong,html[data-theme="red"] .panel h3,
+html[data-theme="red"] .workhead h2{color:#ffffff!important}
+html[data-theme="red"] .ux-theme-picker,html[data-theme="red"] .ux-theme-choice{color:#ffffff}
+html[data-theme="light"] :is(.side-section,.mini-heading,.eyebrow,.top-year,.stat-icon){color:#ae2034!important}
+html[data-theme="dark"] :is(.side-section,.mini-heading,.eyebrow,.top-year,.stat-icon){color:#ff6679!important}
+html[data-theme="light"] .intro{background:#ffffff!important;border-color:#c6bfc1!important}
+html[data-theme="light"] .intro :is(h1,p,.eyebrow){color:#171717!important;text-shadow:none!important}
+html[data-theme="light"] .intro h1 em,html[data-theme="light"] .intro .eyebrow{color:#ae2034!important}
+html[data-theme="dark"] .intro{background:#101012!important}
+html[data-theme="dark"] .intro :is(h1,p){color:#ffffff!important}
+html[data-theme="dark"] .intro h1 em,html[data-theme="dark"] .intro .eyebrow{color:#ff6679!important}
+html[data-theme="red"] .intro{background:#b32239!important}
+html[data-theme="red"] .intro :is(h1,p){color:#ffffff!important;text-shadow:none!important}
+html[data-theme="red"] .intro h1 em,html[data-theme="red"] .intro .eyebrow{color:#171717!important}
