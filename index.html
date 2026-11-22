@@ -52,6 +52,9 @@ function extract(file,buffer){
  }
  // Se não houver cenários identificáveis, vota-se a proposta única, sem inventar cenários.
  if(!scenarios.length)scenarios.push({id:'proposta-unica',label:'Planejamento financeiro apresentado',source:sheets[0].name});
+ // C1/C2 e Cenário 1/2 são propostas; pessimista/realista/otimista são projeções de cada proposta, não votos separados.
+ const numbered=scenarios.filter(x=>/^(c\s*\d+|cen[aá]rio\s*\d+|alternativa\s*\d+|proposta\s*\d+)$/i.test(x.label));
+ if(numbered.length){scenarios.splice(0,scenarios.length,...numbered)}
  if(scenarios.length>25)throw Error('Foram identificados mais de 25 rótulos de cenários. Revise a planilha antes de gerar o formulário.');
  return {id:'pf-'+Date.now().toString(36),title:'Planejamento Financeiro — '+file.name.replace(/\.xlsx$/i,''),filename:file.name,importedAt:new Date().toISOString(),status:'draft',sheets,scenarios,votes:[],reviews:{},report:'',publishedAt:null,confirmed:false};
 }
