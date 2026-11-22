@@ -15,7 +15,7 @@ const nav=[
 ];
 const roleMap={
  prescon:{name:'PRESCON',nav:nav.map(x=>x[0])},
- counselor:{name:'Conselho',nav:['painel','deliberacoes','calendario','jornada','rede']},
+ counselor:{name:'Conselho',nav:['painel','deliberacoes','demandas','calendario','jornada','rede']},
  ej_direx:{name:'DIREX da EJ',nav:['painel','deliberacoes','demandas','calendario','rede']},
  nucleus_direx:{name:'DIREX do Núcleo',nav:['painel','deliberacoes','demandas','calendario','rede']}
 };
