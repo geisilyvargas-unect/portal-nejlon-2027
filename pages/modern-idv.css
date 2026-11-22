@@ -58,3 +58,19 @@ html[data-theme="light"] .panel,html[data-theme="light"] .role-card,html[data-th
 @media(prefers-reduced-motion:reduce){.nav-button,.stat-card,.role-option,.ux-theme-choice,.prescon-create-cta{transition:none!important;transform:none!important}}
 @media(max-width:900px){.topbar{position:relative}.intro{border-radius:19px!important;min-height:210px}.content{padding-top:16px}}
 @media(max-width:600px){.intro{padding:24px 20px!important}.intro h1{font-size:clamp(26px,8vw,35px)!important}.top-actions{gap:6px}.ux-theme-switch{padding:8px!important}.role-card,.panel{padding:16px}}
+
+
+/* A camada moderna respeita a paleta textual de cada fundo. */
+html[data-theme="light"] .intro{background:#ffffff!important;border-color:#c6bfc1!important}
+html[data-theme="light"] .intro :is(h1,p){color:#171717!important}
+html[data-theme="light"] .intro h1 em,html[data-theme="light"] .intro .eyebrow{color:#ae2034!important}
+html[data-theme="dark"] .intro{background:#101012!important}
+html[data-theme="dark"] .intro :is(h1,p){color:#ffffff!important}
+html[data-theme="dark"] .intro h1 em,html[data-theme="dark"] .intro .eyebrow{color:#ff6679!important}
+html[data-theme="red"] .intro{background:#b32239!important}
+html[data-theme="red"] .intro :is(h1,p){color:#ffffff!important}
+html[data-theme="red"] .intro h1 em,html[data-theme="red"] .intro .eyebrow{color:#171717!important}
+html[data-theme="red"] .top-year{color:#ffffff!important}
+html[data-theme="red"] .prescon-create-cta{background:#ffffff!important;color:#171717!important;border-color:#ffffff!important}
+html[data-theme="red"] .btn.red,html[data-theme="red"] .role-option.active{background:#ffffff!important;color:#171717!important;border-color:#ffffff!important}
+html[data-theme="red"] .contact{background:#ffffff!important;color:#171717!important}
