@@ -16,30 +16,43 @@ async function event({demand,actor,action,note='',details={}}){
  return db('portal_demand_events',{method:'POST',prefer:'return=minimal',data:{demand_id:demand,actor_id:actor.userId,actor_role:actor.role,action,note,details}});
 }
 async function list(user){
- const globalReader=['prescon','nucleus_direx'].includes(user.role);
- if(!globalReader&&!['counselor','ej_direx'].includes(user.role))fail(403,'Perfil sem acesso às demandas.');
- if(!globalReader&&!user.ej_id)fail(403,'Seu cadastro ainda não está vinculado a uma EJ.');
- const q=globalReader?'':'&ej_id=eq.'+user.ej_id;
- const demands=await db('demands',{query:'select=id,ej_id,title,description,due_at,status,responsible,created_at,created_by,updated_at,completed_at,template_key,severity&order=created_at.desc&limit=1500'+q});
- const viewSensitive=user.role!=='ej_direx';
- const justifications=viewSensitive?await db('portal_demand_justifications',{query:'select=id,demand_id,ej_id,submitted_by,reason_type,explanation,evidence_url,state,decision_note,decided_by,decided_at,created_at&order=created_at.desc&limit=3000'+q}):[];
- let events=[];
- if(viewSensitive&&demands.length){
-  const ids=demands.map(d=>d.id);
-  for(let start=0;start<ids.length;start+=100){
-   const part=ids.slice(start,start+100);
-   const rows=await db('portal_demand_events',{query:'select=id,demand_id,actor_role,action,note,details,created_at&demand_id=in.('+part.join(',')+')&order=created_at.asc&limit=2500'});
-   events=events.concat(rows);
+ const role=user.role;
+ const isPrescon=role==='prescon';
+ const allEjs=isPrescon||role==='nucleus_direx'||role==='counselor';
+ if(!allEjs&&role!=='ej_direx')fail(403,'Perfil sem acesso às demandas.');
+ if(!allEjs&&!user.ej_id)fail(403,'Seu cadastro ainda não está vinculado a uma EJ.');
+ // Para os demais perfis, o banco é consultado somente por campos de visão geral.
+ // Descrição, responsável, comprovantes, notas e histórico são exclusivos da PRESCON.
+ const columns=isPrescon?
+   'id,ej_id,title,description,due_at,status,responsible,created_at,created_by,updated_at,completed_at,template_key,severity':
+   'id,ej_id,title,due_at,status,severity,created_at';
+ const filter=allEjs?'':'&ej_id=eq.'+user.ej_id;
+ const demands=await db('demands',{query:'select='+columns+'&order=created_at.desc&limit=1500'+filter});
+ let justifications=[],events=[];
+ if(isPrescon){
+  justifications=await db('portal_demand_justifications',{query:'select=id,demand_id,ej_id,submitted_by,reason_type,explanation,evidence_url,state,decision_note,decided_by,decided_at,created_at&order=created_at.desc&limit=3000'});
+  if(demands.length){
+   const ids=demands.map(d=>d.id);
+   for(let start=0;start<ids.length;start+=100){
+    const part=ids.slice(start,start+100);
+    events.push(...await db('portal_demand_events',{query:'select=id,demand_id,actor_role,action,note,details,created_at&demand_id=in.('+part.join(',')+')&order=created_at.asc&limit=2500'}));
+   }
   }
+ }else if(role==='counselor'&&user.ej_id){
+  // Apenas o estado do pedido de justificativa da própria EJ, nunca texto ou documento.
+  justifications=await db('portal_demand_justifications',{query:'select=demand_id,state,created_at&ej_id=eq.'+user.ej_id+'&order=created_at.desc&limit=3000'});
  }
- const ejs=globalReader?await ejIds():[];
- const summary={total:demands.length,
-  waiting:demands.filter(d=>d.status==='pendente'||d.status==='em_andamento').length,
+ const ejs=allEjs?await ejIds():[];
+ const summary={
+  total:demands.length,
+  waiting:demands.filter(d=>['pendente','em_andamento'].includes(d.status)).length,
   justified:demands.filter(d=>d.status==='justificada').length,
   completed:demands.filter(d=>d.status==='concluida').length,
-  pendingReview:justifications.filter(j=>j.state==='pending_review').length,
-  overdue:demands.filter(d=>['pendente','em_andamento'].includes(d.status)&&d.due_at&&d.due_at<new Date().toISOString().slice(0,10)).length};
- return {demands,justifications,events,ejs,summary,limited:demands.length===1500||justifications.length===3000};
+  pendingReview:isPrescon?justifications.filter(j=>j.state==='pending_review').length:0,
+  overdue:demands.filter(d=>['pendente','em_andamento'].includes(d.status)&&d.due_at&&d.due_at<new Date().toISOString().slice(0,10)).length
+ };
+ return {demands,justifications,events,ejs,summary,ownEjId:user.ej_id||null,
+  role,detailAccess:isPrescon,limited:demands.length===1500||(isPrescon&&justifications.length===3000)};
 }
 async function handler(req,res){
  const user=await userFromToken(req);
@@ -95,7 +108,7 @@ async function handler(req,res){
    demand_id:demand.id,ej_id:user.ej_id,submitted_by:user.userId,reason_type:reason,explanation,evidence_url:evidence,state:'pending_review'
   }});
   await event({demand:demand.id,actor:user,action:'justification_submitted',note:'A EJ enviou uma justificativa para análise.',details:{justification_id:created[0].id,reason_type:reason}});
-  return json(res,201,{ok:true,justification:created[0],message:'Justificativa registrada e enviada para a PRESCON.'});
+  return json(res,201,{ok:true,justification:{id:created[0].id,state:'pending_review'},message:'Justificativa registrada e enviada para a PRESCON.'});
  }
  if(user.role!=='prescon')fail(403,'Decisões e alterações de demandas são exclusivas da PRESCON.');
  if(action==='decide'){
