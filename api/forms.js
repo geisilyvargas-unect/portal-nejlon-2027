@@ -86,6 +86,7 @@ async function handler(req,res){
  const user=await userFromToken(req);
  if(req.method==='GET'){
   if(action==='list')return json(res,200,{forms:await overview(user)});
+  if(action==='ejs'){if(user.role!=='prescon')fail(403,'Apenas PRESCON.');return json(res,200,{ejs:await db('ejs',{query:'select=id,name,slug&order=name.asc&limit=100'})});}
   if(action==='form'){
    const id=String(req.query.id||'');if(!uuid(id))fail(400,'Formulário inválido.');
    const form=(await overview(user)).find(v=>v.id===id);
