@@ -20,8 +20,10 @@ html[data-theme="dark"] body :is(input:not([type=checkbox]):not([type=radio]),te
 html[data-theme="red"] body :is(input:not([type=checkbox]):not([type=radio]),textarea,select){background:#202020!important;color:#fff!important;border-color:#aaa!important}
 html[data-theme="dark"] body :is(input,textarea)::placeholder,html[data-theme="red"] body :is(input,textarea)::placeholder{color:#ccc!important}
 html body :is(.hero,.intro,.i-hero,.wa-hero,.idealize-banner){isolation:isolate}
-html[data-theme="light"] body :is(.hero,.intro,.i-hero,.wa-hero,.idealize-banner)[class]{color:#fff}
-html body :is(.hero,.intro,.i-hero,.wa-hero,.idealize-banner) :is(h1,h2,p,span){color:inherit}
+/* Em tema claro, a cor do texto do banner deve acompanhar o fundo real do componente. */
+html[data-theme="light"] body .intro :is(h1,h2,p,span){color:#111!important}
+html[data-theme="light"] body :is(.hero,.i-hero,.wa-hero,.idealize-banner) :is(h1,h2,p,span){color:inherit}
+html[data-theme="dark"] body :is(.hero,.intro,.i-hero,.wa-hero,.idealize-banner) :is(h1,h2,p,span),html[data-theme="red"] body :is(.hero,.intro,.i-hero,.wa-hero,.idealize-banner) :is(h1,h2,p,span){color:inherit}
 html body :is(button,.btn,.create-primary){font-weight:800!important}
 html body :is(button,.btn,.create-primary):focus-visible,html body :is(a,input,textarea,select):focus-visible{outline:3px solid #ff0000!important;outline-offset:3px}
 @media(max-width:600px){html body :is(h1,h2,h3,h4,h5,h6){overflow-wrap:anywhere}html body :is(.intro h1,.hero h1,.i-hero h1){font-size:clamp(1.8rem,8vw,3.5rem)}}
