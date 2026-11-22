@@ -13,11 +13,11 @@ if(!D){document.getElementById('view').textContent='Dados demonstrativos indispo
 const nav=[
  ['painel','◫','Início'],['engajamento','▦','Indicadores'],['deliberacoes','☷','Deliberações'],
  ['pendencias','◷','Pendências'],['relatorios','▤','Relatórios'],['demandas','☑','Demandas'],
- ['calendario','▦','Calendário'],['jornada','✧','Formação'],['rede','⬡','Rede de EJs']
+ ['calendario','▦','Calendário'],['rede','⬡','Rede de EJs']
 ];
 const roleMap={
  prescon:{name:'PRESCON',nav:nav.map(x=>x[0])},
- counselor:{name:'Conselho',nav:['painel','calendario','deliberacoes','demandas','jornada','rede']},
+ counselor:{name:'Conselho',nav:['painel','calendario','deliberacoes','demandas','rede']},
  ej_direx:{name:'DIREX da EJ',nav:['painel','calendario','demandas']},
  nucleus_direx:{name:'DIREX do Núcleo',nav:['painel','calendario','deliberacoes','demandas']}
 };
@@ -51,7 +51,6 @@ const labels={painel:['VISÃO PRESCON','Visão geral da Rede','Acompanhe os prin
  relatorios:['CONSOLIDAÇÃO','Relatórios institucionais','Resultados calculados automaticamente a partir de votos de demonstração.'],
  demandas:['ACOMPANHAMENTO DE ENTREGAS','Demandas da Rede','Organização visual de prazos, responsáveis e encaminhamentos.'],
  calendario:['AGENDA 2027','Calendário institucional','Eventos e reuniões ilustrativos do Conselho e da Rede.'],
- jornada:['JORNADA DO CONSELHEIRO','Jornada de desenvolvimento','Acompanhamento de formações e materiais sem cobranças extras.'],
  rede:['REDE NEJLON','Empresas juniores','As 29 EJs representadas na plataforma.']};
 const heading=()=>{const info=labels[s.section].slice();if(s.role!=='prescon')info[0]='VISÃO '+role().name.toUpperCase();$('section-eyebrow').textContent=info[0];$('section-title').textContent=info[1];$('section-subtitle').textContent=info[2]};
 function heatmap(){
@@ -200,7 +199,6 @@ function listPanel(title,sub,items){
 function extras(){
  if(s.section==='demandas')return '<div class="view-grid">'+panel('Demandas reais da Rede','A gestão de demandas funciona com login institucional e decisões registradas, separadamente dos indicadores fictícios desta demonstração.','<a class="btn red" href="./pages/demandas.html">Abrir Sistema de Demandas →</a>')+'</div>';
  if(s.section==='calendario')return calendarView();
- if(s.section==='jornada')return listPanel('Trilha do Conselheiro','Materiais e formações sem exigência de registro extra.',[['Introdução à Governança','Material e atividade introdutória','Concluída'],['Como analisar uma deliberação','Trilha de formação','Em andamento'],['Boas práticas de participação','Encontro formativo','A iniciar']]);
  if(s.section==='rede')return panel('Empresas juniores da Rede','Lista de 29 empresas de exemplo.','<div class="heatmap">'+D.ejs.map(x=>'<button class="heat none" type="button" data-select-rede="'+esc(x.slug)+'"><span class="name">'+esc(x.name)+'</span></button>').join('')+'</div>');
  return '';
 }
@@ -216,7 +214,7 @@ function render(){
  $('ej-picker').innerHTML=D.ejs.map(e=>'<option value="'+esc(e.slug)+'" '+(e.slug===s.ej?'selected':'')+'>'+esc(e.name)+'</option>').join('');
  const councilAccess=$('council-test-access');if(councilAccess){councilAccess.hidden=s.role!=='counselor';const email=$('council-test-email');if(email)email.textContent='conselho'+s.ej+'@nejlondrina.com';}
  const navButton=([key,icon,name])=>key==='calendario'?'<a class="nav-button" href="./pages/calendar-live.html"><span class="nav-icon" aria-hidden="true">'+icon+'</span>'+esc(name)+'</a>':key==='demandas'?'<a class="nav-button" href="./pages/demandas.html"><span class="nav-icon" aria-hidden="true">'+icon+'</span>'+esc(name)+'</a>':'<button type="button" class="nav-button '+(key===s.section?'active':'')+'" data-nav="'+key+'" aria-current="'+(key===s.section?'page':'false')+'"><span class="nav-icon" aria-hidden="true">'+icon+'</span>'+esc(name)+'</button>';
- const publicKeys=['painel','calendario','deliberacoes','demandas','engajamento','rede','jornada'];
+ const publicKeys=['painel','calendario','deliberacoes','demandas','engajamento','rede'];
  const allowed=nav.filter(n=>role().nav.includes(n[0]));
  const common=allowed.filter(n=>publicKeys.includes(n[0]));
  const adminLinks=[
