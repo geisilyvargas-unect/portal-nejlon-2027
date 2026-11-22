@@ -19,7 +19,7 @@ const roleMap={
  ej_direx:{name:'DIREX da EJ',nav:['painel','deliberacoes','demandas','calendario','rede']},
  nucleus_direx:{name:'DIREX do Núcleo',nav:['painel','deliberacoes','demandas','calendario','rede']}
 };
-const s={role:'prescon',section:'painel',ej:'unect',selected:'unect',filter:'all',search:'',delib:'financeiro',vote:'favorable'};
+const s={role:'prescon',section:'painel',ej:'unect',selected:'unect',filter:'all',search:'',delib:'financeiro',vote:'favorable',positionFilter:'all'};
 const $=id=>document.getElementById(id);
 const esc=x=>String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const fmt=n=>Math.round(n)+'%';
@@ -61,17 +61,21 @@ function trend(){
  return panel('Evolução das respostas','Percentual de EJs que responderam a cada deliberação fictícia.',b);
 }
 function responseCharts(id){
- const v=votes(id),counts=Object.entries(D.positions).map(([key,item])=>({key,...item,n:v.filter(x=>x.position===key).length}));
- let start=0;const gradient=counts.filter(x=>x.n).map(x=>{const a=start;start+=x.n/v.length*100;return x.color+' '+a+'% '+start+'%'}).join(', ');
- const chart='<div class="donutrow"><div class="donut" style="background:conic-gradient('+gradient+')"><div class="donutinner"><strong>'+v.length+'</strong><span>VOTOS FICTÍCIOS</span></div></div><div class="legend">'+counts.map(x=>'<div class="legendrow"><i class="swatch" style="background:'+x.color+'"></i><span>'+esc(x.label)+'</span><strong>'+x.n+' · '+Math.round(x.n*100/v.length)+'%</strong></div>').join('')+'</div></div>';
- return chart;
+ const v=votes(id);
+ const counts=Object.entries(D.positions).map(([key,item])=>({key,...item,n:v.filter(x=>x.position===key).length}));
+ const max=Math.max(1,...counts.map(x=>x.n));
+ const total=v.length;
+ const selected=s.positionFilter;
+ return '<div class="analytics-bars" role="group" aria-label="Filtrar respostas por posicionamento">'+
+ counts.map(x=>'<button type="button" class="analytics-bar '+(selected===x.key?'selected':'')+'" data-position="'+x.key+'" aria-pressed="'+(selected===x.key)+'"><span class="analytics-bar-header"><b>'+esc(x.label)+'</b><strong>'+x.n+' <small>('+Math.round(total?100*x.n/total:0)+'%)</small></strong></span><span class="analytics-track"><i style="width:'+(x.n/max*100)+'%;background:'+x.color+'"></i></span></button>').join('')+
+ '<button type="button" class="btn analytics-reset" data-position="all" '+(selected==='all'?'disabled':'')+'>Mostrar todos os posicionamentos</button></div>';
 }
 function recordList(id,justFlagged=false){
- const v=votes(id).filter(x=>!justFlagged||['suggestions','qualified','against'].includes(x.position));
- return v.length?v.map(x=>{
+ const filtered=votes(id).filter(x=>(!justFlagged||['suggestions','qualified','against'].includes(x.position))&&(s.positionFilter==='all'||x.position===s.positionFilter));
+ return filtered.length?filtered.map(x=>{
  const name=D.ejs.find(e=>e.slug===x.slug)?.name||x.slug;
- return '<details class="record"><summary><span>'+esc(name)+'</span>'+tag(D.positions[x.position].label,x.position==='favorable'?'green':x.position==='against'?'red':'yellow')+'</summary><p>'+esc(x.note)+'</p><small class="note">Posicionamento demonstrativo · sem efeito institucional</small></details>';
- }).join(''):'<p class="note">Nenhum registro de exemplo nesta categoria.</p>';
+ return '<details class="record"><summary><span>'+esc(name)+'</span>'+tag(D.positions[x.position].label,x.position==='favorable'?'green':x.position==='against'?'red':'yellow')+'</summary><p>'+esc(x.note)+'</p><small class="note">Exemplo fictício · sem efeito institucional</small></details>';
+ }).join(''):'<p class="note">Nenhum registro demonstrativo neste filtro.</p>';
 }
 function pending(){
  const id=s.delib,completed=new Set(votes(id).map(v=>v.slug)),missing=D.ejs.filter(e=>!completed.has(e.slug)),sum=summary(id);
@@ -79,7 +83,14 @@ function pending(){
 }
 function reports(){
  const id=s.delib,sum=summary(id),v=votes(id),approval=v.filter(x=>['favorable','suggestions'].includes(x.position)).length,caveats=v.filter(x=>x.position==='qualified').length,suggestions=v.filter(x=>x.position==='suggestions').length;
- return '<div class="view-grid">'+(s.delib==='idealize'?'<div class="notice">IDEALIZE: os resultados abaixo resumem o C1 (UEL). Consulte os votos dos dois locais no <a href="./pages/idealize.html">formulário financeiro completo</a>.</div>':'')+panel('Deliberação analisada','Alterne para visualizar os demais relatórios.',titleOptions())+stats([metric('EJs votantes',sum.votes,'De 29 EJs','◉'),metric('Aprovação direta',Math.round(approval*100/v.length)+'%','Dos votos recebidos','✓'),metric('Ressalvas',caveats,'Para análise humana','◷'),metric('Sugestões',suggestions,'Para avaliação humana','✧')])+panel('Distribuição dos posicionamentos','Os dados e o gráfico são recalculados conforme o exemplo selecionado.',responseCharts(id))+panel('Pareceres que exigem decisão da PRESCON','A plataforma organiza os registros, mas não aceita ou rejeita ressalvas automaticamente.',recordList(id,true))+'</div>';
+ const count=v.length;
+ const warning=id==='idealize'?'<div class="notice">IDEALIZE: os indicadores deste painel resumem apenas C1 (UEL) dos exemplos fictícios. Para comparar C1/C2, rateios e seus dados financeiros, abra o <a href="./pages/idealize.html">painel do Idealize</a>. Não existem votos simulados de rateio.</div>':'';
+ const decisions='<div class="prescon-focus"><div class="prescon-focus-card"><span>EJs sem resposta</span><strong>'+sum.pending+'</strong><button class="btn" type="button" data-nav="pendencias">Ver pendentes →</button></div><div class="prescon-focus-card"><span>Ressalvas para análise humana</span><strong>'+caveats+'</strong><p>Não são aceitas nem rejeitadas automaticamente.</p></div><div class="prescon-focus-card"><span>Sugestões registradas</span><strong>'+suggestions+'</strong><p>Comentários demonstrativos disponíveis abaixo.</p></div></div>';
+ return '<div class="view-grid">'+warning+panel('Deliberação analisada','Escolha o conjunto de exemplos para consultar.',titleOptions())+
+ panel('Prioridades da PRESCON','Pendências e opiniões fictícias, sem providências institucionais reais.',decisions)+
+ stats([metric('EJs votantes',sum.votes,'De 29 EJs','◉'),metric('Aprovação direta',count?Math.round(approval*100/count)+'%':'—','Aprova + aprova com sugestões','✓'),metric('Ressalvas',caveats,'Aguardam decisão humana','◷'),metric('Sugestões',suggestions,'Para avaliação humana','✧')])+
+ panel('Distribuição dos posicionamentos','Clique em uma barra para filtrar os comentários. Contagem e percentuais fictícios.',responseCharts(id))+
+ panel('Pareceres para avaliação','Filtrados pela barra selecionada; não há decisão automática da PRESCON.',recordList(id,false))+'</div>';
 }
 function deliberations(){
  const cards=D.delibs.filter(d=>s.role!=='ej_direx'||d.visibility!=='Conselho');
@@ -126,13 +137,14 @@ document.addEventListener('click',e=>{
  if(target.dataset.nav){s.section=target.dataset.nav;render();return;}
  if(target.dataset.ej){s.selected=target.dataset.ej;render();return;}
  if(target.dataset.filter){s.filter=target.dataset.filter;render();return;}
+ if(target.dataset.position){s.positionFilter=target.dataset.position;render();return;}
  if(target.dataset.openDelib){s.delib=target.dataset.openDelib;s.section='deliberacoes';render();return;}
  if(target.dataset.selectRede){s.selected=target.dataset.selectRede;s.section='painel';s.role='prescon';render();return;}
  if(target.hasAttribute('data-simulate')){const toast=$('toast');toast.textContent='Voto simulado! Nenhuma resposta foi registrada.';toast.classList.add('show');setTimeout(()=>toast.classList.remove('show'),3500);}
 });
 document.addEventListener('change',e=>{
  if(e.target.id==='ej-picker'){s.ej=e.target.value;render();}
- if(e.target.id==='delib-select'){s.delib=e.target.value;render();}
+ if(e.target.id==='delib-select'){s.delib=e.target.value;s.positionFilter='all';render();}
  if(e.target.id==='vote-select')s.vote=e.target.value;
 });
 document.addEventListener('input',e=>{
