@@ -7,6 +7,7 @@ import {getPendingEjs} from '@/lib/pending';
 import {POSITIONS,formatDate,type Deliberation,type Position,type ResponseRow,type DeliberationScenario} from '@/lib/constants';
 import {answersOf,scenariosOf} from '@/lib/deliberation-form';
 import {ReportActions} from '@/components/clipboard';
+import {CsvExport} from '@/components/csv-export';
 import {saveReportNotes,saveResponseReview} from '@/app/actions';
 import {HistoricalReport} from '@/components/historical-deliberation';
 
@@ -118,6 +119,23 @@ export default async function ReportDetail({params}:{params:Promise<{id:string}>
     'Relatório informativo. A validade do resultado depende do Regimento Interno e da análise institucional das ressalvas.'
   );
   const exportText=textLines.join('\n');
+  const csvRows:(string|number|null|undefined)[][]=[
+    ['Data da resposta','EJ',...scenarios.flatMap((sc,index)=>[
+      'Sobre o [C'+(index+1)+'] '+sc.title+', você...',
+      'Justificativa ['+sc.key+']','Sugestões ['+sc.key+']','Ressalvas ['+sc.key+']',
+      'Parecer da PRESCON — sugestões ['+sc.key+']','Parecer da PRESCON — ressalvas ['+sc.key+']'
+    ]),'Clareza (0–5)','Dificuldade (0–5)','Como podemos melhorar?'],
+    ...responses.map(r=>[
+      r.updated_at,ejName(r),
+      ...answersOf(r,scenarios).flatMap((a,i)=>[
+        POSITIONS[a.position],a.justification,a.suggestions,a.caveats,
+        reviewFor(r,scenarios[i],'suggestion')?.comment||'',
+        reviewFor(r,scenarios[i],'caveat')?.comment||''
+      ]),
+      r.final_feedback?.clarity,r.final_feedback?.difficulty,r.final_feedback?.improvements
+    ])
+  ];
+
 
   return <div className="stack report-document">
     <div className="no-print"><Link href="/relatorios" className="link">← Relatórios</Link></div>
@@ -127,7 +145,8 @@ export default async function ReportDetail({params}:{params:Promise<{id:string}>
       <p className="muted">Documento de acompanhamento e transparência das respostas do Conselho Deliberativo.</p>
       <div className="action-row small muted"><span>Prazo: {formatDate(d.due_at)}</span><span>·</span><span>Gerado em: {formatDate(new Date().toISOString())}</span></div>
     </header>
-    <ReportActions content={exportText} filename={'relatorio-nejlon-'+id.slice(0,8)+'.txt'}/>
+    <CsvExport rows={csvRows} filename={'deliberacao-'+d.id+'-respostas.csv'}/>
+      <ReportActions content={exportText} filename={'relatorio-nejlon-'+id.slice(0,8)+'.txt'}/>
     <section className="panel">
       <h2>1. Panorama geral</h2>
       <div className="kpi-grid">
