@@ -20,8 +20,12 @@ for(const file of pages){
   const target=path.resolve(path.dirname(file),ref.split('?')[0]);
   if(!fs.existsSync(target))fail(file+' missing asset '+ref);
  }
- const localStyles=refs.filter(x=>x.endsWith('.css'));
- if(!localStyles.at(-1)?.includes('ux-system.css'))fail(file+' UX CSS not loaded last');
+ const localStyles=refs.filter(x=>x.split('?')[0].endsWith('.css'));
+ const uxIndex=localStyles.findIndex(x=>x.includes('ux-system.css'));
+ if(uxIndex<0)fail(file+' missing UX baseline CSS');
+ // Camadas de identidade posteriores são intencionais e devem ficar acima da base UX.
+ const identityLayers=['brand-red-typography.css','red-black-layered.css','nejlon-idv-consistency.css','modern-idv.css'];
+ if(localStyles.slice(uxIndex+1).some(x=>!identityLayers.some(layer=>x.includes(layer))&&!['dashboard-intro.css'].some(layer=>x.includes(layer))))fail(file+' unexpected stylesheet after UX baseline');
 }
 for(const file of scripts){
  if(!fs.existsSync(file)){fail('missing JS '+file);continue}
