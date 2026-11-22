@@ -241,7 +241,10 @@ async function createForm(ev){
  btn.disabled=true;
  const result=$('auto-create-result');result.textContent='Criando o rascunho…';
  try{
-  const questions=kind==='pf'?[]:[{id:'pergunta1',label:kind==='event'?'Confirma sua participação?':kind==='survey'?'Como avalia a atividade?':'Sua resposta',type:kind==='event'?'choice':kind==='survey'?'choice':'text',required:true,options:kind==='event'?['Sim','Não','Talvez']:kind==='survey'?['Ótima','Boa','Regular','Ruim']:[]}];
+  const scenarioCount=Math.max(1,Math.min(5,Number(x.get('scenarios')||1)));
+  const pfPositions=['Aprovo','Aprovo com sugestões','Aprovo com ressalvas','Reprovo','Abstenho'];
+  const pfQuestions=[{id:'rateio',label:'Sistema de rateios',type:'vote',required:true,options:pfPositions},...Array.from({length:scenarioCount},(_,i)=>({id:'c'+(i+1),label:'C'+(i+1)+' — Cenário '+(i+1),type:'vote',required:true,options:pfPositions})),{id:'feedback',label:'Observações finais',type:'text',required:false}];
+  const questions=kind==='pf'?pfQuestions:[{id:'pergunta1',label:kind==='event'?'Confirma sua participação?':kind==='survey'?'Como avalia a atividade?':'Sua resposta',type:kind==='event'?'choice':kind==='survey'?'choice':'text',required:true,options:kind==='event'?['Sim','Não','Talvez']:kind==='survey'?['Ótima','Boa','Regular','Ruim']:[]}];
   const response=await request('/forms?action=create',{method:'POST',data:{title,kind,description:x.get('description'),questions,createGoogle,dueAt:x.get('due')?new Date(String(x.get('due'))).toISOString():null}});
   const created=response.form;if(!created?.id)throw Error('O servidor não devolveu o formulário criado.');
   let folderStatus='Pasta não solicitada.';
