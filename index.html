@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#0b1118">
+  <meta name="description" content="Demonstração interativa do Portal de Governança NEJLON 2027. Explore gráficos, mapa das 29 EJs e relatórios fictícios.">
+  <title>Portal NEJLON 2027 · Demonstração interativa</title>
+  <link rel="stylesheet" href="./pages/site.css">
+  <script defer src="./pages/demo-data.js"></script>
+  <script defer src="./pages/site.js"></script>
+</head>
+<body>
+  <div class="layout">
+    <aside class="side">
+      <a class="brand" href="./" aria-label="Portal NEJLON 2027">
+        <span class="brand-mark">N<span>.</span></span>
+        <span><strong>NEJLON</strong><small>PORTAL 2027</small></span>
+      </a>
+      <div class="side-section">PAINEL DE NAVEGAÇÃO</div>
+      <nav id="desktop-nav" aria-label="Navegação principal"></nav>
+      <div class="side-foot">
+        <span class="simulation-dot"></span>
+        <div><strong>Modo demonstração</strong><small>Sem login e sem dados reais</small></div>
+      </div>
+    </aside>
+    <main class="main">
+      <header class="topbar">
+        <div class="top-label"><span class="top-sparkle">✦</span> PLATAFORMA DE GOVERNANÇA <span class="top-year">/ 2027</span></div>
+        <div class="top-actions">
+          <span class="pill pill-outline"><span class="simulation-dot"></span> AMBIENTE DE TESTE</span>
+          <a class="contact" href="https://wa.me/5547920011377" target="_blank" rel="noopener noreferrer">Contato PRESCON <span aria-hidden="true">↗</span></a>
+        </div>
+      </header>
+      <div class="content">
+        <section class="intro">
+          <div class="intro-copy"><span class="eyebrow">NEJLON · GESTÃO 2027</span>
+            <h1>Governança mais <em>simples.</em><br>Decisões mais <em>inteligentes.</em></h1>
+            <p>Explore como o Conselho pode acompanhar toda a Rede em um só lugar, com dados visuais, respostas organizadas e menos trabalho manual.</p>
+          </div>
+          <div class="intro-symbol" aria-hidden="true"><span>29</span><small>EJs CONECTADAS</small></div>
+        </section>
+        <div class="demo-alert"><span class="alert-icon" aria-hidden="true">ⓘ</span><p><strong>Apresentação interativa.</strong> As deliberações, votos, datas, indicadores e comentários desta página são <strong>100% fictícios</strong>. Nenhuma ação altera o portal institucional ou o Supabase.</p></div>
+        <section class="role-card">
+          <div><span class="mini-heading">EXPLORE UMA VISÃO</span><p>Selecione o perfil e conheça suas funcionalidades.</p></div>
+          <div class="role-options" id="roles" role="group" aria-label="Selecione o perfil"></div>
+          <label class="ej-select" id="ej-picker-wrap" hidden>Empresa júnior da simulação<select id="ej-picker"></select></label>
+        </section>
+        <div class="mobile-nav" id="mobile-nav" aria-label="Navegação no celular"></div>
+        <div class="workhead"><div><span class="eyebrow" id="section-eyebrow">VISÃO PRESCON</span><h2 id="section-title">Visão geral da Rede</h2><p id="section-subtitle"></p></div><div id="current-date" class="date-chip"></div></div>
+        <div id="view" aria-live="polite"></div>
+        <footer class="footer"><span>NEJLON 2027 · DEMONSTRAÇÃO</span><span>Dados fictícios • Sem autenticação e sem registros oficiais</span></footer>
+      </div>
+    </main>
+  </div>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+</body>
+</html>
