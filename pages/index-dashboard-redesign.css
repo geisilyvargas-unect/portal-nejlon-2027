@@ -1,0 +1,25 @@
+/* Portal NEJLON 2027 — arquitetura de navegação e calendário */
+.portal-admin-heading{margin:22px 10px 8px;font-size:10px;letter-spacing:.12em;font-weight:900;color:#ff4444}
+.portal-admin-group{border:1px solid var(--border,#333);margin:5px 0;background:rgba(0,0,0,.12)}
+.portal-admin-group>summary{cursor:pointer;list-style:none;padding:12px 13px;font-size:12px;font-weight:800;display:flex;justify-content:space-between;align-items:center}
+.portal-admin-group>summary::-webkit-details-marker{display:none}
+.portal-admin-group>summary:after{content:'+';font-size:18px;color:#ff0000}
+.portal-admin-group[open]>summary:after{content:'−'}
+.portal-admin-group>a{display:block;padding:10px 13px 10px 23px;border-top:1px solid var(--border,#333);font-size:12px;text-decoration:none;color:inherit}
+.portal-admin-group>a:hover,.portal-admin-group>a:focus-visible{background:#ff0000;color:white}
+.portal-calendar-panel{grid-column:1/-1;width:100%;min-width:0}
+.portal-calendar-heading{display:flex;justify-content:space-between;align-items:center;gap:18px;flex-wrap:wrap;margin-bottom:20px}
+.portal-calendar-heading h3{font-size:clamp(22px,3vw,34px);text-transform:uppercase;margin:4px 0}
+.portal-calendar-controls{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.portal-calendar-controls strong{text-transform:capitalize;min-width:135px;text-align:center}
+.portal-calendar-controls button{background:transparent;color:inherit;border:2px solid currentColor;min-width:35px;min-height:35px;padding:4px 9px;font-weight:800;cursor:pointer}
+.portal-calendar-controls button:hover{background:#ff0000;color:white;border-color:#ff0000}
+.portal-calendar-week,.portal-calendar-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr))}
+.portal-calendar-week span{text-align:center;font-weight:800;font-size:11px;padding:8px 0}
+.portal-calendar-day{min-height:72px;border:1px solid var(--border,#555);padding:8px;font-weight:700}
+.portal-calendar-day.outside{opacity:.22;background:rgba(128,128,128,.08)}
+.portal-calendar-day.today{border:2px solid #ff0000;background:rgba(255,0,0,.09)}
+.portal-calendar-day.today span{display:inline-grid;place-items:center;width:25px;height:25px;background:#ff0000;color:white;border-radius:50%}
+.portal-calendar-empty{padding:16px;margin-top:16px;border-left:4px solid #ff0000;background:rgba(128,128,128,.07)}
+.portal-calendar-empty p{margin:4px 0 0}
+@media(max-width:760px){.portal-calendar-day{min-height:48px;padding:5px;font-size:12px}.portal-calendar-controls strong{min-width:100px}.portal-admin-group{min-width:190px}.portal-calendar-heading{align-items:flex-start}}
