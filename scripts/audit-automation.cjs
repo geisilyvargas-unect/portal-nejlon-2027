@@ -9,7 +9,7 @@ const cron=read('api/cron-sync.js'),forms=read('api/forms.js'),drive=read('api/d
 assert.match(cron,/MAX_FORMS=200/);
 assert.match(cron,/MAX_PAGES_PER_FORM=30/);
 assert.match(cron,/pending_review/);
-assert.match(cron,/response\.nextPageToken/);
+assert.match(cron,/result\.nextPageToken/);
 assert.match(cron,/status=eq\.open/);
 assert.match(cron,/authorization/);
 assert.match(forms,/Array\.isArray\(questions\)&&questions\.length/);
