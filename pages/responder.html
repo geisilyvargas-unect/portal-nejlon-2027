@@ -19,6 +19,15 @@
 <section class="automation-panel"><div id="respond-form-header"><h2>Carregando formulário…</h2></div>
 <div id="respond-question-list"></div>
 <form id="respond-answer-form" class="automation-form" hidden><div id="respond-questions"></div><button class="btn red" type="submit">Registrar resposta da EJ</button></form>
+<section id="respond-vote-change" class="automation-result" hidden>
+<h3>Resposta desta EJ já registrada</h3>
+<p id="respond-vote-status"></p>
+<form id="respond-change-request-form" class="automation-form" hidden>
+<label>Por que é necessário alterar o voto?<textarea name="reason" rows="3" minlength="10" maxlength="2000" required placeholder="Explique a necessidade da alteração para a PRESCON"></textarea></label>
+<button type="submit" class="btn">Solicitar autorização da PRESCON</button>
+</form>
+<p class="automation-muted">O voto original não será exibido durante a deliberação. Uma alteração só é permitida após aprovação expressa da PRESCON e fica registrada no histórico.</p>
+</section>
 <p id="respond-submit-feedback" class="automation-message" role="status"></p>
 <div id="respond-google-link"></div>
 </section>
