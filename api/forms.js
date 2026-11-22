@@ -45,10 +45,12 @@ async function createGoogleForm(token,title,description,questions){
 }
 async function overview(user){
  const prescon=user.role==='prescon';
+ const oversight=user.role==='nucleus_direx';
  // DIREX de EJ não recebe formulários, manuais, arquivos nem links.
- if(!prescon&&user.role!=='counselor')return [];
- const forms=await db('portal_forms',{query:'select=id,title,description,questions,kind,status,audience,google_form_id,google_responder_url,created_at,due_at&'+(prescon?'':'status=eq.open&')+'order=created_at.desc&limit=100'});
- return prescon?forms:forms.filter(f=>f.audience==='all_members'||user.role==='counselor');
+ if(!prescon&&!oversight&&user.role!=='counselor')return [];
+ const fields=prescon?'id,title,description,questions,kind,status,audience,google_form_id,google_responder_url,created_at,updated_at,due_at':'id,title,description,questions,kind,status,audience,google_responder_url,created_at,updated_at,due_at';
+ const forms=await db('portal_forms',{query:'select='+fields+'&'+(prescon||oversight?'':'status=eq.open&')+'order=created_at.desc&limit=100'});
+ return prescon||oversight?forms:forms.filter(f=>f.audience==='all_members'||user.role==='counselor');
 }
 async function syncGoogle(user,formId){
  const [record]=await db('portal_forms',{query:'select=id,google_form_id,google_question_map,status&'+(formId?'id=eq.'+formId+'&':'google_form_id=not.is.null&')+'limit=1'});
@@ -88,6 +90,29 @@ async function handler(req,res){
  const user=await userFromToken(req);
  if(req.method==='GET'){
   if(action==='list')return json(res,200,{forms:await overview(user)});
+  if(action==='oversight'){
+   if(!['prescon','nucleus_direx'].includes(user.role))fail(403,'Apenas PRESCON ou fiscalização da DIREX do Núcleo.');
+   const forms=await overview(user);
+   const ejs=await db('ejs',{query:'select=id,name&limit=100'});
+   const totals=[];
+   for(const f of forms.slice(0,75)){
+    const submissions=await db('portal_form_submissions',{query:'select=ej_id,state,channel&form_id=eq.'+f.id+'&limit=2000'});
+    const validated=new Set(submissions.filter(x=>x.state==='accepted'&&x.ej_id).map(x=>x.ej_id));
+    totals.push({id:f.id,title:f.title,kind:f.kind,status:f.status,due_at:f.due_at,
+      updated_at:f.updated_at,created_at:f.created_at,question_count:f.questions?.length||0,
+      accepted_count:validated.size,pending_count:Math.max(0,ejs.length-validated.size),
+      pending_review_count:submissions.filter(x=>x.state==='pending_review').length,
+      // Não revelar a EJ que votou nem conteúdo de nenhum voto em aberto.
+      votes_hidden:true});
+   }
+   const decisions=await db('deliberations',{query:'select=id,title,status,due_at,created_at,updated_at&is_demo=eq.false&status=neq.draft&order=created_at.desc&limit=100'});
+   const demands=await db('demands',{query:'select=id,ej_id,title,due_at,status,severity&order=created_at.desc&limit=1500'});
+   const demandStats={total:demands.length,open:demands.filter(d=>['pendente','em_andamento'].includes(d.status)).length,
+       justified:demands.filter(d=>d.status==='justificada').length,
+       overdue:demands.filter(d=>['pendente','em_andamento'].includes(d.status)&&d.due_at&&d.due_at<new Date().toISOString().slice(0,10)).length};
+   return json(res,200,{role:user.role,forms:totals,deliberations:decisions,
+      demands:demandStats,scope:'Acompanhamento institucional somente leitura. Votos individuais, especificações e justificativas não são exibidos.'});
+  }
   if(action==='weekly'){
    if(user.role!=='prescon')fail(403,'Somente a PRESCON pode consultar a situação da Rede.');
    const forms=(await overview(user)).filter(f=>f.status==='open');
