@@ -41,7 +41,7 @@ const metric=(label,value,footer,icon='◇')=>'<article class="stat-card"><span 
 const stats=(items)=>'<div class="stats">'+items.join('')+'</div>';
 const panel=(title,sub,content)=>'<section class="panel"><div class="section-row"><div><h3>'+title+'</h3><p class="sub">'+sub+'</p></div></div>'+content+'</section>';
 const tag=(txt,cls='')=>'<span class="tag '+cls+'">'+esc(txt)+'</span>';
-const titleOptions=()=>'<label class="mini-heading" for="delib-select">DELIBERAÇÃO DEMONSTRATIVA</label><div class="toolrow"><select class="select" id="delib-select">'+D.delibs.map(d=>'<option value="'+d.id+'" '+(d.id===s.delib?'selected':'')+'>'+esc(d.name)+'</option>').join('')+'</select></div>';
+const titleOptions=()=>'<label class="mini-heading" for="delib-select">DELIBERAÇÃO DEMONSTRATIVA</label><div class="toolrow"><select class="select" id="delib-select">'+D.delibs.map(d=>'<option value="'+d.id+'" '+(d.id===s.delib?'selected':'')+'>'+esc(d?.name||demoEntries().find(x=>x.id===id)?.name||'Deliberação')+'</option>').join('')+'</select></div>';
 const labels={painel:['VISÃO PRESCON','Visão geral da Rede','Acompanhe os principais números, pendências e prioridades em uma única tela.'],
  engajamento:['PARTICIPAÇÃO DAS EJs','Radar visual da Rede','Mapa interativo, ficha individual de cada EJ e evolução das respostas.'],
  deliberacoes:['CONSELHO DELIBERATIVO','Deliberações','Acompanhe os cenários e os posicionamentos enviados pelas EJs.'],
@@ -198,15 +198,23 @@ function liveDeliberations(){
  const login='<form id="live-delib-login" class="toolrow" style="flex-wrap:wrap"><input class="select" type="email" name="email" placeholder="E-mail institucional" required autocomplete="username" aria-label="E-mail institucional"><input class="select" type="password" name="password" placeholder="Senha" required autocomplete="current-password" aria-label="Senha"><button class="btn red" type="submit">Entrar</button></form>';
  return '<div class="view-grid">'+panel('Deliberações publicadas pela PRESCON','Acompanhamento automático de formulários, avaliação e relatórios.',info+(liveError?'<p class="note" role="status">'+esc(liveError)+'</p>':'')+(liveLastUpdate?'<p class="note">Última sincronização: '+esc(liveLastUpdate.toLocaleTimeString('pt-BR'))+'</p>':'')+(liveLoading&&liveForms===null?'<p>Sincronizando...</p>':liveForms===null?login:rows||'<p>Nenhuma deliberação disponível para este perfil.</p>'))+'</div>';
 }
-function deliberations(){
- return liveDeliberations();
- const cards=D.delibs.filter(d=>s.role!=='ej_direx'||d.visibility!=='Conselho');
- const id=s.delib,selected=delib(id);
- const stateOf=d=>{const status=String(d.status||'').toLocaleLowerCase('pt-BR');if(/avalia|análise|analise|pendente/.test(status))return 'review';if(/encerrad|fechad|concluíd|concluid|finalizad/.test(status))return 'closed';return 'open';};
- const rows=cards.map(d=>{const state=stateOf(d),status=state==='open'?'Aberta':state==='closed'?'Encerrada':'Aguardando avaliação',action=state==='open'?'<a class="btn red" href="./pages/formulario-deliberacao.html?id='+encodeURIComponent(d.id)+'" target="_blank" rel="noopener noreferrer" aria-label="Responder formulário de '+esc(d.name)+'">Responder formulário ↗</a>':state==='closed'?'<button class="btn red" type="button" data-demo-report="'+esc(d.id)+'" aria-label="Ver relatório demonstrativo de '+esc(d.name)+'">Ver relatório ↗</button>':'<button class="btn" type="button" disabled aria-disabled="true" title="Aguardando avaliação do presidente do Conselho">Aguardando avaliação da PRESCON</button>';return '<div class="list-item deliberation-status-row"><div><strong>'+esc(d.name)+'</strong><p>'+esc(d.visibility)+' • '+(state==='open'?'Votação disponível':state==='review'?'Encaminhada à avaliação do presidente do Conselho':'Deliberação encerrada')+' · Demonstração</p></div><div class="right">'+tag(status,state==='open'?'green':state==='closed'?'yellow':'')+action+'</div></div>';}).join('');
- const extra=s.role==='prescon'?panel('Respostas da deliberação selecionada',selected.name,recordList(id)):panel('Permissões nesta visão','A DIREX e o Conselho consultam apenas os conteúdos autorizados.','<div class="notice">Para votar, utilize o formulário autenticado da deliberação.</div>');
- return '<div class="view-grid">'+(s.role==='prescon'?panel('Criar deliberação financeira','A criação e a publicação são centralizadas na Central de Automações.','<p class="note">Para importar XLSX, gerar a análise e preparar a votação, use a aba Automação de PF.</p>'):'')+panel('Deliberações da Rede','Exemplos de diferentes tipos de votação e visibilidade.',rows)+extra+'</div>';
+function demoEntries(){
+ const base=D.delibs.map(d=>({id:d.id,name:d.name,status:d.status,visibility:d.visibility}));
+ let extras=[];try{extras=JSON.parse(localStorage.getItem('nejlon.deliberations.demo.v2')||'[]')}catch{}
+ return base.concat(Array.isArray(extras)?extras:[]);
 }
+function deliberations(){
+ const cards=demoEntries();
+ const rows=cards.map(d=>{
+  const st=String(d.status||'').toLowerCase(),closed=/encerrad|fechad|finalizad/.test(st),review=/avalia|pendente|análise/.test(st),open=!closed&&!review;
+  const action=open?'<a class="btn red" href="./pages/formulario-deliberacao.html?id='+encodeURIComponent(d.id)+'">Responder formulário ↗</a>':closed?'<button class="btn red" type="button" data-demo-report="'+esc(d.id)+'">Ver relatório ↗</button>':'<button class="btn" disabled>Aguardando avaliação da PRESCON</button>';
+  const controls=s.role==='prescon'?'<div class="toolrow"><button class="btn" data-demo-status="'+esc(d.id)+'" data-next-status="'+(open?'Aguardando avaliação':review?'Encerrada':'Aberta')+'">Alterar etapa: '+(open?'Avaliação':review?'Encerrar':'Reabrir')+'</button></div>':'';
+  return '<div class="list-item deliberation-status-row"><div><strong>'+esc(d.name)+'</strong><p>'+esc(d.visibility||'Conselho')+' · Demonstração local</p>'+controls+'</div><div class="right">'+tag(open?'Aberta':closed?'Encerrada':'Em avaliação',open?'green':closed?'yellow':'')+action+'</div></div>';
+ }).join('');
+ const creation=s.role==='prescon'?panel('Criar deliberação de teste','Sem e-mail, senha ou banco de dados.','<form id="demo-create-deliberation"><label>Título<input class="select" name="title" required minlength="4" maxlength="150" placeholder="Ex.: Planejamento Financeiro 2027"></label><button class="btn red" type="submit">Criar deliberação de teste</button></form><p class="note">Os dados ficam apenas neste navegador. Para importar planilhas no protótipo, use a ferramenta de criação em modo local.</p><a class="btn" href="./pages/prescon-criar-deliberacao.html">Importar PF (modo demonstração) ↗</a>'):'';
+ return '<div class="view-grid">'+panel('Deliberações de teste','Acesso livre: selecione PRESCON ou Conselho acima. Nenhum login é necessário. Os registros são fictícios e locais.',rows)+creation+'</div>';
+}
+
 const calendarStorageKey='nejlon2027.calendar.demo.v1';
 function calendarEntries(){
  try {const a=JSON.parse(localStorage.getItem(calendarStorageKey)||'[]');return Array.isArray(a)?a.filter(x=>x&&/^\\d{4}-\\d{2}-\\d{2}$/.test(x.date)&&typeof x.title==='string'):[]}catch{return []}
@@ -250,9 +258,9 @@ function render(){
  $('roles').innerHTML=Object.entries(roleMap).map(([key,r])=>'<button class="role-option '+(key===s.role?'active':'')+'" type="button" data-role="'+key+'" aria-pressed="'+(key===s.role)+'">'+esc(r.name)+'</button>').join('');
  $('ej-picker-wrap').hidden=!['counselor','ej_direx'].includes(s.role);
  $('ej-picker').innerHTML=D.ejs.map(e=>'<option value="'+esc(e.slug)+'" '+(e.slug===s.ej?'selected':'')+'>'+esc(e.name)+'</option>').join('');
- const councilAccess=$('council-test-access');if(councilAccess){councilAccess.hidden=s.role!=='counselor';const email=$('council-test-email');if(email)email.textContent='conselho'+s.ej+'@nejlondrina.com';}
+ const councilAccess=$('council-test-access');if(councilAccess)councilAccess.hidden=true;
  const navButton=([key,icon,name])=>key==='calendario'?'<a class="nav-button" href="./pages/calendar-live.html"><span class="nav-icon" aria-hidden="true">'+icon+'</span>'+esc(name)+'</a>':key==='demandas'?'<a class="nav-button" href="./pages/demandas.html"><span class="nav-icon" aria-hidden="true">'+icon+'</span>'+esc(name)+'</a>':'<button type="button" class="nav-button '+(key===s.section?'active':'')+'" data-nav="'+key+'" aria-current="'+(key===s.section?'page':'false')+'"><span class="nav-icon" aria-hidden="true">'+icon+'</span>'+esc(name)+'</button>';
- const admin=s.role==='prescon'?'<div class="portal-admin-heading">GESTÃO · PRESCON</div><a class="nav-button" href="./pages/prescon-criar-deliberacao.html">＋ Criar deliberação / PF</a><a class="nav-button" href="./pages/central-automacoes.html#formularios">▤ Gerenciar formulários</a><a class="nav-button" href="./pages/deliberation-hub.html">◷ Acompanhar deliberações</a>':'';
+ const admin='';
  $('desktop-nav').innerHTML=nav.map(navButton).join('')+admin;
  $('mobile-nav').innerHTML=nav.map(navButton).join('')+admin;
  heading();
@@ -262,14 +270,15 @@ function render(){
 // Em dispositivos que interceptam o clique, a navegação usa o href nativo.
 function openDemoDeliberationReport(id){
  const d=D.delibs.find(x=>x.id===id);
- if(!d||!/encerrad|fechad|concluíd|concluid|finalizad/i.test(String(d.status)))return;
- const vv=votes(id), counts=Object.entries(D.positions).map(([key,p])=>'<tr><td>'+esc(p.label)+'</td><td>'+vv.filter(v=>v.position===key).length+'</td></tr>').join('');
+ if(!d){const extra=demoEntries().find(x=>x.id===id);if(!extra||!/encerrad|fechad|concluíd|concluid|finalizad/i.test(String(extra.status)))return;}else if(!/encerrad|fechad|concluíd|concluid|finalizad/i.test(String(d.status)))return;
+ const vv=d?votes(id):[], counts=Object.entries(D.positions).map(([key,p])=>'<tr><td>'+esc(p.label)+'</td><td>'+vv.filter(v=>v.position===key).length+'</td></tr>').join('');
  const html='<h1>'+esc(d.name)+'</h1><p><strong>RELATÓRIO DEMONSTRATIVO — DELIBERAÇÃO ENCERRADA</strong></p><p>Dados fictícios do protótipo. Não representam votos oficiais nem deliberação institucional.</p><p>Total de respostas fictícias: '+vv.length+'</p><table><thead><tr><th>Posicionamento</th><th>Respostas fictícias</th></tr></thead><tbody>'+counts+'</tbody></table><p>Qualquer parecer, sugestão ou ressalva exige análise humana da PRESCON.</p>';
  const ref='nejlon-demo-report-'+id+'-'+Date.now();
- try{sessionStorage.setItem(ref,JSON.stringify({demo:true,title:d.name,createdAt:Date.now(),html}));window.location.href='./pages/relatorio.html?ref='+encodeURIComponent(ref)}catch{alert('Não foi possível abrir o relatório demonstrativo neste navegador.')}
+ try{sessionStorage.setItem(ref,JSON.stringify({demo:true,title:d?.name||demoEntries().find(x=>x.id===id)?.name||'Deliberação',createdAt:Date.now(),html}));window.location.href='./pages/relatorio.html?ref='+encodeURIComponent(ref)}catch{alert('Não foi possível abrir o relatório demonstrativo neste navegador.')}
 }
 document.addEventListener('click',e=>{
  const target=e.target.closest('button');if(!target)return;
+ if(target.dataset.demoStatus&&s.role==='prescon'){const id=target.dataset.demoStatus,next=target.dataset.nextStatus;const entries=demoEntries().filter(x=>!D.delibs.some(d=>d.id===x.id));const base=D.delibs.find(d=>d.id===id);const existing=entries.find(x=>x.id===id);if(existing)existing.status=next;else if(base)entries.push({id,name:base.name,status:next,visibility:base.visibility});localStorage.setItem('nejlon.deliberations.demo.v2',JSON.stringify(entries));render();return;}
  if(target.dataset.demoReport){openDemoDeliberationReport(target.dataset.demoReport);return;}
  if(target.hasAttribute('data-refresh-live')){loadLiveForms();return;}
  if(target.dataset.calendarRemove&&s.role==='prescon'){const id=target.dataset.calendarRemove;if(calendarSave(calendarEntries().filter(x=>x.id!==id)))render();else alert('Não foi possível atualizar a agenda neste navegador.');return;}
@@ -284,6 +293,7 @@ document.addEventListener('click',e=>{
  if(target.dataset.openDelib){s.delib=target.dataset.openDelib;s.section='deliberacoes';render();return;}
  if(target.dataset.selectRede){s.selected=target.dataset.selectRede;s.section='painel';s.role='prescon';render();return;}
 });
+document.addEventListener('submit',e=>{if(e.target.id!=='demo-create-deliberation')return;e.preventDefault();const title=String(new FormData(e.target).get('title')||'').trim();if(title.length<4)return;const entries=demoEntries().filter(x=>!D.delibs.some(d=>d.id===x.id));entries.unshift({id:'local-'+Date.now().toString(36),name:title,status:'Aberta',visibility:'Conselho'});localStorage.setItem('nejlon.deliberations.demo.v2',JSON.stringify(entries));render()});
 document.addEventListener('submit',async e=>{if(e.target.id!=='live-delib-login')return;e.preventDefault();const fd=new FormData(e.target);try{const r=await fetch(liveSB+'/auth/v1/token?grant_type=password',{method:'POST',headers:{apikey:liveKey,'Content-Type':'application/json'},body:JSON.stringify({email:fd.get('email'),password:fd.get('password')})});const v=await r.json();if(!r.ok)throw Error('Credenciais inválidas.');liveSession=v;sessionStorage.setItem('nejlon.respond.session.v1',JSON.stringify(v));await loadLiveForms()}catch(err){liveError=err.message;render()}});
 document.addEventListener('submit',async e=>{
  const form=e.target;
@@ -313,8 +323,6 @@ document.addEventListener('input',e=>{
 });
 $('current-date').textContent=new Intl.DateTimeFormat('pt-BR',{dateStyle:'long',timeZone:'America/Sao_Paulo'}).format(new Date());
 render();
-if(findLiveSession())loadLiveForms();
-setInterval(()=>{if(s.section==='deliberacoes'&&!document.hidden&&!document.querySelector('.live-report-publish[open]'))loadLiveForms()},15000);
-document.addEventListener('visibilitychange',()=>{if(!document.hidden&&s.section==='deliberacoes'&&!document.querySelector('.live-report-publish[open]'))loadLiveForms()});
-window.addEventListener('focus',()=>{if(s.section==='deliberacoes'&&!liveLoading&&!document.querySelector('.live-report-publish[open]'))loadLiveForms()});
+// Modo de teste: nenhuma autenticação nem consulta a dados institucionais.
+
 })();
