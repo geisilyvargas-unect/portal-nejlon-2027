@@ -26,3 +26,29 @@ html body .option:has(input:checked){border:3px solid #ff0000!important}
 html body .scale-labels,html body .actions span{color:var(--pf-muted)!important}
 html body #status,html body #copy-status{color:var(--pf-ink)!important}
 @media(max-width:600px){html body .hero{padding:24px 20px 32px!important}html body .paper{padding:18px!important;box-shadow:3px 3px 0 #0002!important}}
+
+/* Revisão do assistente: componentes sem cores legadas e leitura responsiva. */
+html body .form-control{display:block;width:100%;margin-top:10px;padding:12px;min-height:46px}
+html body .scenario-editor{background:var(--pf-note);border:2px solid var(--pf-line);padding:20px;margin:16px 0}
+html body .scenario-editor .field{margin-top:12px}
+html body .scenario-editor input{display:block;width:100%;padding:12px;margin-top:8px}
+html body .scenario-editor button{margin-top:14px}
+html body .financial-table-wrap{overflow-x:auto;margin:16px 0;max-width:100%;border:1px solid var(--pf-line);padding:12px}
+html body .financial-table{width:100%;min-width:520px;border-collapse:collapse;text-align:left}
+html body .financial-table :is(th,td){border-bottom:1px solid var(--pf-line);padding:10px;color:var(--pf-ink);font-variant-numeric:tabular-nums}
+html body .financial-table th{font-weight:800}
+html body #pf-extraction-review{overflow-wrap:anywhere}
+html body #pf-extraction-review h3{margin-top:24px}
+html body .paper a:not(.create-primary){color:var(--pf-ink);text-decoration:underline}
+html body #result .create-primary{margin:8px 12px 8px 0}
+html body .ux-theme-container{position:relative;z-index:30}
+html body .ux-theme-switch{background:#000!important;color:#fff!important;border-color:#fff!important;box-shadow:none!important}
+html body .ux-theme-picker{background:#000!important;color:#fff!important;border:2px solid #fff!important}
+html body .ux-theme-picker button{box-shadow:none!important;background:#000!important;color:#fff!important;border:1px solid #fff!important}
+html body .ux-theme-picker button[aria-pressed="true"]{border-color:#ff0000!important;background:#222!important}
+html body .ux-theme-picker button:hover{background:#333!important}
+html[data-theme="red"] body .hero{background:#ff0000!important}
+html[data-theme="red"] body .paper{background:#000!important;color:#fff!important}
+html[data-theme="light"] body .paper{background:#fff!important;color:#000!important}
+html[data-theme="dark"] body .paper{background:#101010!important;color:#fff!important}
+@media(max-width:600px){html body .financial-table-wrap{padding:6px}html body .scenario-editor{padding:14px}html body .top{gap:8px}}
