@@ -348,8 +348,10 @@ export async function uploadDeliberationPf(form:FormData){
  const contentType=ext==='xlsx'?'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet':ext==='xls'?'application/vnd.ms-excel':'text/csv';
  const {error:up}=await db.storage.from('deliberation-pf').upload(path,file,{contentType,upsert:false});
  checkError(up);
+ const {data:previous}=await db.from('deliberation_pf_files').select('storage_path').eq('deliberation_id',id).maybeSingle();
  const {error:save}=await db.from('deliberation_pf_files').upsert({deliberation_id:id,storage_path:path,file_name:file.name.slice(0,180),file_size:file.size,uploaded_by:viewer.id},{onConflict:'deliberation_id'});
  if(save){await db.storage.from('deliberation-pf').remove([path]);checkError(save)}
+ if(previous?.storage_path&&previous.storage_path!==path){const {error:cleanupError}=await db.storage.from('deliberation-pf').remove([previous.storage_path]);if(cleanupError)console.error('Falha ao limpar versão antiga do PF:',cleanupError.message)}
  revalidatePath('/deliberacoes/'+id);revalidatePath('/deliberacoes/'+id+'/planejamento-financeiro');
  redirect('/deliberacoes/'+id);
 }
