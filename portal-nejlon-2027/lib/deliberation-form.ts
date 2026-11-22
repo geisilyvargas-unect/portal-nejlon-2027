@@ -3,8 +3,8 @@ import type {Deliberation,DeliberationScenario,ResponseRow,ScenarioAnswer,Positi
 export const VOTE_DESCRIPTIONS = {
   favorable: 'Concordo integralmente com a proposta apresentada.',
   suggestions: 'Concordo com a proposta e apresento sugestões. Conta como aprovação.',
-  qualified: 'Concordo sob condições. A aprovação depende da análise das ressalvas pela PRESCON.',
-  against: 'Não aprovo a proposta e apresento os motivos.',
+  qualified: 'Concordo parcialmente: aprovo, desde que a PRESCON aceite as condições. Se não forem acatadas, o voto contabiliza como reprovação.',
+  against: 'Não aprovo a proposta e apresento pontos pertinentes, a serem analisados pela Presidência do Conselho.',
   abstention: 'Optei por não votar neste cenário.',
 } as const;
 

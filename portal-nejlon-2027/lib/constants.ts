@@ -46,7 +46,8 @@ export type HistoricalData = {
   source_note?: string;
   import_note?: string;
 };
-export type DeliberationScenario = { key: string; title: string; description?: string; material_url?: string };
+import type {FinancialAlternative} from '@/lib/financial-plan';
+export type DeliberationScenario = { key: string; title: string; description?: string; material_url?: string; financial_options?: FinancialAlternative[] };
 export type ScenarioAnswer = { scenario_key: string; position: Position; justification: string; caveats: string; suggestions: string };
 export type FinalFeedback = { clarity?: number; difficulty?: number; improvements?: string };
 export type ResponseRow = {
