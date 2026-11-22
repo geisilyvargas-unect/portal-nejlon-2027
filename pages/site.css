@@ -127,3 +127,18 @@ body{background:var(--bg)}
 @media(max-width:850px){.ej-network-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
 @media(max-width:600px){.ej-network-header{padding:20px 17px;align-items:start}.ej-network-count{display:none}.ej-network-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.ej-network-card{min-height:158px}.ej-network-visual{min-height:100px;padding:26px 12px 8px}.ej-network-visual img{height:75px;max-height:75px}.ej-network-bottom{margin:0 10px;padding:9px 0}.ej-network-cta{font-size:8px}.ej-network-header h3{font-size:28px}}
 @media(prefers-reduced-motion:reduce){.ej-network-card,.ej-network-card:before,.ej-network-arrow{transition:none}}
+
+
+/* Normalização rígida: todas as células e áreas de logo têm dimensões idênticas. */
+.ej-network-grid{grid-auto-rows:196px;align-items:stretch}
+.ej-network-grid>.ej-network-card{height:196px;min-height:196px;max-height:196px;display:grid;grid-template-rows:1fr 48px;align-items:stretch}
+.ej-network-grid .ej-network-visual{box-sizing:border-box;min-width:0;min-height:0;height:148px;width:100%;padding:24px 16px 8px;display:grid;place-items:center}
+.ej-network-grid .ej-network-visual img{box-sizing:border-box;width:112px!important;height:100px!important;max-width:100%!important;max-height:100px!important;object-fit:contain!important;object-position:center!important;margin:0 auto!important;flex:none!important}
+.ej-network-grid .ej-network-bottom{height:48px;box-sizing:border-box;padding:0;margin:0 13px;align-self:stretch}
+@media(max-width:600px){
+ .ej-network-grid{grid-auto-rows:166px}
+ .ej-network-grid>.ej-network-card{height:166px;min-height:166px;max-height:166px;grid-template-rows:1fr 42px}
+ .ej-network-grid .ej-network-visual{height:124px;padding:20px 10px 6px}
+ .ej-network-grid .ej-network-visual img{width:92px!important;height:82px!important;max-height:82px!important}
+ .ej-network-grid .ej-network-bottom{height:42px;margin:0 10px}
+}
