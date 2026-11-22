@@ -1,0 +1,19 @@
+/* Identidade cromática solicitada: vermelho puro (#FF0000).
+   Fonte titular: CY Grotesk V3 Key quando instalada/disponível;
+   fallback tipográfico até o arquivo licenciado ser incorporado. */
+:root{--nejlon-pure-red:#ff0000;--nejlon-title-font:"CY Grotesk V3 Key","CY Grotesk V3","Space Grotesk","Arial Black",sans-serif}
+:is(h1,h2,h3,h4,h5,h6),.brand strong,.intro h1,.workhead h2,.panel h3,.stat-card strong,.idealize-banner h1,.i-hero h1,.wa-hero h1{font-family:var(--nejlon-title-font)!important}
+html[data-theme="light"]{--ux-red:#ff0000;--ux-red-hover:#d40000;--ux-petrol:#e00000;--modern-accent:#ff0000;--modern-accent-soft:#fff0f0}
+html[data-theme="dark"]{--ux-red:#ff0000;--ux-red-hover:#ff3838;--ux-petrol:#ff3838;--modern-accent:#ff3838;--modern-accent-soft:#371414}
+html[data-theme="red"]{--ux-bg:#ff0000;--ux-side:#ff0000;--ux-surface:#ff0000;--ux-raised:#e00000;--ux-hover:#c80000;--ux-alert:#d00000;--ux-warning:#c60000;--ux-text:#ffffff;--ux-muted:#ffffff;--ux-subtle:#ffffff;--ux-red:#ffffff;--ux-red-hover:#ffffff;--ux-petrol:#ffffff;--modern-accent:#ffffff;--modern-accent-soft:#c90000;--modern-glass:rgba(230,0,0,.95)}
+html[data-theme="red"] :is(.side,.main,.panel,.role-card,.stat-card,.ej-directory-card,.comparison-card){background-color:var(--ux-surface)!important}
+html[data-theme="red"] .side{background:#e00000!important}
+html[data-theme="red"] .intro{background:#ff0000!important}
+html[data-theme="red"] .intro h1 em,html[data-theme="red"] .intro .eyebrow{color:#101010!important}
+html[data-theme="red"] :is(.nav-button.active,.role-option.active,.filter.active){background:#101010!important;color:#ffffff!important;border-color:#101010!important}
+html[data-theme="red"] .prescon-create-cta,html[data-theme="red"] :is(.btn.red,.contact){background:#ffffff!important;color:#101010!important;border-color:#ffffff!important}
+html[data-theme="red"] .top-year{color:#ffffff!important}
+html[data-theme="light"] :is(.side-section,.mini-heading,.eyebrow,.top-year,.stat-icon){color:#d00000!important}
+html[data-theme="dark"] :is(.side-section,.mini-heading,.eyebrow,.top-year,.stat-icon){color:#ff3838!important}
+html[data-theme="light"] .intro h1 em,html[data-theme="light"] .intro .eyebrow{color:#d00000!important}
+html[data-theme="dark"] .intro h1 em,html[data-theme="dark"] .intro .eyebrow{color:#ff3838!important}
