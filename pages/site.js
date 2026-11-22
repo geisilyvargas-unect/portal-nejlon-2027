@@ -24,7 +24,7 @@ const roleMap={
 const s={role:'prescon',section:'painel',ej:'unect',selected:'unect',filter:'all',search:'',delib:'financeiro',vote:'favorable',positionFilter:'all',calendarMonth:new Date().getMonth(),calendarYear:new Date().getFullYear()};
 const $=id=>document.getElementById(id);
 // Perfis institucionais verificados em fonte universitária; não inferir URLs das demais EJs.
-const ejInstagram=Object.freeze({unect:'https://www.instagram.com/unectjr/',select:'https://www.instagram.com/select.eng/'});
+const ejInstagram=Object.freeze({unect:'https://www.instagram.com/unectjr/',select:'https://www.instagram.com/select.eng/',elo:'https://www.instagram.com/eloconsultoria/',ecae:'https://www.instagram.com/ecaeuel/','3e':'https://www.instagram.com/3euel/',bioma:'https://www.instagram.com/biomambiental/',smartmec:'https://www.instagram.com/smartmec.ej/'});
 const esc=x=>String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const fmt=n=>Math.round(n)+'%';
 const role=()=>roleMap[s.role];
