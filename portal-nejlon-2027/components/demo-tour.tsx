@@ -7,6 +7,7 @@ import {
 } from 'lucide-react';
 import {EJS_DEMO,DEMO_ROLES,expectedEmail,type DemoRole} from '@/lib/demo-ejs';
 import {ThemeToggle} from '@/components/theme-toggle';
+import {DEMO_DELIBERATIONS,DEMO_POSITIONS,DEMO_EJ_BY_SLUG,demoVotesFor,demoPendingFor,demoCountsFor,demoSummary,type DemoDeliberationId} from '@/lib/demo-responses';
 
 type Section='painel'|'deliberacoes'|'pendencias'|'relatorios'|'acessos'|'calendario'|'demandas'|'jornada'|'rede';
 const NAV:ReadonlyArray<{id:Section;name:string;icon:typeof LayoutDashboard}>= [
@@ -26,11 +27,6 @@ const VISIBLE:Record<DemoRole,Section[]>={
  ej_direx:['painel','deliberacoes','demandas','calendario','rede'],
  nucleus_direx:['painel','deliberacoes','demandas','calendario','rede']
 };
-const SAMPLE_DELIBS=[
- {name:'Planejamento Financeiro 2027 — 1º ciclo',detail:'Deliberação de exemplo • acesso liberado à DIREX',pending:true,open:true,ejVisible:true},
- {name:'Aprovação do Calendário Eleitoral',detail:'Material restrito ao Conselho e à PRESCON',pending:false,open:true,ejVisible:false},
- {name:'Relatório de Encerramento de Ciclo',detail:'Deliberação de exemplo • já encerrada',pending:false,open:false,ejVisible:true}
-];
 const SAMPLE_EVENTS=[
  {name:'Reunião interna do Conselho',type:'Reunião',date:'15/03/2027',time:'19h',direx:false},
  {name:'Encontro da Rede NEJLON',type:'Institucional',date:'20/03/2027',time:'18h',direx:true},
@@ -62,13 +58,42 @@ export function DemoTour(){
  const [section,setSection]=useState<Section>('painel');
  const [demoPosition,setDemoPosition]=useState('favorable');
  const [showVoteNote,setShowVoteNote]=useState(false);
+ const [selectedDelib,setSelectedDelib]=useState<DemoDeliberationId>('financeiro');
  const roleDef=DEMO_ROLES.find(x=>x.value===role)!;
  const ej=EJS_DEMO.find(x=>x.slug===ejSlug)||EJS_DEMO[0];
  const email=expectedEmail(role,ejSlug);
  const sections=VISIBLE[role];
  const name=role==='prescon'?'Presidência do Conselho':role==='nucleus_direx'?'DIREX do Núcleo':role==='counselor'?'Conselho da '+ej.name:'DIREX da '+ej.name;
  const isPrescon=role==='prescon',isCouncil=role==='counselor',isDirex=role==='ej_direx';
- const viewDelibs=SAMPLE_DELIBS.filter(x=>!isDirex||x.ejVisible);
+ const viewDelibs=DEMO_DELIBERATIONS.filter(x=>!isDirex||x.direxVisible);
+ const votes=demoVotesFor(selectedDelib);
+ const missing=demoPendingFor(selectedDelib);
+ const counts=demoCountsFor(selectedDelib);
+ const summary=demoSummary(selectedDelib);
+ const currentDelib=DEMO_DELIBERATIONS.find(d=>d.id===selectedDelib)!;
+ const directApproval=votes.filter(v=>v.position==='favorable'||v.position==='suggestions').length;
+ const flaggedVotes=votes.filter(v=>v.position==='suggestions'||v.position==='qualified'||v.position==='against');
+ let accumulated=0;
+ const chartColors=counts.filter(c=>c.value).map(c=>{
+  const start=accumulated;
+  accumulated+=c.value/Math.max(votes.length,1)*100;
+  return c.color+' '+start.toFixed(3)+'% '+accumulated.toFixed(3)+'%';
+ }).join(', ');
+ const chartBackground=votes.length?'conic-gradient('+chartColors+')':'var(--surface2)';
+ const selectDelib=<label>Deliberação demonstrativa
+   <select value={selectedDelib} onChange={e=>setSelectedDelib(e.target.value as DemoDeliberationId)}>
+    {DEMO_DELIBERATIONS.map(d=><option key={d.id} value={d.id}>{d.title}</option>)}
+   </select>
+ </label>;
+ const chart=<div className="report-chart-row demo-report-chart">
+  <div className="report-pie" style={{background:chartBackground}} role="img" aria-label={counts.map(c=>c.label+': '+c.value).join(', ')}>
+   <div className="report-pie-core"><strong>{votes.length}</strong><span>votos fictícios</span></div>
+  </div>
+  <div className="report-legend">{counts.map(c=><div key={c.key} className="report-legend-row">
+    <span className="report-legend-color" style={{background:c.color}}/><span>{c.label}</span><strong>{c.value}</strong>
+    <span className="muted small">{votes.length?Math.round(c.value/votes.length*100):0}%</span>
+  </div>)}</div>
+ </div>;
  const viewEvents=SAMPLE_EVENTS.filter(x=>!isDirex||x.direx);
  const navigate=(page:Section)=>{setSection(page);setShowVoteNote(false);};
  const changeRole=(value:DemoRole)=>{setRole(value);setSection('painel');setShowVoteNote(false);};
@@ -126,9 +151,9 @@ export function DemoTour(){
       </div>
       <div className="kpi-grid">
        <Stat label="Empresas juniores" value="29" detail="Da Rede NEJLON"/>
-       <Stat label="Deliberações" value={isDirex?'1':'2'} detail="Exemplos disponíveis"/>
-       <Stat label={isPrescon?'Respostas recebidas':isCouncil?'Respostas da EJ':'Demandas'} value={isPrescon?'17':isCouncil?'1':'2'} detail="Dados simulados"/>
-       <Stat label={isPrescon?'EJs pendentes':isCouncil?'Suas pendências':'Eventos'} value={isPrescon?'12':isCouncil?'1':'2'} detail="Acompanhamento fictício"/>
+       <Stat label="Deliberações" value={String(viewDelibs.length)} detail="Exemplos disponíveis"/>
+       <Stat label={isPrescon?'Respostas recebidas':isCouncil?'Posicionamento da EJ':'Demandas'} value={isPrescon?String(demoSummary('financeiro').received):isCouncil?(demoVotesFor('financeiro').some(v=>v.slug===ejSlug)?'1':'0'):'2'} detail={isPrescon?'Exemplo financeiro':isCouncil?'Exemplo financeiro':'Dados simulados'}/>
+       <Stat label={isPrescon?'EJs pendentes':isCouncil?'Suas pendências':'Eventos'} value={isPrescon?String(demoSummary('financeiro').pending):isCouncil?(demoVotesFor('financeiro').some(v=>v.slug===ejSlug)?'0':'1'):'2'} detail={isPrescon?'Exemplo financeiro':isCouncil?'Exemplo financeiro':'Dados simulados'}/>
       </div>
       <div className="panel">
        <h3>O que este perfil pode fazer?</h3>
@@ -156,7 +181,31 @@ export function DemoTour(){
      {section==='deliberacoes'&&<>
       <TitleBlock eyebrow="Governança • Deliberações" title="Deliberações"
        description={isPrescon?'A PRESCON acompanha e organiza os resultados.':isCouncil?'O Conselho responde em nome da própria EJ.':'Esta visão apenas consulta deliberações autorizadas, sem votar.'}/>
-      <SampleList items={viewDelibs.map(item=>({heading:item.name,caption:item.detail,status:item.open?'Aberta':'Encerrada'}))}/>
+      <SampleList items={viewDelibs.map(item=>({heading:item.title,caption:(item.direxVisible?'Visível para DIREX':'Restrita ao Conselho')+' • '+demoSummary(item.id).received+' respostas fictícias',status:item.open?'Aberta':'Encerrada'}))}/>
+      {isPrescon&&<div className="panel">
+       <h3>Respostas recebidas por EJ</h3>
+       {selectDelib}
+       <div className="kpi-grid" style={{marginTop:14}}>
+        <Stat label="Responderam" value={String(summary.received)} detail="EJs fictícias"/>
+        <Stat label="Pendentes" value={String(summary.pending)} detail="EJs fictícias"/>
+        <Stat label="Representatividade" value={summary.participation+'%'} detail="Calculada automaticamente"/>
+       </div>
+       {chart}
+       <div className="demo-vote-records">
+        {votes.map(v=><details key={v.slug} className="demo-vote-record">
+         <summary><strong>{DEMO_EJ_BY_SLUG.get(v.slug)||v.slug.toUpperCase()}</strong><span className="badge">{DEMO_POSITIONS[v.position].label}</span></summary>
+         <p className="muted small">{v.note}</p>
+         <small className="muted">Resposta fictícia • somente apresentação</small>
+        </details>)}
+       </div>
+      </div>}
+      {isCouncil&&<div className="panel">
+       <h3>Posicionamento demonstrativo da {ej.name}</h3>
+       {(()=>{const vote=demoVotesFor('financeiro').find(v=>v.slug===ejSlug);
+        return vote?<><span className="badge blue">{DEMO_POSITIONS[vote.position].label}</span><p className="muted small">{vote.note}</p></>
+          :<p className="muted">Esta EJ ainda aparece como pendente no exemplo financeiro. Você pode simular um voto abaixo.</p>;
+       })()}
+      </div>}
       {isCouncil&&<div className="panel">
        <h3>Exemplo de formulário de voto</h3>
        <p className="muted small">Planejamento Financeiro 2027 • cenário ilustrativo</p>
@@ -178,31 +227,37 @@ export function DemoTour(){
      </>}
      {section==='pendencias'&&<>
       <TitleBlock eyebrow="Acompanhamento exclusivo da PRESCON" title="Central de Pendências"
-       description="Identifique as EJs que ainda não deliberaram e prepare cobranças por e-mail ou WhatsApp."/>
+       description="As EJs pendentes são identificadas automaticamente a partir das respostas fictícias da deliberação selecionada."/>
+      <div className="panel">{selectDelib}</div>
       <div className="kpi-grid">
-       <Stat label="EJs da Rede" value="29" detail="Contas independentes"/>
-       <Stat label="Responderam" value="17" detail="Dados simulados"/>
-       <Stat label="Ainda pendentes" value="12" detail="Dados simulados"/>
-       <Stat label="Representatividade" value="59%" detail="Exemplo de cálculo"/>
+       <Stat label="EJs da Rede" value={String(EJS_DEMO.length)} detail="Empresas cadastradas"/>
+       <Stat label="Responderam" value={String(summary.received)} detail="Respostas fictícias"/>
+       <Stat label="Ainda pendentes" value={String(summary.pending)} detail="Calculado automaticamente"/>
+       <Stat label="Representatividade" value={summary.participation+'%'} detail="Exemplo de cálculo"/>
       </div>
-      <SampleList items={[
-       {heading:'BÓSON',caption:'Não respondeu ao PF 2027',status:'Pendente'},
-       {heading:'UNECT',caption:'Não respondeu ao PF 2027',status:'Pendente'},
-       {heading:'3E',caption:'Resposta recebida no exemplo',status:'Concluída'}
-      ]}/>
+      <SampleList items={missing.map(item=>({heading:item.name,caption:'Ainda não respondeu a '+currentDelib.title,status:'Pendente'}))}/>
+      <div className="notice">São pendências simuladas. Nenhuma cobrança será enviada e nenhuma EJ real será marcada como inadimplente.</div>
      </>}
      {section==='relatorios'&&<>
       <TitleBlock eyebrow="PRESCON • Consolidação" title="Relatórios institucionais"
-        description="Resultados, posicionamentos, sugestões, ressalvas e encaminhamentos."/>
+        description="Resultados e pareceres demonstrativos calculados a partir dos posicionamentos das EJs."/>
+      <div className="panel">{selectDelib}</div>
       <div className="kpi-grid">
-       <Stat label="EJs votantes" value="17" detail="Exemplo de relatório"/>
-       <Stat label="Aprovação" value="82%" detail="Exemplo de resultado"/>
-       <Stat label="Ressalvas" value="3" detail="Aguardando análise"/>
-       <Stat label="Sugestões" value="6" detail="Aguardando encaminhamento"/>
+       <Stat label="EJs votantes" value={String(summary.received)} detail="Exemplo"/>
+       <Stat label="Aprovação direta" value={(votes.length?Math.round(directApproval*100/votes.length):0)+'%'} detail="Dos votos recebidos"/>
+       <Stat label="Ressalvas" value={String(counts.find(c=>c.key==='qualified')?.value||0)} detail="Para análise da PRESCON"/>
+       <Stat label="Sugestões" value={String(counts.find(c=>c.key==='suggestions')?.value||0)} detail="Para encaminhamento"/>
       </div>
-      <div className="panel"><h3>Pareceres da PRESCON</h3>
-       <p className="muted">A presidência analisa as manifestações e registra aceitação ou rejeição, justificativas e próximos passos.</p>
-       <span className="badge blue">Relatório demonstrativo, sem dados reais</span></div>
+      <div className="panel"><h3>Distribuição dos posicionamentos</h3>{chart}</div>
+      <div className="panel">
+       <h3>Pareceres que precisam da PRESCON</h3>
+       <p className="muted small">Os registros abaixo são exemplos. Aceitar ou rejeitar sugestões e ressalvas é sempre uma decisão da PRESCON, nunca do gráfico.</p>
+       {flaggedVotes.map(v=><details key={v.slug} className="demo-vote-record">
+        <summary><strong>{DEMO_EJ_BY_SLUG.get(v.slug)||v.slug.toUpperCase()}</strong><span className="badge">{DEMO_POSITIONS[v.position].label}</span></summary>
+        <p className="muted small">{v.note}</p><span className="badge">Aguardando avaliação (fictícia)</span>
+       </details>)}
+      </div>
+      <span className="badge blue">Relatório demonstrativo, sem votos oficiais</span>
      </>}
      {section==='acessos'&&<>
       <TitleBlock eyebrow="PRESCON • Administração" title="Gestão dos acessos"
