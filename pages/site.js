@@ -170,15 +170,26 @@ function deliberations(){
  s.role==='counselor'?panel('Simulação de voto • '+esc(D.ejs.find(x=>x.slug===s.ej)?.name||'EJ'),'Nenhum voto será gravado no Supabase.','<p class="note">Os votos individuais não são mostrados durante a deliberação. Alterações reais exigem autorização da PRESCON.</p>'+'<div class="toolrow"><select class="select" id="vote-select">'+Object.entries(D.positions).map(([k,x])=>'<option value="'+k+'" '+(s.vote===k?'selected':'')+'>'+esc(x.label)+'</option>').join('')+'</select><button class="btn red" type="button" data-simulate>Simular envio</button></div>') :panel('Permissões nesta visão','A DIREX acompanha apenas conteúdos liberados para consulta.','<div class="notice">Apenas o perfil Conselho pode registrar votos institucionais na versão real.</div>');
  return '<div class="view-grid">'+(s.role==='prescon'?panel('Criar deliberação financeira','A criação e a publicação são centralizadas na Central de Automações.','<p class="note">Para importar XLSX, gerar a análise e preparar a votação, use a aba Automação de PF.</p>'):'')+panel('Deliberações da Rede','Exemplos de diferentes tipos de votação e visibilidade.',rows)+panel('Consultar posicionamentos','Escolha uma deliberação na lista ou abaixo.',titleOptions())+extra+'</div>';
 }
+const calendarStorageKey='nejlon2027.calendar.demo.v1';
+function calendarEntries(){
+ try {const a=JSON.parse(localStorage.getItem(calendarStorageKey)||'[]');return Array.isArray(a)?a.filter(x=>x&&/^\\d{4}-\\d{2}-\\d{2}$/.test(x.date)&&typeof x.title==='string'):[]}catch{return []}
+}
+function calendarSave(entries){try{localStorage.setItem(calendarStorageKey,JSON.stringify(entries));return true}catch{return false}}
 function calendarView(){
  const y=s.calendarYear,m=s.calendarMonth,first=new Date(y,m,1).getDay(),days=new Date(y,m+1,0).getDate();
  const month=new Intl.DateTimeFormat('pt-BR',{month:'long',year:'numeric'}).format(new Date(y,m,1));
+ const entries=calendarEntries().sort((a,b)=>a.date.localeCompare(b.date));
+ const shown=entries.filter(e=>e.date.startsWith(y+'-'+String(m+1).padStart(2,'0')+'-'));
  const cells=Array.from({length:Math.ceil((first+days)/7)*7},(_,i)=>{
-  const d=i-first+1,valid=d>=1&&d<=days,today=valid&&new Date().toDateString()===new Date(y,m,d).toDateString();
-  return '<div class="portal-calendar-day '+(valid?'':'outside')+(today?' today':'')+'">'+(valid?'<span>'+d+'</span>':'')+'</div>';
+  const d=i-first+1,valid=d>=1&&d<=days,date=y+'-'+String(m+1).padStart(2,'0')+'-'+String(d).padStart(2,'0'),today=valid&&new Date().toDateString()===new Date(y,m,d).toDateString();
+  const items=valid?shown.filter(e=>e.date===date):[];
+  return '<div class="portal-calendar-day '+(valid?'':'outside')+(today?' today':'')+'">'+(valid?'<span>'+d+'</span>'+items.map(e=>'<div class="portal-calendar-event" title="'+esc(e.title)+'">'+esc(e.title)+'</div>').join(''):'')+'</div>';
  }).join('');
- return '<section class="panel portal-calendar-panel"><div class="portal-calendar-heading"><div><span class="mini-heading">AGENDA DO CONSELHO</span><h3>Calendário</h3><p class="sub">Consulte os meses e acompanhe os compromissos quando forem cadastrados.</p></div><div class="portal-calendar-controls"><button type="button" data-calendar-shift="-1" aria-label="Mês anterior">‹</button><strong>'+esc(month)+'</strong><button type="button" data-calendar-shift="1" aria-label="Próximo mês">›</button><button type="button" data-calendar-today>Hoje</button></div></div><div class="portal-calendar-week">'+['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'].map(d=>'<span>'+d+'</span>').join('')+'</div><div class="portal-calendar-grid">'+cells+'</div><div class="portal-calendar-empty"><strong>Agenda de 2027 aguardando publicação.</strong><p>O calendário de 2026 é uma referência histórica. Não transferimos datas antigas para 2027 nem inventamos compromissos.</p></div></section>';
+ const manage=s.role==='prescon'?'<details class="portal-calendar-manager"><summary>Gerenciar agenda de teste</summary><p class="sub">Cadastre compromissos fictícios nesta demonstração. Eles ficam somente neste navegador, sem sincronização nem publicação oficial.</p><form id="portal-calendar-form" class="portal-calendar-form"><label>Data<input name="date" type="date" required></label><label>Compromisso<input name="title" maxlength="100" required placeholder="Nome do evento"></label><label>Categoria<select name="category"><option>Reunião</option><option>Deliberação</option><option>Prazo</option><option>Formação</option><option>Evento</option></select></label><button class="btn red" type="submit">Adicionar à agenda de teste</button></form></details>':'';
+ const list=shown.length?shown.map(e=>'<div class="portal-calendar-entry"><div><strong>'+esc(e.date.split('-').reverse().join('/'))+' · '+esc(e.title)+'</strong><p>'+esc(e.category||'Evento')+' · Demonstração local</p></div>'+(s.role==='prescon'?'<button type="button" data-calendar-remove="'+esc(e.id)+'" aria-label="Excluir compromisso '+esc(e.title)+'">Excluir</button>':'')+'</div>').join(''):'<p class="sub">Nenhum compromisso cadastrado para este mês.</p>';
+ return '<section class="panel portal-calendar-panel"><div class="portal-calendar-heading"><div><span class="mini-heading">AGENDA DO CONSELHO</span><h3>Calendário</h3><p class="sub">Agenda demonstrativa, sem eventos oficiais publicados.</p></div><div class="portal-calendar-controls"><button type="button" data-calendar-shift="-1" aria-label="Mês anterior">‹</button><strong>'+esc(month)+'</strong><button type="button" data-calendar-shift="1" aria-label="Próximo mês">›</button><button type="button" data-calendar-today>Hoje</button></div></div><div class="portal-calendar-week">'+['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'].map(d=>'<span>'+d+'</span>').join('')+'</div><div class="portal-calendar-grid">'+cells+'</div><div class="portal-calendar-empty"><strong>Compromissos do mês</strong>'+list+'</div>'+manage+'</section>';
 }
+
 function overview(){
  const p=summary('financeiro');
  return '<div class="view-grid">'+calendarView()+stats([metric('Respostas recebidas',p.votes,'Planejamento financeiro fictício','✓'),metric('EJs pendentes',p.pending,'Exemplo demonstrativo','◷'),metric('Participação',p.pct+'%','Respostas da simulação','◉')])+'</div>';
@@ -224,6 +235,7 @@ function render(){
 }
 document.addEventListener('click',e=>{
  const target=e.target.closest('button');if(!target)return;
+ if(target.dataset.calendarRemove&&s.role==='prescon'){const id=target.dataset.calendarRemove;if(calendarSave(calendarEntries().filter(x=>x.id!==id)))render();else alert('Não foi possível atualizar a agenda neste navegador.');return;}
  if(target.dataset.calendarShift){const d=new Date(s.calendarYear,s.calendarMonth+Number(target.dataset.calendarShift),1);s.calendarYear=d.getFullYear();s.calendarMonth=d.getMonth();render();return;}
  if(target.hasAttribute('data-calendar-today')){s.calendarYear=new Date().getFullYear();s.calendarMonth=new Date().getMonth();render();return;}
  if(target.dataset.exportReport){exportReport(target.dataset.exportReport);return;}
@@ -236,6 +248,7 @@ document.addEventListener('click',e=>{
  if(target.dataset.selectRede){s.selected=target.dataset.selectRede;s.section='painel';s.role='prescon';render();return;}
  if(target.hasAttribute('data-simulate')){const toast=$('toast');toast.textContent='Voto simulado! Nenhuma resposta foi registrada.';toast.classList.add('show');setTimeout(()=>toast.classList.remove('show'),3500);}
 });
+document.addEventListener('submit',e=>{if(e.target.id!=='portal-calendar-form'||s.role!=='prescon')return;e.preventDefault();const form=e.target,fd=new FormData(form),date=String(fd.get('date')||''),title=String(fd.get('title')||'').trim(),category=String(fd.get('category')||'Evento');if(!/^\\d{4}-\\d{2}-\\d{2}$/.test(date)||!title)return;const entries=calendarEntries();entries.push({id:String(Date.now())+'-'+Math.random().toString(36).slice(2,8),date,title,category});if(!calendarSave(entries)){alert('Não foi possível salvar neste navegador.');return}const parts=date.split('-');s.calendarYear=Number(parts[0]);s.calendarMonth=Number(parts[1])-1;render();});
 document.addEventListener('change',e=>{
  if(e.target.id==='ej-picker'){s.ej=e.target.value;render();}
  if(e.target.id==='delib-select'){s.delib=e.target.value;s.positionFilter='all';render();}
