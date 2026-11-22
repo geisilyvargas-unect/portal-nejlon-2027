@@ -84,3 +84,14 @@ O agendamento pode ter atraso de até um dia. Não é sincronização em tempo r
 - Antes de colocar em operação: testar login PRESCON/Conselho, importação de respostas, bloqueio de duplicatas, conteúdo PF, RLS, permissões, erros de rede e exportação no domínio de produção.
 
 **Estado:** código e estruturas preparados no GitHub/Supabase; a ativação depende das credenciais e de validação real no Vercel. Não considerar o sistema pronto para votação institucional antes desses testes.
+
+## Panorama semanal da PRESCON — implementação adicionada
+
+- A aba **Visão geral** agora mostra a seção **Sua semana na PRESCON**, com dados obtidos sob autenticação do Supabase.
+- Indicadores: deliberações abertas, prazos nos próximos sete dias, respostas Google aguardando validação e prazos já ultrapassados.
+- Cada deliberação traz quantidade e lista expandível de EJs **sem resposta aceita**. Respostas Google pendentes de validação não contam como concluídas.
+- Botões: atualizar indicadores, copiar panorama detalhado, preparar lembrete ao grupo no WhatsApp e abrir relatório individual.
+- Prazo é guardado em `portal_forms.due_at` e validado pelo servidor na submissão pelo Portal.
+- Este panorama **não gera mensagens automáticas** nem avalia motivos de ausência; o envio ao WhatsApp depende da escolha do grupo e da confirmação humana.
+- Demandas, calendário e integração Google Calendar **ainda não fazem parte do resumo** porque não estão conectados a dados operacionais reais.
+- A seção atualiza quando a PRESCON entra na Central ou usa **Atualizar prioridades**. Não é um resumo distribuído automaticamente por e-mail.
