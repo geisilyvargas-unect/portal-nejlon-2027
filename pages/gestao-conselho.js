@@ -2,22 +2,27 @@
 'use strict';
 const $=id=>document.getElementById(id);
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const STORAGE='nejlon.council.demo.v1';
+const STORAGE='nejlon.council.demo.v2';
+const EJS=(window.NEJLON_DEMO?.ejs||[]).filter(e=>e&&typeof e.slug==='string'&&typeof e.name==='string');
+const demoMembers=()=>EJS.map((ej,i)=>({id:'m_'+ej.slug,name:'Conselheiro fictício — '+ej.name,ej:ej.slug,attendance:i%5,invited:4,contributions:i%4,actions:i%3}));
 const seed=()=>({
  events:[{id:1,title:'Reunião de alinhamento do Conselho',date:'2027-03-15',time:'19:00',type:'Reunião',agenda:'Governança e prioridades da Rede',visibility:'council'},{id:2,title:'Oficina de análise crítica',date:'2027-03-20',time:'18:00',type:'Formação',agenda:'Como avaliar propostas e ressalvas',visibility:'council'},{id:3,title:'Encontro da Rede',date:'2027-03-27',time:'14:00',type:'Institucional',agenda:'Integração entre EJs',visibility:'public'}],
  steps:[{id:1,title:'Introdução à governança',description:'Papel e responsabilidades do Conselho',required:true},{id:2,title:'Como analisar deliberações',description:'Critérios, argumentos e perguntas críticas',required:true},{id:3,title:'Comunicação e participação',description:'Escuta ativa e colaboração na Rede',required:false}],
- members:[{id:'m1',name:'Conselheiro A (fictício)',ej:'unect',attendance:3,invited:4,contributions:2,actions:1},{id:'m2',name:'Conselheiro B (fictício)',ej:'boson',attendance:2,invited:4,contributions:3,actions:2},{id:'m3',name:'Conselheiro C (fictício)',ej:'lex',attendance:1,invited:4,contributions:1,actions:0}],
- progress:{m1:[1],m2:[1,2],m3:[]},checkins:[],
- actions:[{id:1,title:'Revisar materiais de formação',owner:'m1',due:'2027-03-21',status:'pending',eventId:1}],
+ members:demoMembers(),
+ progress:{},checkins:[],
+ actions:[{id:1,title:'Revisar materiais de formação',owner:'m_unect',due:'2027-03-21',status:'pending',eventId:1}],
  announcements:[{id:1,title:'Boas-vindas à Jornada do Conselho',body:'Materiais introdutórios disponíveis na trilha demonstrativa.',audience:'council'}]
 });
 let data;try{const saved=JSON.parse(sessionStorage.getItem(STORAGE)||'null');data=saved&&Array.isArray(saved.events)&&Array.isArray(saved.members)?saved:seed()}catch{data=seed()}
 const persist=()=>{try{sessionStorage.setItem(STORAGE,JSON.stringify(data));return true}catch{return false}};
 const state={role:'prescon',ej:'unect',tab:'overview'};
+const ejPicker=$('ej');
+ejPicker.innerHTML=EJS.map(e=>'<option value="'+esc(e.slug)+'">'+esc(e.name)+'</option>').join('');
+ejPicker.value=state.ej;
 const tabs=[['overview','Visão geral'],['calendar','Agenda e reuniões'],['learning','Jornada'],['engagement','Engajamento'],['checkins','Acompanhamento'],['resources','Biblioteca'],['actions','Encaminhamentos']];
 const isAdmin=()=>state.role==='prescon',isCouncil=()=>state.role==='counselor'||isAdmin();
 const own=()=>data.members.find(m=>m.ej===state.ej)||null;
-const visibleTabs=()=>tabs.filter(([id])=>isCouncil()||['overview','calendar','resources'].includes(id));
+const visibleTabs=()=>tabs.filter(([id])=>isAdmin()||(state.role==='counselor'&&id!=='checkins')||['overview','calendar','resources'].includes(id));
 const date=d=>{if(!d)return 'Sem prazo';const parts=d.split('-');return parts.length===3?parts.reverse().join('/'):d};
 const card=(title,body)=>'<article class="card"><h3>'+esc(title)+'</h3>'+body+'</article>';
 const note=()=>'<p class="notice"><strong>Simulação:</strong> alterações feitas aqui permanecem somente nesta aba do navegador. Nenhum dado oficial é alterado.</p>';
@@ -32,7 +37,7 @@ return '<div class="grid">'+[
 }
 const orderedEvents=()=>[...data.events].sort((a,b)=>((a.date||'')+(a.time||'')).localeCompare((b.date||'')+(b.time||'')));
 function overview(){
-const today=()=>{const now=new Date();return [now.getFullYear(),String(now.getMonth()+1).padStart(2,'0'),String(now.getDate()).padStart(2,'0')].join('-')};
+const today=()=>new Intl.DateTimeFormat('en-CA',{timeZone:'America/Sao_Paulo',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());
 const upcoming=orderedEvents().filter(e=>(e.visibility==='public'||isCouncil())&&e.date>=today()).slice(0,3);
 return '<div class="grid">'+card('Próximos compromissos','<div class="stat">'+upcoming.length+'</div><p>Eventos demonstrativos disponíveis</p>')+card('Materiais de formação','<div class="stat">'+(isCouncil()?data.steps.length:'—')+'</div><p>Etapas da Jornada</p>')+card('Encaminhamentos','<div class="stat">'+(isCouncil()?data.actions.filter(a=>a.status==='pending'&&(isAdmin()||(own()&&a.owner===own().id))).length:'—')+'</div><p>Ações demonstrativas pendentes</p>')+'</div><h2>Comunicados</h2><div class="stack">'+data.announcements.filter(a=>isCouncil()||a.audience==='public').map(a=>card(a.title,'<p>'+esc(a.body)+'</p>')).join('')+'</div><h2>Próximas atividades</h2><div class="grid">'+(upcoming.length?upcoming.map(e=>card(e.title,'<p>'+esc(date(e.date))+' · '+esc(e.time)+'</p><span class="tag">'+esc(e.type)+'</span>')).join(''):'<p class="empty">Nenhuma atividade futura disponível nesta visão.</p>')+'</div>'+note();
 }
@@ -41,7 +46,7 @@ const events=orderedEvents().filter(e=>isCouncil()||e.visibility==='public');
 return '<h2>Agenda institucional</h2><div class="stack">'+events.map(e=>card(e.title,'<p><strong>'+esc(date(e.date))+' · '+esc(e.time)+'</strong> · '+esc(e.type)+'</p><p>Pauta: '+esc(e.agenda)+'</p>'+ (isAdmin()?btn('removeEvent','Excluir evento fictício',e.id):''))).join('')+'</div>'+(isAdmin()?'<h2>Cadastrar reunião fictícia</h2><form class="card form" id="event-form"><label>Título<input name="title" maxlength="120" required></label><label>Data<input type="date" name="date" required></label><label>Horário<input type="time" name="time" required></label><label>Tipo<select name="type"><option>Reunião</option><option>Formação</option><option>Institucional</option></select></label><label>Pauta<textarea name="agenda" maxlength="600" required></textarea></label><label>Visibilidade<select name="visibility"><option value="council">Conselho</option><option value="public">Institucional</option></select></label><button class="primary">Adicionar à simulação</button></form>':'')+note();
 }
 function learning(){
-const m=own();if(!m)return '<h2>Jornada do Conselheiro</h2><p class="notice">Não há conselheiro fictício cadastrado para esta EJ. Selecione UNECT, BÓSON ou LEX para testar o progresso da jornada.</p>'+note();const done=data.progress[m.id]||[],pct=Math.round(100*done.length/data.steps.length);
+const m=own();if(!m)return '<h2>Jornada do Conselheiro</h2><p class="notice">Não há conselheiro fictício cadastrado para esta EJ. Selecione uma das EJs disponíveis para testar o progresso da jornada.</p>'+note();const done=data.progress[m.id]||[],pct=Math.round(100*done.length/data.steps.length);
 return '<h2>Jornada do Conselheiro</h2><p class="muted">Acompanhamento demonstrativo de '+esc(m.name)+' · '+esc(m.ej.toUpperCase())+'</p><div class="card"><div class="line"><strong>Progresso</strong><strong>'+pct+'%</strong></div><div class="progress" role="progressbar" aria-valuenow="'+pct+'" aria-valuemin="0" aria-valuemax="100" aria-label="Progresso na trilha"><div style="width:'+pct+'%"></div></div></div><div class="stack">'+data.steps.map((step,i)=>card('Etapa '+(i+1)+' — '+esc(step.title),'<p>'+esc(step.description)+'</p><span class="tag">'+(step.required?'Obrigatória':'Opcional')+'</span> <span class="tag">'+(done.includes(step.id)?'Concluída':'A iniciar')+'</span><p>'+btn('step',done.includes(step.id)?'Desmarcar conclusão':'Marcar concluída',step.id)+'</p>')).join('')+'</div>'+note();
 }
 function engagement(){

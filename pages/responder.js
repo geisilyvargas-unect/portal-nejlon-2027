@@ -6,7 +6,7 @@ const SB='https://imsisbixzkqphooxyfhr.supabase.co';
 const KEY='sb_publishable_mS_TDGKZhUuJi-rxc5Nu1w_IXODeo-_';
 const STORE='nejlon.conselheiro.session.v1';
 const id=new URLSearchParams(location.search).get('id')||'';
-const isUuid=/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id);
+const isUuid=/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id);
 const esc=x=>String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 let session=null,form=null,editAuthorizationId=null;
 try{session=JSON.parse(sessionStorage.getItem(STORE)||'null')}catch{}

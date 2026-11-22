@@ -13,6 +13,12 @@
 5. **Acompanhamento:** PRESCON fictícia → registrar resumo de contato e próximo encontro → consultar histórico → excluir registro fictício.
 6. **Encaminhamentos:** PRESCON cria e atribui; conselheiro conclui apenas encaminhamentos atribuídos ao perfil fictício da sua EJ.
 
+## Cobertura das EJs na demonstração
+- A seleção de EJ utiliza o mesmo catálogo público de **29 EJs** de `pages/demo-data.js`, evitando listas divergentes entre os módulos.
+- Cada EJ recebe um conselheiro **inteiramente fictício**, com indicadores sintéticos e progresso individual independente. Nenhum nome ou dado de membro real é necessário.
+- A chave `sessionStorage` da demonstração passa à versão `v2` para evitar dados legados incompatíveis com o catálogo completo.
+- A seleção de EJ em DIREX Núcleo permanece desabilitada na interface; isso não é autenticação nem autorização real.
+
 ## Entidades da demonstração
 - `events`: id, title, date, time, type, agenda, visibility
 - `steps`: id, title, description, required
@@ -55,3 +61,9 @@ Estas estruturas são apenas JavaScript fictício. Não criar tabelas de produç
 - Vincular encaminhamentos às reuniões reais e implementar trilha de auditoria.
 - Testar em navegadores e dispositivos reais, inclusive teclado e leitor de tela.
 - Homologar deploy Vercel e fluxos com autenticação; o protótipo não substitui essa etapa.
+
+## Auditoria de regressão (22/11/2026)
+- Corrigida a validação de links de formulário em `pages/responder.js`: o padrão anterior exigia seis grupos de caracteres e rejeitava UUIDs válidos de cinco grupos. A correção não altera votos existentes.
+- Corrigido o teste `tests/council-demo.test.cjs`, que continha uma sequência literal `\\n` inválida e impedia a execução da suíte.
+- A suíte de votação (`tests/vote-lifecycle.test.cjs`) agora expõe falhas de inicialização antes de testar o ciclo de vida, facilitando diagnóstico.
+- **Atenção à integração:** a branch `main` recebeu alterações concorrentes; o CI de merge também acusa ausência de `ux-system.css` como último CSS em `index.html`. Resolver sobre a base atual antes de integrar o PR; não publicar versão com CI vermelho.

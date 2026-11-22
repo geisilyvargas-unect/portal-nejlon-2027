@@ -52,6 +52,7 @@ async function setup(statuses, opts={}){
   fetch,FormData:MockFormData,confirm:()=>opts.confirm!==false,setTimeout:()=>0,console};
  vm.runInNewContext(source,context,{filename:'responder.js'});
  await tick();await tick();await tick();
+ assert.equal(el('respond-login-error').textContent,'','Inicialização do formulário falhou: '+el('respond-login-error').textContent);
  const submit=async(id)=>{
   const form=el(id),event={preventDefault(){},target:form};
   await form.listeners.submit(event);
