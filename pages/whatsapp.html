@@ -1,9 +1,13 @@
 <!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#1c1a1a"><title>Mensagem para o Conselho · Portal NEJLON</title><link rel="stylesheet" href="./site.css"><link rel="stylesheet" href="./visual-identity.css"><link rel="stylesheet" href="./whatsapp.css"><script defer src="./whatsapp.js"></script></head>
 <body class="wa-page"><main class="wa-shell">
 <nav class="wa-nav"><a href="../index.html">← Voltar ao Portal</a><span>PRESCON · COMUNICADOS AO CONSELHO</span></nav>
-<header class="wa-hero"><span class="eyebrow">CENTRAL DE COMUNICAÇÃO</span><h1>MENSAGEM PARA O <em>CONSELHO</em></h1><p>Prepare um único comunicado para o grupo do Conselho, com prazo e dois caminhos de resposta: Portal NEJLON e Google Forms.</p></header>
+<header class="wa-hero"><span class="eyebrow">CENTRAL DE COMUNICAÇÃO</span><h1>MENSAGEM PARA O <em>CONSELHO</em></h1><p>Escolha um modelo pronto, personalize e reutilize suas mensagens para o grupo do Conselho.</p></header>
 <div class="wa-info"><strong>Envio ao grupo:</strong> o botão abre o compartilhamento da mensagem no WhatsApp. Você escolhe o grupo do Conselho e confirma o envio. O portal não tem acesso ao grupo nem dispara mensagens sozinho.</div>
-<section class="wa-panel"><h2>1. Informações da deliberação</h2>
+<section class="wa-panel wa-library" id="biblioteca"><div class="wa-library-head"><div><span class="eyebrow">BIBLIOTECA DA PRESCON</span><h2>1. Modelos de mensagem</h2></div><span class="wa-counter" id="wa-template-count"></span></div><p>Escolha um modelo para preencher o texto abaixo. Seus modelos personalizados ficam salvos neste navegador.</p>
+<div class="wa-library-controls"><label>Categoria<select id="wa-category"><option value="all">Todas as categorias</option><option value="Deliberações">Deliberações</option><option value="Prazos e lembretes">Prazos e lembretes</option><option value="Reuniões e eventos">Reuniões e eventos</option><option value="Comunicados">Comunicados</option><option value="Personalizados">Personalizados</option></select></label><label>Buscar modelo<input id="wa-search" type="search" placeholder="Ex.: prazo, reunião, votação"></label></div><div id="wa-template-list" class="wa-template-grid"></div>
+<div class="wa-save"><label>Nome do seu modelo<input id="wa-custom-name" maxlength="80" placeholder="Ex.: Abertura de deliberação de PF"></label><button type="button" class="btn red" id="wa-save-template">Salvar texto atual como modelo</button></div><p class="wa-help">Os modelos padrão ficam sempre disponíveis. Os personalizados podem ser excluídos, mas não são sincronizados entre dispositivos nesta versão.</p>
+</section>
+<section class="wa-panel"><h2>2. Personalizar mensagem</h2>
 <div class="wa-formgrid">
 <label>Assunto<input id="wa-form-title" value="Deliberação do Planejamento Financeiro" maxlength="180"></label>
 <label>Prazo da resposta<input id="wa-deadline" placeholder="Ex.: 30/11 às 12h" maxlength="100"></label>
@@ -11,9 +15,9 @@
 <label>Link para responder pelo Google Forms<input id="wa-google-link" type="url" placeholder="https://docs.google.com/forms/..."></label>
 </div>
 <label>Mensagem para o grupo<textarea id="wa-template" rows="12" spellcheck="true"></textarea></label>
-<p class="wa-hints">Campos automáticos: <code>{formulario}</code> <code>{prazo}</code> <code>{link_portal}</code> <code>{link_google}</code>. Você pode editar livremente o texto antes de enviar.</p>
+<p class="wa-hints">Campos opcionais nos modelos: <code>{formulario}</code> <code>{prazo}</code> <code>{link_portal}</code> <code>{link_google}</code>. Só é necessário preencher links quando o modelo os utilizar.</p>
 </section>
-<section class="wa-panel"><h2>2. Conferir e compartilhar</h2><p>Prévia da mensagem que irá para o grupo:</p>
+<section class="wa-panel"><h2>3. Conferir e compartilhar</h2><p>Prévia da mensagem que irá para o grupo:</p>
 <div id="wa-warning" role="status" aria-live="polite"></div>
 <pre id="wa-preview" class="wa-group-preview"></pre>
 <div class="wa-actions"><button type="button" class="btn" id="wa-copy">Copiar mensagem</button><button type="button" class="btn red" id="wa-share">Abrir no WhatsApp e escolher o grupo ↗</button></div>
