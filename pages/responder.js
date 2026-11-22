@@ -8,7 +8,7 @@ const STORE='nejlon.conselheiro.session.v1';
 const id=new URLSearchParams(location.search).get('id')||'';
 const isUuid=/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id);
 const esc=x=>String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-let session=null,form=null;
+let session=null,form=null,editAuthorizationId=null;
 try{session=JSON.parse(sessionStorage.getItem(STORE)||'null')}catch{}
 async function parseResponse(res){
  let x;try{x=await res.json()}catch{x={}}
@@ -22,7 +22,7 @@ async function refresh(){
 }
 async function request(query,options={},retry=true){
  let res;
- try{res=await fetch(API+query,{method:options.method||'GET',headers:{Authorization:'Bearer '+session.access_token,apikey:KEY,'Content-Type':'application/json'},...(options.data?{body:JSON.stringify(options.data)}:{})})}catch{throw Error('Não foi possível acessar o servidor. Confira a publicação do Portal no Vercel.')}
+ try{res=await fetch(API+query,{method:options.method||'GET',headers:{Authorization:'Bearer '+session.access_token,apikey:KEY,'Content-Type':'application/json'},...(options.data?{body:JSON.stringify(options.data)}:{})})}catch{throw Error('Não foi possível acessar o Supabase. Confira sua conexão.')}
  if(res.status===401&&retry){await refresh();return request(query,options,false)}
  return parseResponse(res);
 }
@@ -47,7 +47,34 @@ async function show(){
   return '<fieldset class="respond-question">'+legend+'<div class="respond-options">'+(q.options||[]).map(v=>'<label class="respond-option"><input type="radio" name="'+esc(q.id)+'" value="'+esc(v)+'"'+required+'><span>'+esc(v)+'</span></label>').join('')+'</div></fieldset>';
  }).join('');
  $('respond-answer-form').hidden=false;
+ await updateVoteStatus();
 }
+async function updateVoteStatus(){
+ const status=await request('?action=my_vote_status&id='+id);
+ const panel=$('respond-vote-change'),requestForm=$('respond-change-request-form');
+ editAuthorizationId=null;
+ panel.hidden=!status.registered;
+ requestForm.hidden=true;
+ const button=$('respond-answer-form').querySelector('button[type=submit]');
+ button.textContent='Registrar resposta da EJ';
+ if(!status.registered){$('respond-answer-form').hidden=false;return}
+ const change=status.request;
+ $('respond-answer-form').hidden=true;
+ if(change?.status==='approved'&&status.can_request){
+  editAuthorizationId=change.id;
+  $('respond-vote-status').textContent='A PRESCON autorizou uma substituição. Preencha novamente todo o formulário e confirme o novo voto. Esta autorização só pode ser usada uma vez.';
+  $('respond-answer-form').hidden=false;
+  button.textContent='Substituir voto autorizado pela PRESCON';
+  return;
+ }
+ if(change?.status==='requested'){$('respond-vote-status').textContent='Sua solicitação de alteração está aguardando decisão da PRESCON.';return}
+ if(!status.can_request){$('respond-vote-status').textContent='A resposta já foi registrada e o prazo para solicitar alteração está encerrado.';return}
+ $('respond-vote-status').textContent=change?.status==='denied'
+  ?'A PRESCON recusou a solicitação. Motivo: '+(change.decision_note||'Consulte a PRESCON.')+'. Você pode enviar nova solicitação enquanto o prazo estiver aberto.'
+  :'Você já enviou uma resposta. Para substituir o voto, solicite antes a autorização da PRESCON.';
+ requestForm.hidden=false;
+}
+
 async function login(ev){
  ev.preventDefault();const button=ev.target.querySelector('button');button.disabled=true;
  $('respond-login-error').textContent='Verificando conta…';
@@ -67,9 +94,23 @@ $('respond-answer-form').addEventListener('submit',async e=>{
  if(!confirm('Confirma o registro da resposta da sua EJ? Ela não poderá ser substituída automaticamente.'))return;
  const btn=e.target.querySelector('button[type=submit]');btn.disabled=true;showError('Registrando resposta…');
  try{
-  const out=await request('?action=submit',{method:'POST',data:{formId:form.id,answers}});
-  e.target.hidden=true;showError(out.message||'Resposta registrada com sucesso!');
+  const out=editAuthorizationId?
+   await request('?action=apply_vote_change',{method:'POST',data:{authorizationId:editAuthorizationId,answers}}):
+   await request('?action=submit',{method:'POST',data:{formId:form.id,answers}});
+  showError(out.message||'Resposta registrada com sucesso!');
+  await updateVoteStatus();
  }catch(error){showError('Não foi possível registrar: '+error.message);btn.disabled=false}
+});
+$('respond-change-request-form').addEventListener('submit',async e=>{
+ e.preventDefault();
+ const button=e.target.querySelector('button');button.disabled=true;
+ try{
+  const reason=String(new FormData(e.target).get('reason')||'').trim();
+  const result=await request('?action=request_vote_change',{method:'POST',data:{formId:id,reason}});
+  showError(result.message||'Solicitação enviada à PRESCON.');
+  e.target.reset();
+  await updateVoteStatus();
+ }catch(error){showError(error.message)}finally{button.disabled=false}
 });
 if(!isUuid){$('respond-login-error').textContent='Link do formulário inválido. Solicite um link atualizado à PRESCON.';$('respond-login-form').hidden=true}
 else if(session)show().catch(e=>{switchLogin(false);$('respond-login-error').textContent=e.message;session=null;sessionStorage.removeItem(STORE)});
