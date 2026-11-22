@@ -31,10 +31,11 @@ export function engagementStatus(rate:number|null):EngagementStatus{
 export function buildEngagement(
  ejs:readonly EngagementEj[],
  deliberations:readonly EngagementDeliberation[],
- responses:readonly EngagementResponse[]
+ responses:readonly EngagementResponse[],
+ options:{includeDemo?:boolean}={}
 ):EngagementSnapshot{
  const official=deliberations.filter(d=>
-  !d.is_demo&&!d.is_historical&&(d.status==='open'||d.status==='closed')
+  (!d.is_demo||options.includeDemo===true)&&!d.is_historical&&(d.status==='open'||d.status==='closed')
  );
  const votes=new Set(
   responses
