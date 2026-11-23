@@ -1,21 +1,21 @@
-/* Interpretação conservadora do painel PF. Não adivinha valores ausentes. */
 (()=>{'use strict';
 const norm=v=>String(v??'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toUpperCase().trim();
-const money=v=>{if(typeof v==='number')return Number.isFinite(v)?v:null;let s=String(v??'').replace(/\s/g,'').replace(/R\$/gi,'').replace(/[−–]/g,'-');if(!s||s==='-')return null;const negative=/^\(.*\)$/.test(s);s=s.replace(/[()]/g,'');if(!/^-?[\d.,]+$/.test(s))return null;if(s.includes(','))s=s.replace(/\./g,'').replace(',','.');else if(/^\d{1,3}(\.\d{3})+$/.test(s))s=s.replace(/\./g,'');const n=Number(s);return Number.isFinite(n)?(negative?-n:n):null};
-const names=['pessimistic','realistic','optimistic'];
-function parse(sheets){const alternatives=[];const warnings=[];const groups=[];
- for(const sheet of sheets){const rows=sheet.rows||[];const text=norm(sheet.name+' '+rows.slice(0,8).flat().join(' '));const isPanel=/PAINEL DE PROJE|PAINEL FINANCEIR|PLANEJAMENTO FINANCEIR|PROJE[CÇ][AÃ]O|CENARIO/.test(text);if(!isPanel&&!rows.some(r=>r.some(v=>/PESSIMISTA/i.test(String(v)))&&r.some(v=>/REALISTA/i.test(String(v)))&&r.some(v=>/OTIMISTA/i.test(String(v)))))continue;
- let header=-1,cols=[];for(let i=0;i<rows.length;i++){const n=rows[i].map(norm);const p=n.findIndex(x=>x==='PESSIMISTA'),r=n.findIndex(x=>x==='REALISTA'),o=n.findIndex(x=>x==='OTIMISTA');if(p>=0&&r>=0&&o>=0){header=i;cols=[p,r,o];break}}
- if(header<0){warnings.push(sheet.name+': cabeçalho de projeções não encontrado.');continue}
- const sectionRows={expenses:null,revenue:null,balance:null};let section='';
- for(let i=header+1;i<rows.length;i++){const row=rows[i],label=norm(row.slice(0,Math.min(...cols)).join(' '));if(/DESPESAS|CUSTOS|GASTOS|SAIDAS/.test(label))section='expenses';if(/ENTRADAS|RECEITAS|FATURAMENTO/.test(label))section='revenue';if(/SALDO|RESULTADO|SUPERAVIT/.test(label))section='balance';if(/^(TOTAL|SALDO FINAL)$/.test(norm(row.find(x=>norm(x)==='TOTAL'||norm(x)==='SALDO FINAL')))){const key=label.includes('SALDO FINAL')?'balance':section;if(key==='expenses'||key==='balance'){const values=cols.map(c=>money(row[c]));if(values.every(Number.isFinite))sectionRows[key]=values}}
- if(section==='revenue'&&/^(PESSIMISTA|REALISTA|OTIMISTA)$/.test(norm(row.find(x=>names.some((_,j)=>norm(x)===['PESSIMISTA','REALISTA','OTIMISTA'][j]))))){const labelIndex=row.findIndex(x=>['PESSIMISTA','REALISTA','OTIMISTA'].includes(norm(x)));const labelName=norm(row[labelIndex]);const target=['PESSIMISTA','REALISTA','OTIMISTA'].indexOf(labelName);const nums=row.slice(labelIndex+1).map(money).filter(x=>x!==null);if(nums.length){if(!sectionRows.revenue)sectionRows.revenue=[null,null,null];sectionRows.revenue[target]=nums[nums.length-1]}}
- }
- if(!sectionRows.revenue){sectionRows.revenue=[null,null,null]}for(let i=header+1;i<rows.length;i++){const row=rows[i],label=norm(row.slice(0,Math.min(...cols)).join(' '));const vals=cols.map(c=>money(row[c]));if(vals.every(Number.isFinite)){if(/^(TOTAL|SOMA)?\s*(RECEITAS|ENTRADAS|FATURAMENTO)/.test(label))sectionRows.revenue=vals;if(/^(TOTAL|SOMA)?\s*(DESPESAS|CUSTOS|GASTOS|SAIDAS)/.test(label))sectionRows.expenses=vals;if(/^(SALDO|RESULTADO|SUPERAVIT)/.test(label))sectionRows.balance=vals;}}if(!sectionRows.expenses||sectionRows.revenue.some(x=>x===null)){warnings.push(sheet.name+': despesas ou receitas incompletas; confira os dados.');continue}
- const projections={};names.forEach((key,i)=>{projections[key]={expenses:sectionRows.expenses[i],revenue:sectionRows.revenue[i],balance:sectionRows.revenue[i]-sectionRows.expenses[i]};if(sectionRows.balance&&Math.abs(sectionRows.balance[i]-projections[key].balance)>.02)warnings.push(sheet.name+': divergência de saldo em '+['pessimista','realista','otimista'][i])});
- groups.push({sheet:sheet.name,projections});alternatives.push({id:'alt-'+alternatives.length,label:sheet.name,projections});
- }
- if(!alternatives.length)warnings.push('Nenhum painel completo reconhecido. Mantenha a planilha original e revise manualmente.');
- return {alternatives,warnings,sourceSheets:groups.map(x=>x.sheet),status:alternatives.length?'needs-review':'unrecognized'} }
- window.NEJLON_PF_PARSER={parse,money};
+function money(v){if(typeof v==='number')return Number.isFinite(v)?v:null;let s=String(v??'').replace(/\s|R\$/gi,'').replace(/[−–]/g,'-');if(!s||! /^-?[\d.,]+$/.test(s.replace(/[()]/g,'')))return null;const neg=s.startsWith('(');s=s.replace(/[()]/g,'');if(s.includes(',')&&s.includes('.'))s=s.lastIndexOf(',')>s.lastIndexOf('.')?s.replace(/\./g,'').replace(',','.'):s.replace(/,/g,'');else if(s.includes(','))s=/^\d{1,3}(,\d{3})+$/.test(s)?s.replace(/,/g,''):s.replace(',','.');else if(/^-?\d{1,3}(\.\d{3})+$/.test(s))s=s.replace(/\./g,'');const n=Number(s);return Number.isFinite(n)?(neg?-n:n):null}
+const keys=['pessimistic','realistic','optimistic'],names=['PESSIMISTA','REALISTA','OTIMISTA'];
+const complete=a=>a?.length===3&&a.every(Number.isFinite);
+function parse(sheets){const alternatives=[],warnings=[];for(const sheet of sheets){const rows=sheet.rows||[],name=norm(sheet.name),rateio=/INGRESSOS|RATEIO/.test(name),panel=/PAINEL|PREVISAO|PLANEJAMENTO FINANCEIRO|CENARIO/.test(name);if(!rateio&&!panel)continue;
+let cols=null,section='',expense=null,revenue=null,balance=null,vertical=null,metrics={};
+for(let i=0;i<rows.length;i++){const row=rows[i],n=row.map(norm);const h=names.map(k=>n.indexOf(k));if(h.every(c=>c>=0)){cols=h;continue}
+const left=cols?Math.min(...cols):row.length;const label=n.slice(0,left).filter(Boolean).join(' ');const all=n.join(' ');const vals=cols?cols.map(c=>money(row[c])):null;
+if(rateio){if(/DESPESAS PREVISTAS/.test(all))section='expenses';if(/ENTRADAS PREVISTAS COM RATEIO/.test(all))section='revenue';if(/SALDO PREVISTO/.test(all))section='balance';if(complete(vals)){if(section==='expenses')expense=vals;if(section==='revenue')revenue=vals;if(section==='balance')balance=vals;section=''}continue}
+if(/DESPESAS PREVISTAS|TOTAL DE DESPESAS/.test(label))section='expenses';if(/ENTRADAS PREVISTAS|RECEITAS PREVISTAS/.test(label))section='revenue';if(/SALDO PREVISTO/.test(label))section='balance';
+if(complete(vals)){if(section==='expenses'&&/(^| )TOTAL$/.test(label)||/TOTAL DE DESPESAS/.test(label))expense=vals;if(/SALDO FINAL|RESULTADO FINAL/.test(label))balance=vals;if(/CUSTO\s*\/\s*CONGRES/.test(label))metrics.costPerAttendee=vals;if(/TOTAL DE RECEITAS|TOTAL DE ENTRADAS/.test(label))revenue=vals}
+if(section==='revenue'){const total=n.indexOf('TOTAL');if(total>=0&&n.includes('CENARIOS'))vertical=total;const k=n.findIndex(x=>names.includes(x));if(k>=0&&vertical!==null){revenue??=[null,null,null];revenue[names.indexOf(n[k])]=money(row[vertical])}}
+}
+if(!complete(expense)||!complete(revenue)){warnings.push(sheet.name+': receitas ou despesas não reconhecidas integralmente.');continue}
+const projections={};keys.forEach((k,i)=>{const computed=Math.round((revenue[i]-expense[i])*100)/100;projections[k]={revenue:revenue[i],expenses:expense[i],balance:computed,reportedBalance:complete(balance)?balance[i]:null,costPerAttendee:metrics.costPerAttendee?.[i]??null};if(complete(balance)&&Math.abs(balance[i]-computed)>.02)warnings.push(sheet.name+' · '+names[i]+': saldo informado diverge do cálculo.')});
+const scenario=name.match(/(?:^|\s)C\s*(\d+)/)?.[1];alternatives.push({id:'alt-'+alternatives.length,label:scenario?'Cenário '+scenario+' — '+(rateio?'com rateio':'sem rateio'):sheet.name,scenario:scenario||sheet.name,rateio,sourceSheet:sheet.name,projections})}
+if(!alternatives.length)warnings.push('Nenhum painel completo reconhecido. Confira o XLSX original.');
+return {alternatives,warnings,sourceSheets:alternatives.map(a=>a.sourceSheet),status:alternatives.length?'needs-review':'unrecognized'}}
+window.NEJLON_PF_PARSER={parse,money};
 })();
