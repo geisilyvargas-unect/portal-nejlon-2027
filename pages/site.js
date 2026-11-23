@@ -10,18 +10,9 @@ if(D&&window.NEJLON_IDEALIZE_VOTES&&!D.delibs.some(x=>x.id==='idealize')){
 }
 
 if(!D){document.getElementById('view').textContent='Dados demonstrativos indisponíveis.';return;}
-const nav=[
- ['painel','◫','Visão geral'],['engajamento','▦','Engajamento'],['deliberacoes','☷','Deliberações'],
- ['pendencias','◷','Pendências'],['relatorios','▤','Relatórios'],['demandas','☑','Demandas'],
- ['calendario','▦','Calendário'],['jornada','✧','Jornada'],['rede','⬡','Rede de EJs']
-];
-const roleMap={
- prescon:{name:'PRESCON',nav:nav.map(x=>x[0])},
- counselor:{name:'Conselho',nav:['painel','deliberacoes','demandas','calendario','jornada','rede']},
- ej_direx:{name:'DIREX da EJ',nav:['painel','demandas']},
- nucleus_direx:{name:'DIREX do Núcleo',nav:['painel','deliberacoes','demandas']}
-};
-const s={role:'prescon',section:'painel',ej:'unect',selected:'unect',filter:'all',search:'',delib:'financeiro',vote:'favorable',positionFilter:'all'};
+const nav=[['deliberacoes','☷','Deliberações'],['engajamento','▦','Participação nas deliberações'],['pendencias','◷','Votos pendentes'],['relatorios','▤','Relatórios de deliberação']];
+const roleMap={prescon:{name:'PRESCON',nav:nav.map(x=>x[0])},counselor:{name:'Conselho',nav:['deliberacoes']},nucleus_direx:{name:'DIREX do Núcleo',nav:['deliberacoes']}};
+const s={role:'prescon',section:'deliberacoes',ej:'unect',selected:'unect',filter:'all',search:'',delib:'financeiro',vote:'favorable',positionFilter:'all'};
 const $=id=>document.getElementById(id);
 const esc=x=>String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const ejLogo=(slug)=>'<img class="ej-original-logo" src="./pages/logos/'+esc(({catecz:'catec-z',gaia:'gaia-jr',smatjr:'smat',vetjr:'vet-jr'})[slug]||slug)+'.svg" alt="" loading="lazy">';
@@ -168,24 +159,24 @@ function extras(){
 }
 function roleLanding(){
  if(s.role==='ej_direx')return '<div class="view-grid">'+panel('Demandas da sua EJ','A DIREX da EJ consulta apenas título, classificação, prazo e situação das próprias demandas. Não acessa documentos ou formulários.','<a class="btn red" href="./pages/demandas.html">Consultar minhas demandas →</a>')+'</div>';
- if(s.role==='nucleus_direx')return '<div class="view-grid">'+panel('Fiscalização da Rede','Acompanhe demandas, deliberações e formulários, sem editar registros ou consultar votos individuais.','<a class="btn red" href="./pages/fiscalizacao.html">Abrir fiscalização →</a>')+'</div>';
+ if(s.role==='nucleus_direx')return '<div class="view-grid">'+panel('Fiscalização da Rede','Acompanhe demandas, deliberações e formulários, sem editar registros ou consultar votos individuais.','<p class="note">Consulta demonstrativa de deliberações, sem acesso a votos individuais.</p>')+'</div>';
  return '<div class="view-grid">'+panel('Painel do Conselho','As dez áreas históricas num só lugar. Consulte demandas de todas as EJs apenas em visão geral.','<div class="toolrow"><a class="btn red" href="./pages/painel-conselho.html">Painel do Conselho →</a><a class="btn" href="./pages/demandas.html">Panorama de demandas →</a></div>')+'</div>';
 }
 function render(){
- if(s.role!=='prescon'&&!role().nav.includes(s.section))s.section='painel';
+ if(!role().nav.includes(s.section))s.section='deliberacoes';
  $('roles').innerHTML=Object.entries(roleMap).map(([key,r])=>'<button class="role-option '+(key===s.role?'active':'')+'" type="button" data-role="'+key+'" aria-pressed="'+(key===s.role)+'">'+esc(r.name)+'</button>').join('');
  $('ej-picker-wrap').hidden=!['counselor','ej_direx'].includes(s.role);
  $('ej-picker').innerHTML=D.ejs.map(e=>'<option value="'+esc(e.slug)+'" '+(e.slug===s.ej?'selected':'')+'>'+esc(e.name)+'</option>').join('');
- const primary=['painel','deliberacoes','pendencias','relatorios'];
+ const primary=nav.map(n=>n[0]);
  const navButton=([key,icon,name])=>key==='demandas'?'<a class="nav-button" href="./pages/demandas.html"><span class="nav-icon" aria-hidden="true">'+icon+'</span>'+esc(name)+'</a>':'<button type="button" class="nav-button '+(key===s.section?'active':'')+'" data-nav="'+key+'" aria-current="'+(key===s.section?'page':'false')+'"><span class="nav-icon" aria-hidden="true">'+icon+'</span>'+esc(name)+'</button>';
  const allowed=nav.filter(n=>role().nav.includes(n[0]));
  const mainNav=allowed.filter(n=>primary.includes(n[0]));
  const secondaryNav=allowed.filter(n=>!primary.includes(n[0]));
  const menu=mainNav.map(navButton).join('')+(secondaryNav.length?'<details class="nav-more" '+(secondaryNav.some(n=>n[0]===s.section)?'open':'')+'><summary>Outras áreas <span aria-hidden="true">⌄</span></summary>'+secondaryNav.map(navButton).join('')+'</details>':'');
  const createDelib=s.role==='prescon'?'<a class="nav-button new-deliberation" href="./pages/prescon-criar-deliberacao.html" style="background:#e00000;color:#fff;font-weight:800;border:2px solid #e00000;border-radius:8px;margin:8px 0 12px;padding:12px;display:flex;align-items:center;gap:8px"><span aria-hidden="true">＋</span> Nova deliberação</a>':'';
- $('desktop-nav').innerHTML=createDelib+menu+(s.role==='prescon'?'<a class="nav-button auto-portal-link" href="./pages/central-automacoes.html">⚙ Automações</a>':s.role==='counselor'?'<a class="nav-button auto-portal-link" href="./pages/painel-conselho.html">☷ Painel do Conselho</a>':s.role==='nucleus_direx'?'<a class="nav-button auto-portal-link" href="./pages/fiscalizacao.html">◉ Fiscalização</a>':'');
+ $('desktop-nav').innerHTML=createDelib+menu;
  // Em telas pequenas, navegação linear: evita opções ocultas em <details> dentro do carrossel.
- $('mobile-nav').innerHTML=createDelib+allowed.map(navButton).join('')+(s.role==='prescon'?'<a class="nav-button auto-portal-link" href="./pages/central-automacoes.html">⚙ Automações</a>':s.role==='counselor'?'<a class="nav-button auto-portal-link" href="./pages/painel-conselho.html">☷ Conselho</a>':s.role==='nucleus_direx'?'<a class="nav-button auto-portal-link" href="./pages/fiscalizacao.html">◉ Fiscalização</a>':'');
+ $('mobile-nav').innerHTML=createDelib+allowed.map(navButton).join('');
  heading();
  if(s.role==='prescon')$('view').innerHTML=s.section==='painel'?overview():s.section==='engajamento'?'<div class="view-grid">'+heatmap()+trend()+'</div>':s.section==='deliberacoes'?deliberations():s.section==='pendencias'?pending():s.section==='relatorios'?reports():extras();
  else $('view').innerHTML=s.section==='painel'?roleLanding():s.section==='deliberacoes'&&s.role==='counselor'?deliberations():s.section==='deliberacoes'&&s.role==='nucleus_direx'?panel('Deliberações e formulários','A DIREX do Núcleo acompanha pelo painel autenticado de fiscalização, sem editar nem ver votos individuais.','<a class="btn red" href="./pages/fiscalizacao.html">Abrir fiscalização →</a>'):extras();
@@ -193,13 +184,13 @@ function render(){
 document.addEventListener('click',e=>{
  const target=e.target.closest('button');if(!target)return;
  if(target.dataset.exportReport){exportReport(target.dataset.exportReport);return;}
- if(target.dataset.role){s.role=target.dataset.role;s.section='painel';render();return;}
+ if(target.dataset.role){s.role=target.dataset.role;s.section='deliberacoes';render();return;}
  if(target.dataset.nav){s.section=target.dataset.nav;render();return;}
  if(target.dataset.ej){s.selected=target.dataset.ej;render();return;}
  if(target.dataset.filter){s.filter=target.dataset.filter;render();return;}
  if(target.dataset.position){s.positionFilter=target.dataset.position;render();return;}
  if(target.dataset.openDelib){s.delib=target.dataset.openDelib;s.section='deliberacoes';render();return;}
- if(target.dataset.selectRede){s.selected=target.dataset.selectRede;s.section='painel';s.role='prescon';render();return;}
+ if(target.dataset.selectRede){s.selected=target.dataset.selectRede;s.section='deliberacoes';s.role='prescon';render();return;}
  if(target.hasAttribute('data-simulate')){const toast=$('toast');toast.textContent='Voto simulado! Nenhuma resposta foi registrada.';toast.classList.add('show');setTimeout(()=>toast.classList.remove('show'),3500);}
 });
 document.addEventListener('change',e=>{
