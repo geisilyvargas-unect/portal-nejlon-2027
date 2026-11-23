@@ -15,16 +15,16 @@ function classify(sheet){
  const t=norm(sheet.name+' '+sheet.rows.slice(0,20).map(row=>row.join(' ')).join(' '));
  return {rateio:/rateio|localidade|distancia/.test(t),c1:/\bc1\b|cenario 1|uel/.test(t),c2:/\bc2\b|cenario 2|aurora/.test(t)};
 }
-input.addEventListener('change',async()=>{
- const file=input.files?.[0];if(!file)return;preview.innerHTML='';
+window.NEJLON_PF_IMPORT=async(file)=>{
+ if(!file)return;preview.innerHTML='';
  if(!/\.(csv|xls|xlsx)$/i.test(file.name)){status.textContent='Selecione CSV, XLS ou XLSX.';return}
  if(file.size>15*1024*1024){status.textContent='O arquivo ultrapassa o limite de 15 MB.';return}
  try{
   status.textContent='Lendo o planejamento…';
-  const buffer=await file.arrayBuffer();
+  
   let sheets=[];
-  if(/\.csv$/i.test(file.name)){sheets=[{name:'Tabela CSV',rows:csv(new TextDecoder().decode(buffer))}]}
-  else {if(!window.XLSX)throw Error('Biblioteca XLSX não carregou. Use CSV ou verifique a conexão.');const w=XLSX.read(buffer,{type:'array'});sheets=w.SheetNames.map(name=>({name,rows:XLSX.utils.sheet_to_json(w.Sheets[name],{header:1,defval:'',raw:false})}))}
+  if(/\.csv$/i.test(file.name)){sheets=[{name:'Tabela CSV',rows:(window.NEJLON_DEMO_CSV?.parse||csv)(new TextDecoder().decode(await file.arrayBuffer()))}]}
+  else {sheets=await window.NEJLON_XLSX_VIEW.rows(file)}
   if(!sheets.some(s=>s.rows.some(r=>r.some(x=>String(x).trim()))))throw Error('Planilha sem conteúdo legível.');
   const letter=n=>{let out='';for(n++;n;n=Math.floor((n-1)/26))out=String.fromCharCode(65+(n-1)%26)+out;return out};
   // Keep every row/column of the imported workbook; never replace with extracted financial summaries.
@@ -44,5 +44,5 @@ input.addEventListener('change',async()=>{
   status.textContent='Planilha carregada para consulta. Selecione uma aba e navegue pela grade.';
 
  }catch(e){status.textContent='Não foi possível importar: '+String(e.message||e)}
-});
+};
 })();
