@@ -344,3 +344,34 @@ html body .pf-modern button[aria-selected=true]{background:#c90000!important;col
 html body .pf-modern button[aria-selected=false]{background:#242424!important;color:#fff!important}
 html body .pf-modern [hidden]{display:none!important}
 html body .xlsx-original-view{color-scheme:light}
+
+/* Componentes de deliberação: fonte única de cores e superfícies. */
+html[data-theme=light]{--ux-bg:#fff;--ux-side:#f2f2f2;--ux-accent-ink:#b00000}
+html[data-theme=dark],html[data-theme=black],:root:not([data-theme]){--ux-bg:#101010;--ux-side:#080808;--ux-accent-ink:#ff6666}
+html[data-theme=red]{--ux-bg:#ff0000;--ux-side:#080808;--ux-accent-ink:#ff6666;color-scheme:dark}
+html body{background:var(--ux-bg)!important;color:var(--ux-text)!important}
+html body :is(.paper,.panel,.stat-card,.role-card,.comparison-card,.idealize-financial-card,.pf-reading){background:var(--ux-surface)!important;color:var(--ux-text)!important;border:1px solid var(--ux-border)!important;border-radius:12px!important;box-shadow:var(--ux-shadow)!important}
+html body :is(.paper,.panel){padding:clamp(16px,3vw,28px)!important}
+html body :is(.paper,.panel) :is(.manual,.notice,.rating,.option,.scenario-editor,.pf-reading-item,.idealize-scenario,.idealize-final,.idealize-guide-item,.idealize-financial-stats>div){background:var(--ux-raised)!important;color:var(--ux-text)!important;border-color:var(--ux-border)!important;border-radius:8px!important}
+html body :is(.paper,.panel,.idealize-shell) :is(h2,h3,h4,p,label,legend,summary,small,strong,span):not(.pf-modern *):not(.xlsx-original-view *):not(.idealize-banner *):not(.idealize-manual-art *):not(.tag *):not(.btn *):not(button *):not(.tag):not(.positive *):not(.negative *){color:var(--ux-text)!important;-webkit-text-fill-color:currentColor}
+html body :is(.paper,.panel,.idealize-shell) :is(input:not([type=radio]):not([type=checkbox]),textarea,select):not(.pf-modern *):not(.xlsx-original-view *){background:var(--ux-input)!important;color:var(--ux-text)!important;border:1px solid var(--ux-border)!important;border-radius:8px!important;padding:10px 12px;min-height:42px}
+html body :is(.actions button,.create-primary,.btn.red,.idealize-submit,.new-deliberation){background:#ff0000!important;color:#000!important;border:1px solid #ff0000!important;border-radius:8px!important;box-shadow:none!important;font-weight:800}
+html body :is(.actions button,.create-primary,.btn.red,.idealize-submit,.new-deliberation):hover{background:#c00000!important;color:#fff!important}
+html body :is(.hero,.idealize-banner,.intro){background:#202020 url('./nejlon-hero-waves.svg') center/cover no-repeat!important;border:1px solid #505050!important;border-radius:12px!important;color:#fff!important;padding:clamp(22px,4vw,38px)!important;overflow:hidden!important}
+html body .hero::after{display:none!important}
+html body :is(.hero,.idealize-banner,.intro) :is(h1,p,span,em){color:#fff!important;-webkit-text-fill-color:currentColor}
+html body :is(.hero,.idealize-banner,.intro) h1{font-family:var(--nejlon-title);font-size:clamp(28px,4vw,48px)!important;text-transform:uppercase;line-height:1.2!important;text-shadow:2px 3px #000,4px 5px #ff0000!important}
+html body :is(.top,.idealize-top,.topbar){background:var(--ux-side)!important;color:var(--ux-text)!important;border-bottom:3px solid #ff0000!important}
+html body :is(.top,.idealize-top) :is(a,span,strong){color:var(--ux-text)!important}
+html body .section-label{background:#c00000!important;color:#fff!important;border-radius:8px 8px 0 0}
+html body .paper .option:has(input:checked){border:2px solid #ff0000!important}
+html body .paper :is(input[type=radio],input[type=checkbox]){accent-color:#ff0000!important}
+html body .paper .pf-modern{background:#151515!important;color:#fff!important}
+html body .pf-modern :is(button,select,option,label,small,strong,p,h3,span){color:#fff!important;-webkit-text-fill-color:#fff!important}
+html body .pf-modern button{box-shadow:none!important;border-radius:8px!important}
+html body .pf-modern button[aria-selected=false]{background:#242424!important}
+html body .pf-modern button[aria-selected=true]{background:#c00000!important}
+html body .pf-modern select{background:#242424!important;border:1px solid #666!important;border-radius:8px!important}
+html body .idealize-projections button.active{background:#c00000!important;color:#fff!important;border-color:#ff0000!important}
+html body .paper em:not(.xlsx-original-view *){color:var(--ux-accent-ink)!important}
+html body .pf-reading summary{padding:14px;cursor:pointer}
