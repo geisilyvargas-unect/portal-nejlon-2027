@@ -6,5 +6,8 @@
       "path": "/api/cron-sync",
       "schedule": "0 12 * * *"
     }
-  ]
+  ],
+  "buildCommand": "mkdir -p public && cp index.html public/index.html && cp -R pages public/pages",
+  "outputDirectory": "public",
+  "installCommand": ""
 }
