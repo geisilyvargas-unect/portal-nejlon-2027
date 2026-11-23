@@ -1,0 +1,14 @@
+# Google Drive — configuração antes da publicação
+
+Branch de preparação; não mesclar em main até autorização. A integração exige backend Vercel e conta PRESCON ativa no Supabase. O formulário demonstrativo continua local.
+
+1. Em https://console.cloud.google.com/ crie ou selecione projeto. Ative Drive API e Sheets API. Forms API somente se necessário.
+2. Configure Google Auth Platform (branding, audience, data access). Para conta pessoal use External e adicione seu e-mail como test user enquanto em Testing. Tokens de atualização em Testing normalmente expiram em 7 dias quando há escopos adicionais. Para uso duradouro avalie publicação e requisitos de verificação.
+3. Crie OAuth client ID Web application. Configure origem https://portal-nejlon-2027-geisily.vercel.app e redirect URI exato https://portal-nejlon-2027-geisily.vercel.app/api/google-callback. Não use curingas.
+4. Na futura implantação configure variáveis de servidor GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, GOOGLE_TOKEN_ENCRYPTION_KEY (32 bytes aleatórios em base64, ex.: openssl rand -base64 32), SUPABASE_SERVICE_ROLE_KEY, SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, PORTAL_PUBLIC_ORIGIN=https://portal-nejlon-2027-geisily.vercel.app e PORTAL_UI_URL=https://portal-nejlon-2027-geisily.vercel.app/pages/central-automacoes.html. Nunca coloque segredos no GitHub nem no JS público. GOOGLE_ENABLE_FORMS=true é opcional; exige habilitar Forms API e consentimento adicional. Drive e Sheets usam drive.file.
+5. Verifique tabelas existentes portal_google_connections, portal_drive_settings, portal_drive_files, profiles, portal_forms, portal_form_submissions; tokens devem ficar inacessíveis a anon/authenticated. Não foi aplicada migração nem alterado banco nesta branch.
+6. Após autorização para publicar: confirme /api/drive?action=health, login PRESCON, conecte Google, crie pasta e teste upload de arquivo fictício <=3 MB. Confirme arquivo no Drive, depois exportação CSV/Sheets. Verifique que outros perfis recebem 403 e que não há tokens nos logs. Teste falha, reconexão e limite de tamanho.
+7. Teste criação de PF com opção Drive marcada; confirme cópia original na pasta 01 — Deliberações. O link demonstrativo continua restrito ao navegador; não confundir backup com publicação compartilhável.
+8. Não ativar faturamento sem autorização. Consulte cotas no console, configure limites e monitore armazenamento da conta. Upload via JSON/base64 limitado a 3 MB para respeitar limite HTTP da função. Não há polling de Drive nem sincronização contínua adicionada.
+
+Referências: https://developers.google.com/workspace/drive/api/guides/api-specific-auth ; https://developers.google.com/workspace/drive/api/guides/limits ; https://developers.google.com/workspace/sheets/api/scopes ; https://developers.google.com/identity/protocols/oauth2/web-server .
