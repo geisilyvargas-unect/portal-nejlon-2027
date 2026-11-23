@@ -320,3 +320,10 @@ html[data-theme="light"] .wa-info strong{color:var(--ux-text)}
  .mobile-nav .nav-more .nav-button{margin:0;display:flex}
  .mobile-nav .nav-button{flex:0 0 auto}
 }
+
+/* Banner: composição orgânica nas bordas, área de leitura livre. */
+html .intro,html[data-theme="light"] .intro{background:#252123 url('./nejlon-hero-waves.svg') center/100% 100% no-repeat;isolation:isolate;overflow:hidden}
+html .intro::before,html .intro::after{content:none!important;display:none!important}
+.intro-copy{min-width:0;flex:1;position:relative;z-index:1}
+html .intro h1{font-size:clamp(25px,3.15vw,44px);max-width:100%;white-space:normal;overflow-wrap:normal;letter-spacing:.005em;line-height:1.2}
+@media(max-width:760px){html .intro h1{font-size:clamp(24px,5.8vw,35px)}html .intro{background-size:cover}}
