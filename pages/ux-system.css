@@ -327,3 +327,20 @@ html .intro::before,html .intro::after{content:none!important;display:none!impor
 .intro-copy{min-width:0;flex:1;position:relative;z-index:1}
 html .intro h1{font-size:clamp(25px,3.15vw,44px);max-width:100%;white-space:normal;overflow-wrap:normal;letter-spacing:.005em;line-height:1.2}
 @media(max-width:760px){html .intro h1{font-size:clamp(24px,5.8vw,35px)}html .intro{background-size:cover}}
+
+/* Identidade compartilhada entre módulos — sem alterar a planilha original. */
+:root,html[data-theme=dark],html[data-theme=red]{--ux-surface:#101010;--ux-raised:#202020;--ux-input:#181818;--ux-text:#fff;--ux-muted:#ccc;--ux-border:#505050;--ux-red:#ff0000;--ux-red-hover:#d00000;--nejlon-radius:12px;--nejlon-title:'CY Grotesk V3 Key','Arial Black',Impact,system-ui,sans-serif}
+html[data-theme=light]{--ux-surface:#fff;--ux-raised:#f2f2f2;--ux-input:#fff;--ux-text:#111;--ux-muted:#555;--ux-border:#ccc;--ux-red:#ff0000;--ux-red-hover:#c00000}
+html[data-theme=red] body{background:#ff0000}
+html body :is(.panel,.stat-card,.role-card,.comparison-card,.ej-directory-card,.wa-panel,.automation-panel,.paper,.pf-reading,.idealize-financial-card){background:var(--ux-surface);color:var(--ux-text);border-color:var(--ux-border);border-radius:var(--nejlon-radius)}
+html body :is(.workhead h2,.panel h3,.paper h2,.wa-panel h2,.i-section h2,.ej-directory-card h3){font-family:var(--nejlon-title);text-transform:uppercase;letter-spacing:-.02em;line-height:1.2}
+html body :is(.nav-button,.role-option,.filter,.pf-tabs button,.ux-theme-switch){border-radius:8px;min-height:40px}
+html body :is(.nav-button.active,.role-option.active,.filter.active,.pf-tabs button.active,.pf-tabs button[aria-selected=true]){background:#c90000!important;color:#fff!important;border-color:#ff0000!important}
+html body :is(.nav-button.active,.role-option.active,.filter.active,.pf-tabs button.active) :is(span,strong,small){color:#fff}
+html body :is(.panel,.paper,.wa-panel,.automation-panel) :is(input:not([type=radio]):not([type=checkbox]),select,textarea):not(.pf-modern *){background:var(--ux-input);color:var(--ux-text);border-color:var(--ux-border);border-radius:8px}
+html body :is(.pf-reading,.pf-reading-item) summary{cursor:pointer}
+html body .pf-reading-item{background:var(--ux-raised);color:var(--ux-text)}
+html body .pf-modern button[aria-selected=true]{background:#c90000!important;color:#fff!important}
+html body .pf-modern button[aria-selected=false]{background:#242424!important;color:#fff!important}
+html body .pf-modern [hidden]{display:none!important}
+html body .xlsx-original-view{color-scheme:light}
