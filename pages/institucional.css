@@ -11,3 +11,110 @@
 /* Melhor leitura das letras grandes nos materiais institucionais. */
 .i-hero h1,.i-section h2{letter-spacing:.035em;line-height:1.18;text-shadow:2px 3px 0 #121212,4px 5px 0 #ce2d32;overflow-wrap:break-word}
 @media(max-width:560px){.i-hero h1,.i-section h2{letter-spacing:.018em;line-height:1.2}}
+
+/* Hero institucional simplificado: sem ondas, recortes, sombras ou prisma decorativo. */
+.institutional .i-hero{background:#1c1a1a;min-height:0;padding:48px clamp(24px,5vw,64px);border-radius:14px;overflow:visible}
+.institutional .i-hero::after{content:none;display:none}
+.institutional .i-hero .i-prism,.institutional .i-hero .slogan{display:none}
+.institutional .i-hero .i-tag{color:#d8d8d8;font-size:11px;letter-spacing:1.1px}
+.institutional .i-hero h1{font-family:Arial,Helvetica,sans-serif;font-size:clamp(30px,4vw,48px);font-weight:750;line-height:1.15;letter-spacing:-.035em;text-transform:none;text-shadow:none;margin:18px 0 16px;max-width:760px;overflow-wrap:normal}
+.institutional .i-hero p{max-width:700px;color:#d4d4d4;font-size:15px;line-height:1.65}
+@media(max-width:560px){.institutional .i-hero{padding:32px 22px}.institutional .i-hero h1{font-size:clamp(29px,8vw,38px)}}
+
+/* Logotipo oficial fornecido pela usuária */
+.ej-logo{height:88px;display:flex;align-items:center;justify-content:center;background:#080808;border-radius:9px;margin-bottom:6px;padding:12px}
+.ej-logo img{display:block;max-width:100%;max-height:66px;object-fit:contain}
+
+/* Marca oficial do núcleo e identidade consistente nas EJs. */
+.institutional .i-top{gap:18px}
+.institutional .i-nejlon-brand{display:block;width:150px;height:48px;object-fit:contain;object-position:center}
+.institutional .i-hero-brand{display:block;width:min(230px,70%);height:auto;max-height:110px;object-fit:contain;object-position:left center;margin-bottom:26px}
+.institutional .i-foot img{width:160px;height:auto;max-height:78px;object-fit:contain}
+.institutional .ej{min-height:205px;align-items:flex-start}
+.institutional .ej-logo{width:100%;height:104px;margin:0 0 10px;padding:14px;background:#181818;border:1px solid #393939;border-radius:10px}
+.institutional .ej-logo img{width:100%;height:100%;max-height:76px;max-width:230px;object-fit:contain}
+.institutional .ej strong{font-size:13px}
+@media(max-width:650px){.institutional .i-top{flex-wrap:wrap}.institutional .i-nejlon-brand{order:3;width:130px;height:42px}.institutional .i-hero-brand{width:190px}.institutional .ej{min-height:0}}
+
+/* Padronização da área visual das logos, preservando cada SVG original. */
+.institutional .ej-grid{align-items:stretch}
+.institutional .ej{min-width:0}
+.institutional .ej-logo{
+ box-sizing:border-box;
+ width:100%;
+ height:124px;
+ flex:0 0 124px;
+ margin:0 0 10px;
+ padding:12px;
+ display:flex;
+ align-items:center;
+ justify-content:center;
+ overflow:hidden;
+}
+.institutional .ej-logo img{
+ display:block;
+ width:100%;
+ height:100%;
+ max-width:none;
+ max-height:none;
+ object-fit:contain;
+ object-position:center;
+}
+@media(max-width:650px){
+ .institutional .ej-logo{height:112px;flex-basis:112px}
+}
+
+/* Exibição neutra: preserva integralmente as artes originais, sem efeitos. */
+.institutional .ej-grid .ej .ej-logo{
+ box-sizing:border-box;
+ background:transparent;
+ border:0;
+ border-radius:0;
+ box-shadow:none;
+ width:100%;
+ height:118px;
+ flex:0 0 118px;
+ margin:0 0 8px;
+ padding:4px 0;
+ overflow:hidden;
+ display:flex;
+ align-items:center;
+ justify-content:center;
+}
+.institutional .ej-grid .ej .ej-logo > img{
+ display:block;
+ width:100%;
+ height:100%;
+ max-width:none;
+ max-height:none;
+ object-fit:contain;
+ object-position:center;
+ transform:none;
+ filter:none;
+ opacity:1;
+}
+@media(max-width:650px){
+ .institutional .ej-grid .ej .ej-logo{height:108px;flex-basis:108px}
+}
+
+/* Acervo histórico de relatórios de deliberação */
+.institutional .i-report-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-top:20px}
+.institutional .i-report-card{display:flex;flex-direction:column;gap:9px;background:#242222;border:1px solid #484646;border-radius:12px;padding:18px;min-width:0}
+.institutional .i-report-card small{color:#b9e56e;font-weight:750;text-transform:uppercase;letter-spacing:.06em}
+.institutional .i-report-card strong{color:#f6f6f6;font-size:16px;line-height:1.4}
+.institutional .i-report-card span{color:#aaa;font-size:12px;line-height:1.5}
+@media(max-width:650px){.institutional .i-report-grid{grid-template-columns:1fr}}
+
+/* Portfólio institucional: hierarquia visual discreta, sem redesenhar marcas. */
+.institutional .i-portfolio-heading{display:flex;align-items:center;justify-content:space-between;gap:24px;padding:20px 0 24px;border-bottom:1px solid #4a4949;margin-bottom:22px}
+.institutional .i-portfolio-heading h2{font-family:'DM Sans',Arial,sans-serif!important;font-weight:750!important;font-size:clamp(25px,3.4vw,40px)!important;line-height:1.15!important;letter-spacing:-.035em!important;text-transform:none!important;margin:9px 0 0!important;text-shadow:none!important}
+.institutional .i-portfolio-heading h2 em{font-style:normal;color:#a2ca19}
+.institutional .i-portfolio-kicker{color:#b7c7c9;font-size:11px;font-weight:700;letter-spacing:.13em}
+.institutional .i-portfolio-count{min-width:124px;display:flex;flex-direction:column;align-items:center;gap:4px;border:1px solid #526063;border-radius:12px;padding:14px 16px;background:#23292b;box-shadow:none}
+.institutional .i-portfolio-count strong{font-size:37px;line-height:1;color:#f5f5f5}
+.institutional .i-portfolio-count small{font-size:10px;color:#c4d1d0}
+@media(max-width:650px){.institutional .i-portfolio-heading{align-items:flex-start;flex-direction:column}.institutional .i-portfolio-count{flex-direction:row;min-width:0;gap:12px}.institutional .i-portfolio-count strong{font-size:27px}}
+
+.institutional .i-document-access{border:1px solid #475153;border-radius:16px;padding:clamp(22px,4vw,42px);background:#232a2b;margin-top:28px}.institutional .i-document-access h2{font-family:'DM Sans',Arial,sans-serif;font-size:clamp(25px,3vw,38px);line-height:1.2;text-transform:none;letter-spacing:-.025em;margin:12px 0}.institutional .i-document-access h2 em{color:#b4d854;font-style:normal}.institutional .i-document-access p{max-width:740px;color:#c6cecf;line-height:1.7}.institutional .i-document-access-actions{display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-top:18px}.institutional .i-document-status{font-size:12px;color:#d5dcdd}.institutional .i-document-access-actions a{color:#b4d854;font-size:13px;font-weight:700;text-decoration:underline}
+
+.institutional .i-document-access-actions .i-portfolio-download{display:inline-flex;background:#b6db7a;color:#173d46!important;padding:12px 16px;border-radius:9px;text-decoration:none;font-weight:750}.institutional .i-document-access-actions .i-portfolio-download[hidden]{display:none!important}
