@@ -26,7 +26,8 @@ async function makeReport(userId,token,formId,asSheet){
   }
  }
  const root=await ensureRoot(userId,token);
- const folder=await ensureChild(token,root.id,formId?forms[0].title:'Relatórios da Rede');
+ const section=await ensureChild(token,root.id,formId?'01 — Deliberações':'04 — Relatórios');
+ const folder=await ensureChild(token,section.id,formId?forms[0].title:'Relatórios da Rede');
  const stamp=new Date().toISOString().slice(0,10);
  if(asSheet){
   const doc=await google('https://www.googleapis.com/drive/v3/files?fields=id,name,webViewLink',token,{method:'POST',data:{name:'Relatório NEJLON '+stamp,mimeType:'application/vnd.google-apps.spreadsheet',parents:[folder.id]}});
@@ -41,7 +42,7 @@ async function makeReport(userId,token,formId,asSheet){
 async function handle(req,res){
  const action=String(req.query?.action||'status');
  if(action==='callback'){
-  const returnTo=process.env.PORTAL_UI_URL||'https://geisilyvargas-unect.github.io/portal-nejlon-2027/pages/central-automacoes.html';
+  const returnTo=process.env.PORTAL_UI_URL||G.SITE+'/pages/central-automacoes.html';
   const state=req.query?.state;
   if(!state||!req.query?.code)return res.redirect(302,returnTo+'?google=cancelado');
   if(!ready())fail(503,'Integração Google ainda não configurada no servidor.');
@@ -97,9 +98,10 @@ async function handle(req,res){
   const base64=String(params.base64||'');
   if(!base64||base64.length>6*1024*1024||!/^[A-Za-z0-9+/]*={0,2}$/.test(base64))fail(400,'Arquivo inválido ou muito grande.');
   const bytes=Buffer.from(base64,'base64');
-  if(bytes.length>4*1024*1024)fail(413,'Limite de 4 MB por arquivo.');
+  if(bytes.length>3*1024*1024)fail(413,'Limite de 3 MB por arquivo.');
   const root=await ensureRoot(uid,token);
-  const folder=await ensureChild(token,root.id,params.folderName||'Documentos avulsos');
+  const section=await ensureChild(token,root.id,params.kind==='pf'?'01 — Deliberações':'05 — Documentos institucionais');
+  const folder=await ensureChild(token,section.id,params.folderName||'Documentos avulsos');
   const file=await upload(token,folder.id,name,mime,bytes);
   await recordFile(uid,file,{kind:params.kind==='manual'?'manual':'upload',folderId:folder.id});
   return json(res,200,{ok:true,file:{name:file.name,url:file.webViewLink||'https://drive.google.com/file/d/'+file.id+'/view'}});
