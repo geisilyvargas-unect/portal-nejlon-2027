@@ -3,7 +3,7 @@ const crypto=require('node:crypto');
 const SB=process.env.SUPABASE_URL||'https://imsisbixzkqphooxyfhr.supabase.co';
 const PUBLIC_KEY=process.env.SUPABASE_PUBLISHABLE_KEY||'sb_publishable_mS_TDGKZhUuJi-rxc5Nu1w_IXODeo-_';
 const SITE=process.env.PORTAL_PUBLIC_ORIGIN||'https://portal-nejlon-2027.vercel.app';
-const scopes=['openid','email','https://www.googleapis.com/auth/drive.file','https://www.googleapis.com/auth/forms.body','https://www.googleapis.com/auth/forms.responses.readonly','https://www.googleapis.com/auth/spreadsheets'];
+const scopes=['openid','email','https://www.googleapis.com/auth/drive.file',...(process.env.GOOGLE_ENABLE_FORMS==='true'?['https://www.googleapis.com/auth/forms.body','https://www.googleapis.com/auth/forms.responses.readonly']:[])];
 class HttpError extends Error{constructor(code,message){super(message);this.code=code}}
 function fail(code,message){throw new HttpError(code,message)}
 function json(res,status,data){res.status(status).setHeader('Cache-Control','no-store').setHeader('Content-Type','application/json; charset=utf-8').end(JSON.stringify(data))}
@@ -99,7 +99,7 @@ async function settings(userId){
 async function ensureRoot(userId,token){
  const old=await settings(userId);
  if(old?.root_folder_id)return {id:old.root_folder_id,url:old.root_folder_url};
- const folder=await createFolder(token,'NEJLON — Documentos do Conselho');
+ const folder=await createFolder(token,'NEJLON — PRESCON 2027');
  await db('portal_drive_settings',{method:'POST',query:'on_conflict=owner_user_id',data:{owner_user_id:userId,root_folder_id:folder.id,root_folder_url:folder.webViewLink||'https://drive.google.com/drive/folders/'+folder.id},prefer:'resolution=merge-duplicates,return=representation'});
  return {id:folder.id,url:folder.webViewLink||'https://drive.google.com/drive/folders/'+folder.id};
 }
