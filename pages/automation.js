@@ -27,7 +27,7 @@ async function refreshSession(){
 }
 async function request(endpoint,{method='GET',data,retry=true}={}){
  if(!session?.access_token)throw Error('Você está no modo de exploração. Para consultar ou alterar dados reais, clique em “Entrar para salvar alterações”.');
- const fetchData=()=>fetch(API+endpoint,{method,headers:{'Content-Type':'application/json',apikey:PUBLIC,Authorization:'Bearer '+session.access_token},...(data===undefined?{}:{body:JSON.stringify(data)})});
+ const fetchData=()=>fetch((endpoint.startsWith('/drive?')?location.origin+'/api':API)+endpoint,{method,headers:{'Content-Type':'application/json',apikey:PUBLIC,Authorization:'Bearer '+session.access_token},...(data===undefined?{}:{body:JSON.stringify(data)})});
  let response;
  try{response=await fetchData()}catch{throw Error('Não foi possível acessar a API no Supabase. Verifique sua conexão ou a função publicada.')}
  if(response.status===401&&retry){await refreshSession();return request(endpoint,{method,data,retry:false})}
@@ -267,7 +267,7 @@ function fileBase64(file){
 async function submitUpload(ev){
  ev.preventDefault();const data=new FormData(ev.target),file=data.get('file');
  if(!file||!file.size){toast('Selecione um arquivo.');return}
- if(file.size>4*1024*1024){toast('O limite nesta integração é de 4 MB por arquivo.');return}
+ if(file.size>3*1024*1024){toast('O limite nesta integração é de 3 MB por arquivo.');return}
  const btn=ev.target.querySelector('button[type=submit]');btn.disabled=true;
  try{
   const saved=await request('/drive?action=upload',{method:'POST',data:{name:file.name,mime:file.type||'application/octet-stream',base64:await fileBase64(file),folderName:data.get('folderName')}});
@@ -384,7 +384,7 @@ $('auto-vote-changes').addEventListener('click',async event=>{
   await loadVoteChangeRequests();
  }catch(error){toast(error.message)}finally{button.disabled=false}
 });
-fetch(API+'/drive?action=health').then(r=>r.ok?r.json():Promise.reject()).then(x=>{$('auto-setup-status').textContent=x.configured?'Backend Supabase disponível. Faça login para continuar. As integrações Google são independentes.':'O backend do Portal está configurado, mas a integração Google ainda precisa de autorização.'}).catch(()=>{$('auto-setup-status').textContent='Não foi possível confirmar o backend Supabase. Confira sua conexão e as funções do projeto.'});
+fetch('/api/drive?action=health').then(r=>r.ok?r.json():Promise.reject()).then(x=>{$('auto-setup-status').textContent=x.configured?'Backend Supabase disponível. Faça login para continuar. As integrações Google são independentes.':'O backend do Portal está configurado, mas a integração Google ainda precisa de autorização.'}).catch(()=>{$('auto-setup-status').textContent='Não foi possível confirmar o backend Supabase. Confira sua conexão e as funções do projeto.'});
 if(session)load().catch(e=>{
  session=null;sessionStorage.removeItem(STORE);
  showPreview();
