@@ -14,6 +14,7 @@ const descriptions={
  against:'O(a) conselheiro(a) não aprova a proposta e apresenta motivos relevantes à Presidência do Conselho.',
  abstention:'O(a) conselheiro(a) se abstém e opta por não votar.'
 };
+const params=new URLSearchParams(location.search),readonly=params.get('mode')==='view'||params.get('role')==='prescon'||Number(new Intl.DateTimeFormat('en',{year:'numeric',timeZone:'America/Sao_Paulo'}).format(new Date()))!==2026;
 const states={projection:'realistic',rateio:true,submission:null};
 const votingBlocks=[{scenarioKey:'rateio',title:'Sistema de rateios',label:'SISTEMA DE RATEIOS',description:'Avalie a proposta geral do sistema de rateios por localidade. Consulte os valores financeiros acima antes de votar.'},...P.alternatives.map((a,i)=>({...a,label:'[C'+(i+1)+'] CENÁRIO '+(i+1),description:'Avalie a proposta financeira para '+a.venue+'. As projeções pessimista, realista e otimista são informações de apoio.'}))];
 const stats=(label,value,small)=>'<div class="stat-card"><span class="stat-label">'+escape(label)+'</span><strong>'+escape(value)+'</strong><span class="stat-footer">'+escape(small)+'</span></div>';
@@ -84,7 +85,7 @@ function drawResults(){
 }
 function field(fd,key){return String(fd.get(key)||'').trim()}
 function submit(ev){
- ev.preventDefault();
+ ev.preventDefault();if(readonly)return;
  const form=ev.currentTarget,fd=new FormData(form);
  if(!form.reportValidity())return;
  const answers=votingBlocks.map(a=>({scenarioKey:a.scenarioKey,
@@ -102,5 +103,5 @@ $('idealize-vote-form').addEventListener('change',e=>{
  if(e.target.matches('input[type="radio"]'))toggleChoice(e.target.name.replace('position_',''));
 });
 $('idealize-vote-form').addEventListener('submit',submit);
-drawFinances();drawForm();drawResults();
+drawFinances();drawForm();drawResults();if(readonly){$('idealize-vote-form').querySelectorAll('input,select,textarea,button[type=submit]').forEach(el=>el.disabled=true);$('submit-status').textContent='Somente consulta — votação indisponível.';}
 })();
