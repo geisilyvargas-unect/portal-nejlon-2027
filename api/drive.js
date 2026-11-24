@@ -42,7 +42,7 @@ async function makeReport(userId,token,formId,asSheet){
 async function handle(req,res){
  const action=String(req.query?.action||'status');
  if(action==='callback'){
-  const returnTo=process.env.PORTAL_UI_URL||G.SITE+'/pages/central-automacoes.html';
+  const returnTo=new URL('/versao-supabase/integracoes.html',G.SITE).href;
   const state=req.query?.state;
   if(!state||!req.query?.code)return res.redirect(302,returnTo+'?google=cancelado');
   if(!ready())fail(503,'Integração Google ainda não configurada no servidor.');
