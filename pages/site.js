@@ -10,7 +10,7 @@ if(D&&window.NEJLON_IDEALIZE_VOTES&&!D.delibs.some(x=>x.id==='idealize')){
 }
 
 if(!D){document.getElementById('view').textContent='Dados demonstrativos indisponíveis.';return;}
-const nav=[['deliberacoes','☷','Deliberações'],['engajamento','▦','Participação']];
+const nav=[['deliberacoes','☷','Deliberações'],['engajamento','▦','Participação'],['dmc','◎','Desenvolvimento Conselheiro']];
 const roleMap={prescon:{name:'PRESCON',nav:nav.map(x=>x[0])},counselor:{name:'Conselho',nav:nav.map(x=>x[0])},ej_direx:{name:'DIREX de EJ',nav:['engajamento']},nucleus_direx:{name:'DIREX do Núcleo',nav:['deliberacoes','engajamento']}};
 const s={role:'prescon',section:'deliberacoes',ej:'unect',selected:'unect',filter:'all',search:'',delib:'financeiro',vote:'favorable',positionFilter:'all'};
 s.level='macro';s.responseFilter='missing';s.delibFilter='all';
@@ -52,6 +52,7 @@ const panel=(title,sub,content)=>'<section class="panel"><div class="section-row
 const tag=(txt,cls='')=>'<span class="tag '+cls+'">'+esc(txt)+'</span>';
 const titleOptions=()=>'<label class="mini-heading" for="delib-select">DELIBERAÇÃO DEMONSTRATIVA</label><div class="toolrow"><select class="select" id="delib-select">'+D.delibs.map(d=>'<option value="'+d.id+'" '+(d.id===s.delib?'selected':'')+'>'+esc(d.name)+'</option>').join('')+'</select></div>';
 const labels={painel:['VISÃO PRESCON','Visão geral da Rede','Acompanhe os principais números, pendências e prioridades em uma única tela.'],
+ dmc:['MÍNIMO CONSELHO VIÁVEL','Desenvolvimento Conselheiro','Diagnóstico de Maturidade Conselheira'],
  engajamento:['PARTICIPAÇÃO DAS EJs','Participação','Acompanhe as respostas às deliberações.'],
  deliberacoes:['CONSELHO DELIBERATIVO','Deliberações','Acompanhe os cenários e os posicionamentos enviados pelas EJs.'],
  pendencias:['ACOMPANHAMENTO','Central de Pendências','Veja quem respondeu e quem ainda está pendente, sem procurar planilhas.'],
@@ -199,6 +200,7 @@ function render(){
  // Em telas pequenas, navegação linear: evita opções ocultas em <details> dentro do carrossel.
  $('mobile-nav').innerHTML=allowed.map(navButton).join('');
  heading();const yearHost=$('current-date');yearHost.innerHTML='<label for="management-year" style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">Ano da gestão <select id="management-year" class="select" aria-label="Ano da gestão">'+years().map(y=>'<option value="'+y+'" '+(s.year===y?'selected':'')+'>'+y+(y<currentYear?' · Histórico':y>currentYear?' · Prévia':' · Vigente')+'</option>').join('')+'</select></label>';yearHost.querySelector('select').onchange=e=>{selectYear(Number(e.target.value));render()};$('section-eyebrow').textContent+=' · '+s.year+(archived()?' · CONSULTA':'');
+ if(s.section==='dmc'){window.NEJLON_DMC.render($('view'),s.role,s.year);return;}
  if(s.section==='engajamento'){ $('view').innerHTML=participation();return; }
  if(s.role==='prescon')$('view').innerHTML=s.section==='painel'?overview():s.section==='engajamento'?'<div class="view-grid">'+heatmap()+trend()+'</div>':s.section==='deliberacoes'?deliberations():s.section==='pendencias'?pending():s.section==='relatorios'?reports():extras();
  else $('view').innerHTML=s.section==='relatorios'?reports():s.section==='painel'?roleLanding():s.section==='deliberacoes'&&s.role==='counselor'?deliberations():s.section==='deliberacoes'&&s.role==='nucleus_direx'?panel('Relatórios de deliberação','Consulta exclusiva aos relatórios publicados pela PRESCON.',D.delibs.map(d=>'<div class="list-item"><div><strong>'+esc(d.name)+'</strong><p>'+ (reportState(d.id).published?'Publicado':'Aguardando publicação')+'</p></div>'+(reportState(d.id).published?'<a class="btn red" href="./pages/relatorio.html?role=counselor&id='+encodeURIComponent(d.id)+'">Ver relatório</a>':'<button class="btn" disabled>Ver relatório</button>')+'</div>').join('')):extras();
