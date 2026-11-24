@@ -391,8 +391,14 @@ async function handler(req,res){
    if(user.role!=='prescon')fail(403,'Relatórios individuais são exclusivos da PRESCON.');
    const formId=String(req.query.id||'');if(!uuid(formId))fail(400,'Formulário inválido.');
    const rows=await db('portal_form_submissions',{query:'select=id,form_id,ej_id,respondent_name,respondent_email,channel,state,answers,submitted_at,review_note&form_id=eq.'+formId+'&order=submitted_at.desc&limit=2000'});
-   const summaries={accepted:rows.filter(v=>v.state==='accepted').length,pending:rows.filter(v=>v.state==='pending_review').length,duplicate:rows.filter(v=>v.state==='duplicate').length,rejected:rows.filter(v=>v.state==='rejected').length,google:rows.filter(v=>v.channel==='google').length,portal:rows.filter(v=>v.channel==='portal').length};
-   return json(res,200,{rows,summaries});
+   const [form]=await db('portal_forms',{query:'select=id,audience,status&id=eq.'+formId+'&limit=1'});
+   if(!form)fail(404,'Formulário não encontrado.');
+   const roster=form.audience==='counselor'?await eligibleRoster(form,[]):null;
+   const eligible=new Set((roster||[]).map(e=>e.id));
+   const acceptedRows=rows.filter(v=>v.state==='accepted'&&(!roster||eligible.has(v.ej_id)));
+   const acceptedCount=roster?new Set(acceptedRows.map(v=>v.ej_id)).size:acceptedRows.length;
+   const summaries={accepted:acceptedCount,pending:rows.filter(v=>v.state==='pending_review').length,duplicate:rows.filter(v=>v.state==='duplicate').length,rejected:rows.filter(v=>v.state==='rejected').length,google:rows.filter(v=>v.channel==='google').length,portal:rows.filter(v=>v.channel==='portal').length};
+   return json(res,200,{rows,summaries,eligible_ejs:roster,total_ejs:roster?roster.length:null,absent_count:roster?roster.length-acceptedCount:null,representation_percent:roster&&roster.length?100*acceptedCount/roster.length:null});
   }
   fail(404,'Operação desconhecida.');
  }
