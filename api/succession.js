@@ -12,7 +12,7 @@ return G.json(res,200,{role:p.role,rows,candidates});
 }
 if(req.method!=='POST')G.fail(405,'Método não permitido.');
 const b=G.body(req),reason=String(b.reason||'').trim();
-if(reason.length<3||reason.length>2000||b.confirm!==true)G.fail(400,'Confirme a operação e informe a justificativa.');
+if(typeof b.reason!=='string'||reason.length<3||reason.length>2000||b.confirm!==true)G.fail(400,'Confirme a operação e informe a justificativa.');
 if(b.action==='request'&&p.role==='prescon'&&uuid(b.target)){await G.db('rpc/portal_request_succession',{method:'POST',data:{p_actor:p.userId,p_target:b.target,p_reason:reason}});}
 else if(uuid(b.request)&&((b.action==='cancel'&&p.role==='prescon')||(b.action==='accept'&&p.role!=='prescon'))){await G.db('rpc/portal_resolve_succession',{method:'POST',data:{p_actor:p.userId,p_request:b.request,p_action:b.action,p_reason:reason}});}
 else G.fail(403,'Operação não autorizada.');
