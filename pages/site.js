@@ -11,7 +11,7 @@ if(D&&window.NEJLON_IDEALIZE_VOTES&&!D.delibs.some(x=>x.id==='idealize')){
 
 if(!D){document.getElementById('view').textContent='Dados demonstrativos indisponíveis.';return;}
 const nav=[['deliberacoes','☷','Deliberações'],['engajamento','▦','Participação']];
-const roleMap={prescon:{name:'PRESCON',nav:nav.map(x=>x[0])},counselor:{name:'Conselho',nav:nav.map(x=>x[0])},nucleus_direx:{name:'DIREX do Núcleo',nav:['deliberacoes']}};
+const roleMap={prescon:{name:'PRESCON',nav:nav.map(x=>x[0])},counselor:{name:'Conselho',nav:nav.map(x=>x[0])},ej_direx:{name:'DIREX de EJ',nav:['engajamento']},nucleus_direx:{name:'DIREX do Núcleo',nav:['deliberacoes']}};
 const s={role:'prescon',section:'deliberacoes',ej:'unect',selected:'unect',filter:'all',search:'',delib:'financeiro',vote:'favorable',positionFilter:'all'};
 s.level='macro';s.responseFilter='missing';s.delibFilter='all';
 const read=(k,f)=>{try{return JSON.parse(localStorage.getItem(k))??f}catch{return f}};
@@ -171,7 +171,7 @@ function roleLanding(){
  return '<div class="view-grid">'+panel('Painel do Conselho','As dez áreas históricas num só lugar. Consulte demandas de todas as EJs apenas em visão geral.','<div class="toolrow"><a class="btn red" href="./pages/painel-conselho.html">Painel do Conselho →</a><a class="btn" href="./pages/demandas.html">Panorama de demandas →</a></div>')+'</div>';
 }
 function render(){
- if(!role().nav.includes(s.section))s.section='deliberacoes';
+ if(!role().nav.includes(s.section))s.section=role().nav[0];
  $('roles').innerHTML=Object.entries(roleMap).map(([key,r])=>'<button class="role-option '+(key===s.role?'active':'')+'" type="button" data-role="'+key+'" aria-pressed="'+(key===s.role)+'">'+esc(r.name)+'</button>').join('');
  $('ej-picker-wrap').hidden=!['counselor','ej_direx'].includes(s.role);
  $('ej-picker').innerHTML=D.ejs.map(e=>'<option value="'+esc(e.slug)+'" '+(e.slug===s.ej?'selected':'')+'>'+esc(e.name)+'</option>').join('');
