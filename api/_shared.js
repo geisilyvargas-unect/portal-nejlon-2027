@@ -3,14 +3,15 @@ const crypto=require('node:crypto');
 const SB=process.env.SUPABASE_URL||'https://imsisbixzkqphooxyfhr.supabase.co';
 const PUBLIC_KEY=process.env.SUPABASE_PUBLISHABLE_KEY||'sb_publishable_mS_TDGKZhUuJi-rxc5Nu1w_IXODeo-_';
 const SITE=process.env.PORTAL_PUBLIC_ORIGIN||'https://portal-nejlon-2027.vercel.app';
-const scopes=['openid','email','https://www.googleapis.com/auth/drive.file','https://www.googleapis.com/auth/forms.body','https://www.googleapis.com/auth/forms.responses.readonly','https://www.googleapis.com/auth/spreadsheets'];
+const scopes=['openid','email','https://www.googleapis.com/auth/drive.file','https://www.googleapis.com/auth/calendar.app.created',...(process.env.GOOGLE_ENABLE_FORMS==='true'?['https://www.googleapis.com/auth/forms.body','https://www.googleapis.com/auth/forms.responses.readonly']:[])];
 class HttpError extends Error{constructor(code,message){super(message);this.code=code}}
 function fail(code,message){throw new HttpError(code,message)}
 function json(res,status,data){res.status(status).setHeader('Cache-Control','no-store').setHeader('Content-Type','application/json; charset=utf-8').end(JSON.stringify(data))}
 function body(req){if(req.body&&typeof req.body==='object')return req.body;if(typeof req.body==='string'){try{return JSON.parse(req.body)}catch{fail(400,'JSON inválido.')}}return{}}
-function envCheck(){const required=['SUPABASE_SERVICE_ROLE_KEY','GOOGLE_CLIENT_ID','GOOGLE_CLIENT_SECRET','GOOGLE_TOKEN_ENCRYPTION_KEY'];return required.filter(key=>!process.env[key])}
+function envCheck(){const required=['GOOGLE_CLIENT_ID','GOOGLE_CLIENT_SECRET','GOOGLE_TOKEN_ENCRYPTION_KEY'];return [...required.filter(key=>!process.env[key]),...(!serverKey()?['SUPABASE_SECRET_KEY']:[])]}
 function ready(){return envCheck().length===0}
-function serviceKey(){const k=process.env.SUPABASE_SERVICE_ROLE_KEY;if(!k)fail(503,'Integração ainda não configurada: falta a chave de servidor Supabase.');return k}
+function serverKey(){return process.env.SUPABASE_SECRET_KEY||process.env.supabase_secret_play||process.env.SUPABASE_SERVICE_ROLE_KEY}
+function serviceKey(){const k=serverKey();if(!k)fail(503,'Integração ainda não configurada: falta a chave de servidor Supabase.');return k}
 async function requestJson(url,options={}){
  const response=await fetch(url,options);
  let data;try{data=await response.json()}catch{data={}}
@@ -20,7 +21,7 @@ async function requestJson(url,options={}){
 async function db(table,{method='GET',query='',data,prefer}={}){
  const key=serviceKey();
  return requestJson(SB+'/rest/v1/'+table+(query?'?'+query:''),{
-  method,headers:{apikey:key,Authorization:'Bearer '+key,'Content-Type':'application/json',...(prefer?{Prefer:prefer}:{})},
+  method,headers:{apikey:key,...(key.startsWith('sb_secret_')?{}:{Authorization:'Bearer '+key}),'Content-Type':'application/json',...(prefer?{Prefer:prefer}:{})},
   ...(data!==undefined?{body:JSON.stringify(data)}:{})
  });
 }
@@ -99,7 +100,7 @@ async function settings(userId){
 async function ensureRoot(userId,token){
  const old=await settings(userId);
  if(old?.root_folder_id)return {id:old.root_folder_id,url:old.root_folder_url};
- const folder=await createFolder(token,'NEJLON — Documentos do Conselho');
+ const folder=await createFolder(token,'NEJLON — PRESCON 2027');
  await db('portal_drive_settings',{method:'POST',query:'on_conflict=owner_user_id',data:{owner_user_id:userId,root_folder_id:folder.id,root_folder_url:folder.webViewLink||'https://drive.google.com/drive/folders/'+folder.id},prefer:'resolution=merge-duplicates,return=representation'});
  return {id:folder.id,url:folder.webViewLink||'https://drive.google.com/drive/folders/'+folder.id};
 }
@@ -115,7 +116,7 @@ async function recordFile(userId,file,{kind,formId,folderId}={}){
 }
 function protect(handler){return async(req,res)=>{
  const origin=String(req.headers.origin||'');
- const allowed=new Set(['https://geisilyvargas-unect.github.io','https://portal-nejlon-2027.vercel.app','https://portal-nejlon-2027-geisily.vercel.app',new URL(SITE).origin]);
+ const allowed=new Set(['https://portal-nejlon-2027.vercel.app','https://portal-nejlon-2027-geisily.vercel.app',new URL(SITE).origin]);
  for(const extra of String(process.env.PORTAL_ALLOWED_ORIGINS||'').split(',')){if(extra.trim().startsWith('https://'))allowed.add(extra.trim())}
  if(origin){if(!allowed.has(origin))return json(res,403,{error:'Origem não autorizada.'});res.setHeader('Access-Control-Allow-Origin',origin);res.setHeader('Vary','Origin')}
  res.setHeader('Access-Control-Allow-Headers','Authorization,Content-Type');
