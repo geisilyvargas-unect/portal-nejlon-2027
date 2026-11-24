@@ -2,6 +2,24 @@
 const G=require('./_shared');
 const crypto=require('node:crypto');
 module.exports=G.protect(async(req,res)=>{
+ if(req.method==='POST'&&G.body(req).action==='complete_password'){
+ const auth=String(req.headers.authorization||'');
+ const password=G.body(req).password;
+ if(!auth.startsWith('Bearer ')||auth.length>4600)G.fail(401,'Sessão inválida.');
+ if(typeof password!=='string'||password.length<12||password.length>128)G.fail(400,'Use de 12 a 128 caracteres.');
+ const headers={apikey:G.PUBLIC_KEY,Authorization:auth,'Content-Type':'application/json'};
+ const meResponse=await fetch(G.SB+'/auth/v1/user',{headers});
+ if(!meResponse.ok)G.fail(401,'Sessão inválida.');
+ const me=await meResponse.json();
+ if(!/^[0-9a-f-]{36}$/i.test(me.id||'')||!me.email_confirmed_at)G.fail(403,'Valide seu e-mail.');
+ const profile=(await G.db('profiles',{query:'select=id,must_change_password&id=eq.'+me.id+'&limit=1'}))[0];
+ if(!profile)G.fail(403,'Perfil não cadastrado.');
+ const changed=await fetch(G.SB+'/auth/v1/user',{method:'PUT',headers,body:JSON.stringify({password})});
+ if(!changed.ok)G.fail(400,'Não foi possível atualizar a senha. Solicite um novo link.');
+ await G.db('profiles',{method:'PATCH',query:'id=eq.'+me.id,data:{must_change_password:false}});
+ await fetch(G.SB+'/auth/v1/logout?scope=global',{method:'POST',headers});
+ return G.json(res,200,{ok:true});
+ }
  const p=await G.prescon(req);
  if(req.method==='GET')return G.json(res,200,{profiles:await G.db('profiles',{query:'select=id,full_name,email,role,ej_id,active&order=full_name'})});
  if(req.method!=='POST')G.fail(405,'Método não permitido.');
