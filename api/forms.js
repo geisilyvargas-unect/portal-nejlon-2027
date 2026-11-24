@@ -54,9 +54,11 @@ async function overview(user){
  return prescon||oversight?forms:forms.filter(f=>f.audience==='all_members'||user.role==='counselor');
 }
 async function syncGoogle(user,formId){
- const [record]=await db('portal_forms',{query:'select=id,google_form_id,google_question_map,status&'+(formId?'id=eq.'+formId+'&':'google_form_id=not.is.null&')+'limit=1'});
+ const [record]=await db('portal_forms',{query:'select=id,google_form_id,google_question_map,status,audience,due_at&'+(formId?'id=eq.'+formId+'&':'google_form_id=not.is.null&')+'limit=1'});
  if(!record?.google_form_id)fail(404,'Formulário Google não vinculado.');
+ if(record.audience==='counselor'&&(record.status!=='open'||(record.due_at&&Date.parse(record.due_at)<=Date.now())))fail(409,'Sincronização de votação encerrada não permitida.');
  const token=await accessToken(user.userId);
+ const roster=record.audience==='counselor'?await eligibleRoster(record,[]):null;
  let pageToken='',pages=0,created=0,skipped=0;
  do{
   const qs=new URLSearchParams({pageSize:'1000'});
@@ -65,6 +67,7 @@ async function syncGoogle(user,formId){
   for(const r of response.responses||[]){
    const existing=await db('portal_form_submissions',{query:'select=id&form_id=eq.'+record.id+'&google_response_id=eq.'+encodeURIComponent(r.responseId)+'&limit=1'});
    if(existing.length){skipped++;continue}
+   if(roster&&(!r.lastSubmittedTime||(record.due_at&&Date.parse(r.lastSubmittedTime)>Date.parse(record.due_at)))){skipped++;continue}
    const answerMap={};
    for(const [googleQuestionId,value] of Object.entries(r.answers||{})){
     const key=record.google_question_map?.[googleQuestionId]||googleQuestionId;
@@ -73,9 +76,11 @@ async function syncGoogle(user,formId){
    let ejId=null;const ejName=String(answerMap.ej||'').trim().toLowerCase();
    if(ejName){
     const ejs=await db('ejs',{query:'select=id,name,slug&limit=100'});
-    const ej=ejs.find(v=>v.slug?.toLowerCase()===ejName||v.name?.toLowerCase()===ejName);
+    const candidates=roster?roster.filter(v=>v.name?.toLowerCase()===ejName||ejs.some(e=>e.id===v.id&&e.slug?.toLowerCase()===ejName)):ejs.filter(v=>v.slug?.toLowerCase()===ejName||v.name?.toLowerCase()===ejName);
+    const ej=candidates.length===1?candidates[0]:null;
     if(ej)ejId=ej.id;
    }
+   if(roster&&!ejId){skipped++;continue}
    try{await db('portal_form_submissions',{method:'POST',prefer:'return=minimal',data:{
      form_id:record.id,ej_id:ejId,respondent_email:r.respondentEmail||null,respondent_name:answerMap.respondent||null,
      channel:'google',state:'pending_review',google_response_id:r.responseId,answers:answerMap,
@@ -301,6 +306,9 @@ async function handler(req,res){
   if(data.ejId&&uuid(data.ejId))ejId=data.ejId;
   if(data.state==='accepted'){
    if(!ejId)fail(400,'Vincule a resposta a uma EJ antes de aceitá-la.');
+   const [form]=await db('portal_forms',{query:'select=id,audience,status,due_at&id=eq.'+existing.form_id+'&limit=1'});
+   if(!form)fail(404,'Formulário não encontrado.');
+   if(form.audience==='counselor'&&!(await eligibleRoster(form,[])).some(e=>e.id===ejId))fail(400,'EJ não elegível nesta votação.');
    const conflict=await db('portal_form_submissions',{query:'select=id&form_id=eq.'+existing.form_id+'&ej_id=eq.'+ejId+'&state=eq.accepted&limit=1'});
    if(conflict.some(v=>v.id!==submissionId))fail(409,'Já existe resposta válida para essa EJ. Marque uma das respostas como duplicada antes.');
   }
