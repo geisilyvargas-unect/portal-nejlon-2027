@@ -6,6 +6,7 @@ module.exports=G.protect(async(req,res)=>{
  if(req.method==='GET')return G.json(res,200,{profiles:await G.db('profiles',{query:'select=id,full_name,email,role,ej_id,active&order=full_name'})});
  if(req.method!=='POST')G.fail(405,'Método não permitido.');
  const b=G.body(req),name=String(b.name||'').trim(),email=String(b.email||'').trim().toLowerCase(),reason=String(b.reason||'').trim();
+ if(b.action==='set_active'){if(typeof b.active!=='boolean'||!/^[0-9a-f-]{36}$/i.test(b.target||'')||reason.length<3)G.fail(400,'Dados inválidos.');await G.db('rpc/portal_set_profile_active',{method:'POST',data:{p_actor:p.userId,p_target:b.target,p_active:b.active,p_reason:reason}});return G.json(res,200,{ok:true});}
  if(b.action!=='create'||!['counselor','ej_direx','nucleus_direx'].includes(b.role)||name.length<2||name.length>120||!/^\S+@\S+\.\S+$/.test(email)||reason.length<3)G.fail(400,'Dados inválidos.');
  const ej=b.role==='nucleus_direx'?null:b.ej;
  if(b.role!=='nucleus_direx'&&(!/^[0-9a-f-]{36}$/i.test(ej||'')||!(await G.db('ejs',{query:'select=id&id=eq.'+ej})).length))G.fail(400,'EJ inválida.');
