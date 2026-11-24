@@ -7,7 +7,7 @@
       "schedule": "0 12 * * *"
     }
   ],
-  "buildCommand": "mkdir -p public && cp index.html public/index.html && cp -R pages public/pages",
+  "buildCommand": "mkdir -p public && cp index.html public/index.html && cp -R pages public/pages && cp -R versao-supabase public/versao-supabase",
   "outputDirectory": "public",
   "installCommand": ""
 }
