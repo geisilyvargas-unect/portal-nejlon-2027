@@ -31,8 +31,9 @@ async function userFromToken(req){
  const token=header.slice(7);
  const me=await requestJson(SB+'/auth/v1/user',{headers:{apikey:PUBLIC_KEY,Authorization:'Bearer '+token}});
  if(!me.id||!me.email)fail(401,'Sessão inválida.');
- const profile=(await db('profiles',{query:'select=id,email,role,ej_id,active&id=eq.'+encodeURIComponent(me.id)+'&limit=1'}))[0];
+ const profile=(await db('profiles',{query:'select=id,email,role,ej_id,active,must_change_password&id=eq.'+encodeURIComponent(me.id)+'&limit=1'}))[0];
  if(!profile||!profile.active)fail(403,'Perfil inativo ou não autorizado.');
+ if(profile.must_change_password)fail(403,'Troca de senha inicial obrigatória. Procure a PRESCON para concluir a ativação.');
  return {...profile,userId:me.id};
 }
 async function prescon(req){const p=await userFromToken(req);if(p.role!=='prescon')fail(403,'Acesso reservado à PRESCON.');return p}
