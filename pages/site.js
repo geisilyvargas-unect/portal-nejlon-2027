@@ -19,8 +19,16 @@ const norm=v=>String(v??'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLo
 const aliases=['3E-UEL','Aprimora','Artus','Bioma','Bóson Consultoria','Business Consultoria',"CATEC'z",'CONSOAGRO','Cotton','ECAE UEL','Elo Consultoria','FertField','Gaia Júnior','Kinase Consultoria','LEX','Lion','MECA Engenharia','NOTTON','Paracelso Consultoria','Pegasus','SELECT','Sete','SmartMec Jr','SMat Jr','Solução Jr.','TCP Engenharia Civil','Therion','Unect Jr.','VetJr'];
 const matchEj=v=>D.ejs.find(e=>[e.slug,e.name].some(n=>norm(n)===norm(v)))||D.ejs.find(e=>norm(v).startsWith(norm(e.slug))&&norm(e.slug).length>=3)||D.ejs.find(e=>norm(v)==='3euel'&&e.slug==='3e');
 for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(k?.startsWith('nejlon-demo-delib-')){const d=read(k,null);if(d?.id&&!D.delibs.some(x=>x.id===d.id))D.delibs.push({...d,name:d.title,status:'Aberta',visibility:'Conselho'})}}
+const currentYear=Number(new Intl.DateTimeFormat('en',{year:'numeric',timeZone:'America/Sao_Paulo'}).format(new Date()));
+const allDelibs=D.delibs.map(d=>({...d,year:Number(d.year)|| (d.id.startsWith('local-')?Number(new Intl.DateTimeFormat('en',{year:'numeric',timeZone:'America/Sao_Paulo'}).format(new Date(parseInt(d.id.slice(6),36)))):d.id==='idealize'?2026:2027)}));
+const demoRoster=D.ejs.slice();
+const years=()=>[...new Set([currentYear,...allDelibs.map(d=>d.year)])].sort((a,b)=>b-a);
+s.year=currentYear;
+const archived=()=>s.year<currentYear;
+function selectYear(year){s.year=year;D.delibs=allDelibs.filter(d=>d.year===year);s.delib=D.delibs[0]?.id||'';s.delibFilter='all';s.level='macro'}
+selectYear(currentYear);
 const reportState=id=>read('nejlon-report-v1-'+id,{});
-const isOpen=d=>d.status==='Aberta'&&!reportState(d.id).closed&&!reportState(d.id).published;
+const isOpen=d=>s.year===currentYear&&d.status==='Aberta'&&!reportState(d.id).closed&&!reportState(d.id).published;
 const stage=d=>reportState(d.id).published?'published':isOpen(d)?'open':'analysis';
 const $=id=>document.getElementById(id);
 const esc=x=>String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -140,9 +148,10 @@ function deliberations(){
  const count=summary(d.id);
  return '<section class="delib-card"><div class="delib-card-head"><div><span class="delib-kicker">DELIBERAÇÃO</span><h3>'+esc(d.name)+'</h3></div><span class="delib-status '+st+'">'+(st==='open'?'Votação aberta':st==='published'?'Finalizada':'Em apuração')+'</span></div><div class="delib-progress"><div><span>'+count.votes+' de '+D.ejs.length+' EJs responderam</span><strong>'+count.pct+'%</strong></div><div class="delib-track" role="progressbar" aria-valuenow="'+count.pct+'" aria-valuemin="0" aria-valuemax="100"><i style="width:'+count.pct+'%"></i></div>'+(!admin?'<small>'+ (voted?'Seu voto registrado':open?'Seu voto pendente':'Sua EJ não respondeu')+'</small>':'')+'</div><div class="delib-actions"><div><a class="delib-action primary" href="'+form+'"><span>▤</span> Ver formulário <span>↗</span></a><small>'+(open&&!admin?'Disponível para votação':'Disponível para consulta')+'</small></div><div>'+(admin||pub?'<a class="delib-action secondary" href="'+report+'"><span>▥</span> Ver relatório <span>↗</span></a>':'<button class="delib-action secondary" disabled>Ver relatório</button>')+'<small>'+(pub?'Publicado — última versão disponível':admin?'Disponível para apuração':open?'Aguardando encerramento':'Em elaboração pela PRESCON')+'</small></div></div></section>';
  }).join('');
- return '<div class="view-grid">'+(s.role==='prescon'?'<div class="toolrow"><a class="btn red" href="./pages/prescon-criar-deliberacao.html">＋ Nova deliberação</a></div>':'')+controls+(rows||'<p class="note">Nenhuma deliberação neste filtro.</p>')+'</div>';
+ return '<div class="view-grid">'+(s.role==='prescon'&&s.year===currentYear?'<div class="toolrow"><a class="btn red" href="./pages/prescon-criar-deliberacao.html">＋ Nova deliberação</a></div>':'')+controls+(rows||'<p class="note">Nenhuma deliberação neste filtro.</p>')+'</div>';
 }
 function participation(){
+ if(!D.delibs.length)return '<p class="note">Nenhuma deliberação registrada neste ano. Não há indicadores disponíveis.</p>';
  if(s.role==='nucleus_direx')return '<div class="view-grid">'+stats([metric('EJs da Rede',D.ejs.length,'Elegíveis'),metric('Deliberações',D.delibs.length,'Total'),metric('Participação média',(D.delibs.reduce((a,d)=>a+summary(d.id).pct,0)/D.delibs.length).toFixed(2)+'%','Rede')])+trend()+'</div>';
  const individual=e=>stats([metric('Taxa de participação',e.pct+'%','Respostas registradas'),metric('Respondidas',e.done,'Deliberações'),metric('Sem resposta',e.missing,'Deliberações')])+panel('Histórico de participação',esc(e.name),D.delibs.map(d=>'<div class="list-item"><strong>'+esc(d.name)+'</strong>'+tag(done(e.slug,d.id)?'Respondida':isOpen(d)?'Pendente':'Não respondeu',done(e.slug,d.id)?'green':'yellow')+'</div>').join(''));
  if(!['prescon','counselor'].includes(s.role))return '<div class="view-grid">'+individual(perEj(D.ejs.find(e=>e.slug===s.ej)))+'</div>';
@@ -182,18 +191,21 @@ function render(){
  const allowed=nav.filter(n=>role().nav.includes(n[0]));
  const mainNav=allowed.filter(n=>primary.includes(n[0]));
  const secondaryNav=allowed.filter(n=>!primary.includes(n[0]));
- const menu=mainNav.map(navButton).join('')+(secondaryNav.length?'<details class="nav-more" '+(secondaryNav.some(n=>n[0]===s.section)?'open':'')+'><summary>Outras áreas <span aria-hidden="true">⌄</span></summary>'+secondaryNav.map(navButton).join('')+'</details>':'');
+ const yearButton=y=>'<button type="button" class="nav-button '+(s.year===y?'active':'')+'" data-year="'+y+'">'+y+(y===currentYear?' · Ano vigente':y>currentYear?' · Prévia futura':' · Histórico')+'</button>';
+ const yearMenu=yearButton(currentYear)+(years().some(y=>y<currentYear)?'<details '+(archived()?'open':'')+'><summary>Anos anteriores</summary>'+years().filter(y=>y<currentYear).map(yearButton).join('')+'</details>':'')+years().filter(y=>y>currentYear).map(yearButton).join('');
+ const menu=yearMenu+mainNav.map(navButton).join('')+(secondaryNav.length?'<details class="nav-more" '+(secondaryNav.some(n=>n[0]===s.section)?'open':'')+'><summary>Outras áreas <span aria-hidden="true">⌄</span></summary>'+secondaryNav.map(navButton).join('')+'</details>':'');
  const createDelib=s.role==='prescon'?'<a class="nav-button new-deliberation" href="./pages/prescon-criar-deliberacao.html" style="background:#e00000;color:#fff;font-weight:800;border:2px solid #e00000;border-radius:8px;margin:8px 0 12px;padding:12px;display:flex;align-items:center;gap:8px"><span aria-hidden="true">＋</span> Nova deliberação</a>':'';
  $('desktop-nav').innerHTML=menu;
  // Em telas pequenas, navegação linear: evita opções ocultas em <details> dentro do carrossel.
- $('mobile-nav').innerHTML=allowed.map(navButton).join('');
- heading();
+ $('mobile-nav').innerHTML=years().map(yearButton).join('')+allowed.map(navButton).join('');
+ heading();$('section-eyebrow').textContent+=' · '+s.year+(archived()?' · CONSULTA':'');
  if(s.section==='engajamento'){ $('view').innerHTML=participation();return; }
  if(s.role==='prescon')$('view').innerHTML=s.section==='painel'?overview():s.section==='engajamento'?'<div class="view-grid">'+heatmap()+trend()+'</div>':s.section==='deliberacoes'?deliberations():s.section==='pendencias'?pending():s.section==='relatorios'?reports():extras();
  else $('view').innerHTML=s.section==='relatorios'?reports():s.section==='painel'?roleLanding():s.section==='deliberacoes'&&s.role==='counselor'?deliberations():s.section==='deliberacoes'&&s.role==='nucleus_direx'?panel('Relatórios de deliberação','Consulta exclusiva aos relatórios publicados pela PRESCON.',D.delibs.map(d=>'<div class="list-item"><div><strong>'+esc(d.name)+'</strong><p>'+ (reportState(d.id).published?'Publicado':'Aguardando publicação')+'</p></div>'+(reportState(d.id).published?'<a class="btn red" href="./pages/relatorio.html?role=counselor&id='+encodeURIComponent(d.id)+'">Ver relatório</a>':'<button class="btn" disabled>Ver relatório</button>')+'</div>').join('')):extras();
 }
 document.addEventListener('click',e=>{
  const target=e.target.closest('button');if(!target)return;
+ if(target.dataset.year){selectYear(Number(target.dataset.year));render();return;}
  if(target.dataset.level){s.level=target.dataset.level;render();return;}
  if(target.dataset.delibFilter){s.delibFilter=target.dataset.delibFilter;render();return;}
  if(target.dataset.responseFilter){s.responseFilter=target.dataset.responseFilter;render();return;}
