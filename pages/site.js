@@ -10,8 +10,8 @@ if(D&&window.NEJLON_IDEALIZE_VOTES&&!D.delibs.some(x=>x.id==='idealize')){
 }
 
 if(!D){document.getElementById('view').textContent='Dados demonstrativos indisponíveis.';return;}
-const nav=[['deliberacoes','☷','Deliberações'],['engajamento','▦','Participação'],['dmc','◎','Desenvolvimento Conselheiro']];
-const roleMap={prescon:{name:'PRESCON',nav:nav.map(x=>x[0])},counselor:{name:'Conselho',nav:nav.map(x=>x[0])},ej_direx:{name:'DIREX de EJ',nav:['engajamento']},nucleus_direx:{name:'DIREX do Núcleo',nav:['deliberacoes','engajamento']}};
+const nav=[['deliberacoes','☷','Deliberações'],['engajamento','▦','Participação'],['demandas','▤','Demandas'],['dmc','◎','Desenvolvimento Conselheiro']];
+const roleMap={prescon:{name:'PRESCON',nav:nav.map(x=>x[0])},counselor:{name:'Conselho',nav:nav.map(x=>x[0])},ej_direx:{name:'DIREX de EJ',nav:['engajamento','demandas']},nucleus_direx:{name:'DIREX do Núcleo',nav:['deliberacoes','engajamento','demandas']}};
 const s={role:'prescon',section:'deliberacoes',ej:'unect',selected:'unect',filter:'all',search:'',delib:'financeiro',vote:'favorable',positionFilter:'all'};
 s.level='macro';s.responseFilter='missing';s.delibFilter='all';
 const read=(k,f)=>{try{return JSON.parse(localStorage.getItem(k))??f}catch{return f}};
@@ -188,7 +188,7 @@ function render(){
  $('ej-picker-wrap').hidden=!['counselor','ej_direx'].includes(s.role);
  $('ej-picker').innerHTML=D.ejs.map(e=>'<option value="'+esc(e.slug)+'" '+(e.slug===s.ej?'selected':'')+'>'+esc(e.name)+'</option>').join('');
  const primary=nav.map(n=>n[0]);
- const navButton=([key,icon,name])=>key==='demandas'?'<a class="nav-button" href="./pages/demandas.html"><span class="nav-icon" aria-hidden="true">'+icon+'</span>'+esc(name)+'</a>':'<button type="button" class="nav-button '+(key===s.section?'active':'')+'" data-nav="'+key+'" aria-current="'+(key===s.section?'page':'false')+'"><span class="nav-icon" aria-hidden="true">'+icon+'</span>'+esc(name)+'</button>';
+ const navButton=([key,icon,name])=>key==='demandas'?'<details class="demand-nav" '+(s.section==='demandas'?'open':'')+'><summary class="nav-button '+(s.section==='demandas'?'active':'')+'">▤ Demandas <span>⌄</span></summary>'+[['geral','Visão geral'],['lancar','Lançar demandas'],['mapa','Mapa de demandas'],['justificativas','Justificativas'],['historico','Histórico'],['politica','Política de participação']].filter(([k])=>k!=='lancar'||s.role==='prescon').map(([k,t])=>'<button type="button" class="nav-button demand-sub" data-demand-section="'+k+'">'+t+'</button>').join('')+'</details>':'<button type="button" class="nav-button '+(key===s.section?'active':'')+'" data-nav="'+key+'" aria-current="'+(key===s.section?'page':'false')+'"><span class="nav-icon" aria-hidden="true">'+icon+'</span>'+esc(name)+'</button>';
  const allowed=nav.filter(n=>role().nav.includes(n[0]));
  const mainNav=allowed.filter(n=>primary.includes(n[0]));
  const secondaryNav=allowed.filter(n=>!primary.includes(n[0]));
@@ -200,6 +200,7 @@ function render(){
  // Em telas pequenas, navegação linear: evita opções ocultas em <details> dentro do carrossel.
  $('mobile-nav').innerHTML=allowed.map(navButton).join('');
  heading();const yearHost=$('current-date');yearHost.innerHTML='<label for="management-year" style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">Ano da gestão <select id="management-year" class="select" aria-label="Ano da gestão">'+years().map(y=>'<option value="'+y+'" '+(s.year===y?'selected':'')+'>'+y+(y<currentYear?' · Histórico':y>currentYear?' · Prévia':' · Vigente')+'</option>').join('')+'</select></label>';yearHost.querySelector('select').onchange=e=>{selectYear(Number(e.target.value));render()};$('section-eyebrow').textContent+=' · '+s.year+(archived()?' · CONSULTA':'');
+ if(s.section==='demandas'){window.NEJLON_DEMANDAS.render($('view'),{role:s.role,year:s.year,ej:s.ej,ejs:D.ejs,section:s.demandSection||'geral',delibs:D.delibs,votes,closed:d=>stage(d)==='published'||reportState(d.id).closed===true});return;}
  if(s.section==='dmc'){window.NEJLON_DMC.render($('view'),s.role,s.year);return;}
  if(s.section==='engajamento'){ $('view').innerHTML=participation();return; }
  if(s.role==='prescon')$('view').innerHTML=s.section==='painel'?overview():s.section==='engajamento'?'<div class="view-grid">'+heatmap()+trend()+'</div>':s.section==='deliberacoes'?deliberations():s.section==='pendencias'?pending():s.section==='relatorios'?reports():extras();
@@ -207,6 +208,7 @@ function render(){
 }
 document.addEventListener('click',e=>{
  const target=e.target.closest('button');if(!target)return;
+ if(target.dataset.demandSection){s.section='demandas';s.demandSection=target.dataset.demandSection;render();return;}
  if(target.dataset.year){selectYear(Number(target.dataset.year));render();return;}
  if(target.dataset.level){s.level=target.dataset.level;render();return;}
  if(target.dataset.delibFilter){s.delibFilter=target.dataset.delibFilter;render();return;}
