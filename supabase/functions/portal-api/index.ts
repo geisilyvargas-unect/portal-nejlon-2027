@@ -131,6 +131,11 @@ async function list(user){
  return {demands,justifications,events,ejs,summary,ownEjId:user.ej_id||null,
   role,detailAccess:isPrescon,limited:demands.length===1500||(isPrescon&&justifications.length===3000)};
 }
+async function eligibleRoster(form, fallback){
+ if(form.audience!=='counselor')return fallback;
+ const rows=await db('portal_form_eligible_ejs',{query:'select=ej_id,name_snapshot&form_id=eq.'+form.id+'&order=name_snapshot.asc'});
+ return rows.map(e=>({id:e.ej_id,name:e.name_snapshot}));
+}
 async function handler(req,res){
  const user=await userFromToken(req);
  const action=String(req.query?.action||'list');
@@ -313,11 +318,13 @@ async function handler(req,res){
    const ejs=await db('ejs',{query:'select=id,name&limit=100'});
    const totals=[];
    for(const f of forms.slice(0,75)){
+    const roster=await eligibleRoster(f,ejs);
+    const eligible=new Set(roster.map(e=>e.id));
     const submissions=await db('portal_form_submissions',{query:'select=ej_id,state,channel&form_id=eq.'+f.id+'&limit=2000'});
-    const validated=new Set(submissions.filter(x=>x.state==='accepted'&&x.ej_id).map(x=>x.ej_id));
+    const validated=new Set(submissions.filter(x=>x.state==='accepted'&&x.ej_id&&(f.audience!=='counselor'||eligible.has(x.ej_id))).map(x=>x.ej_id));
     totals.push({id:f.id,title:f.title,kind:f.kind,status:f.status,due_at:f.due_at,
       updated_at:f.updated_at,created_at:f.created_at,question_count:f.questions?.length||0,
-      accepted_count:validated.size,pending_count:Math.max(0,ejs.length-validated.size),
+      accepted_count:validated.size,pending_count:Math.max(0,roster.length-validated.size),
       pending_review_count:submissions.filter(x=>x.state==='pending_review').length,
       // Não revelar a EJ que votou nem conteúdo de nenhum voto em aberto.
       votes_hidden:true});
@@ -336,15 +343,17 @@ async function handler(req,res){
    const ejs=await db('ejs',{query:'select=id,name,slug&order=name.asc&limit=100'});
    const enriched=[];
    for(const f of forms.slice(0,40)){
+    const roster=await eligibleRoster(f,ejs);
+    const eligible=new Set(roster.map(e=>e.id));
     const submissions=await db('portal_form_submissions',{query:'select=ej_id,state,channel&form_id=eq.'+f.id+'&limit=2000'});
-    const accepted=new Set(submissions.filter(x=>x.state==='accepted'&&x.ej_id).map(x=>x.ej_id));
+    const accepted=new Set(submissions.filter(x=>x.state==='accepted'&&x.ej_id&&(f.audience!=='counselor'||eligible.has(x.ej_id))).map(x=>x.ej_id));
     enriched.push({
      id:f.id,title:f.title,kind:f.kind,due_at:f.due_at,
-     valid_votes:accepted.size,pending_ejs:ejs.filter(x=>!accepted.has(x.id)).map(x=>({id:x.id,name:x.name})),
+     valid_votes:accepted.size,pending_ejs:roster.filter(x=>!accepted.has(x.id)).map(x=>({id:x.id,name:x.name})),
      pending_review:submissions.filter(x=>x.state==='pending_review').length,
      google_responder_url:f.google_responder_url,
-     // A lista de ausentes parte das EJs cadastradas, não de comparação por e-mail.
-     total_ejs:ejs.length
+     // Votações do Conselho usam exclusivamente a composição congelada.
+     total_ejs:roster.length
     });
    }
    const now=Date.now(),week=7*24*3600*1000;
