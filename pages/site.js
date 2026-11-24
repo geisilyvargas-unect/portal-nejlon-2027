@@ -10,26 +10,33 @@ if(D&&window.NEJLON_IDEALIZE_VOTES&&!D.delibs.some(x=>x.id==='idealize')){
 }
 
 if(!D){document.getElementById('view').textContent='Dados demonstrativos indisponíveis.';return;}
-const nav=[['deliberacoes','☷','Deliberações'],['engajamento','▦','Participação nas deliberações'],['pendencias','◷','Votos pendentes'],['relatorios','▤','Relatórios de deliberação']];
-const roleMap={prescon:{name:'PRESCON',nav:nav.map(x=>x[0])},counselor:{name:'Conselho',nav:['deliberacoes','relatorios']},nucleus_direx:{name:'DIREX do Núcleo',nav:['deliberacoes']}};
+const nav=[['deliberacoes','☷','Deliberações'],['engajamento','▦','Participação']];
+const roleMap={prescon:{name:'PRESCON',nav:nav.map(x=>x[0])},counselor:{name:'Conselho',nav:nav.map(x=>x[0])},nucleus_direx:{name:'DIREX do Núcleo',nav:['deliberacoes']}};
 const s={role:'prescon',section:'deliberacoes',ej:'unect',selected:'unect',filter:'all',search:'',delib:'financeiro',vote:'favorable',positionFilter:'all'};
+s.level='macro';s.responseFilter='missing';s.delibFilter='all';
+const read=(k,f)=>{try{return JSON.parse(localStorage.getItem(k))??f}catch{return f}};
+const norm=v=>String(v??'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]/g,'');
+const aliases=['3E-UEL','Aprimora','Artus','Bioma','Bóson Consultoria','Business Consultoria',"CATEC'z",'CONSOAGRO','Cotton','ECAE UEL','Elo Consultoria','FertField','Gaia Júnior','Kinase Consultoria','LEX','Lion','MECA Engenharia','NOTTON','Paracelso Consultoria','Pegasus','SELECT','Sete','SmartMec Jr','SMat Jr','Solução Jr.','TCP Engenharia Civil','Therion','Unect Jr.','VetJr'];
+const matchEj=v=>D.ejs.find(e=>[e.slug,e.name].some(n=>norm(n)===norm(v)))||D.ejs.find(e=>norm(v).startsWith(norm(e.slug))&&norm(e.slug).length>=3)||D.ejs.find(e=>norm(v)==='3euel'&&e.slug==='3e');
+for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(k?.startsWith('nejlon-demo-delib-')){const d=read(k,null);if(d?.id&&!D.delibs.some(x=>x.id===d.id))D.delibs.push({...d,name:d.title,status:'Aberta',visibility:'Conselho'})}}
+const reportState=id=>read('nejlon-report-v1-'+id,{});
+const isOpen=d=>d.status==='Aberta'&&!reportState(d.id).closed&&!reportState(d.id).published;
+const stage=d=>reportState(d.id).published?'published':isOpen(d)?'open':'analysis';
 const $=id=>document.getElementById(id);
 const esc=x=>String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const ejLogo=(slug)=>'<img class="ej-original-logo" src="./pages/logos/'+esc(({catecz:'catec-z',gaia:'gaia-jr',smatjr:'smat',vetjr:'vet-jr'})[slug]||slug)+'.svg" alt="" loading="lazy">';
 const fmt=n=>Math.round(n)+'%';
 const role=()=>roleMap[s.role];
 const votes=id=>{
- const valid=new Set(D.ejs.map(e=>e.slug));
- const seen=new Set();
- return (Array.isArray(D.votes[id])?D.votes[id]:[]).filter(v=>{
-  if(!v||!valid.has(v.slug)||!D.positions[v.position]||seen.has(v.slug))return false;
-  seen.add(v.slug);return true;
- });
+ const seen=new Map();
+ for(const v of D.votes[id]||[])if(D.ejs.some(e=>e.slug===v.slug)&&D.positions[v.position])seen.set(v.slug,v);
+ for(const v of read('nejlon-demo-answers-'+id,[])){const e=matchEj(v.respondent?.ej),a=v.answers?.[0];if(e&&D.positions[a?.position])seen.set(e.slug,{slug:e.slug,position:a.position,note:a.justification||''})}
+ return [...seen.values()];
 };
 const delib=id=>D.delibs.find(x=>x.id===id)||D.delibs[0];
 const done=(ej,id)=>votes(id).find(v=>v.slug===ej);
-const summary=id=>{const n=votes(id).length,total=D.ejs.length;return {votes:n,pending:Math.max(0,total-n),pct:total?Math.round(n*100/total):0}};
-const perEj=ej=>{const n=D.delibs.filter(d=>done(ej.slug,d.id)).length;const total=D.delibs.length;return {...ej,done:n,missing:total-n,pct:Math.round(n*100/total),status:n/total>=.8?'high':n/total>=.5?'medium':'low',answered:D.delibs.filter(d=>done(ej.slug,d.id)),pending:D.delibs.filter(d=>!done(ej.slug,d.id))}};
+const summary=id=>{const n=votes(id).length,total=D.ejs.length;return {votes:n,pending:Math.max(0,total-n),pct:total?Number((n*100/total).toFixed(2)):0}};
+const perEj=ej=>{const n=D.delibs.filter(d=>done(ej.slug,d.id)).length;const total=D.delibs.length;return {...ej,done:n,missing:total-n,pct:Number((total?n*100/total:0).toFixed(2)),status:n/total>=.8?'high':n/total>=.5?'medium':'low',answered:D.delibs.filter(d=>done(ej.slug,d.id)),pending:D.delibs.filter(d=>!done(ej.slug,d.id))}};
 const ejData=()=>D.ejs.map(perEj).sort((a,b)=>a.name.localeCompare(b.name,'pt-BR'));
 const metric=(label,value,footer,icon='◇')=>'<article class="stat-card"><span class="stat-icon">'+icon+'</span><span class="stat-label">'+esc(label)+'</span><strong>'+esc(value)+'</strong><span class="stat-footer">'+esc(footer)+'</span></article>';
 const stats=(items)=>'<div class="stats">'+items.join('')+'</div>';
@@ -37,7 +44,7 @@ const panel=(title,sub,content)=>'<section class="panel"><div class="section-row
 const tag=(txt,cls='')=>'<span class="tag '+cls+'">'+esc(txt)+'</span>';
 const titleOptions=()=>'<label class="mini-heading" for="delib-select">DELIBERAÇÃO DEMONSTRATIVA</label><div class="toolrow"><select class="select" id="delib-select">'+D.delibs.map(d=>'<option value="'+d.id+'" '+(d.id===s.delib?'selected':'')+'>'+esc(d.name)+'</option>').join('')+'</select></div>';
 const labels={painel:['VISÃO PRESCON','Visão geral da Rede','Acompanhe os principais números, pendências e prioridades em uma única tela.'],
- engajamento:['PARTICIPAÇÃO DAS EJs','Radar visual da Rede','Mapa interativo, ficha individual de cada EJ e evolução das respostas.'],
+ engajamento:['PARTICIPAÇÃO DAS EJs','Participação','Acompanhe as respostas às deliberações.'],
  deliberacoes:['CONSELHO DELIBERATIVO','Deliberações','Acompanhe os cenários e os posicionamentos enviados pelas EJs.'],
  pendencias:['ACOMPANHAMENTO','Central de Pendências','Veja quem respondeu e quem ainda está pendente, sem procurar planilhas.'],
  relatorios:['CONSOLIDAÇÃO','Relatórios institucionais','Resultados calculados automaticamente a partir de votos de demonstração.'],
@@ -125,12 +132,23 @@ function exportReport(format){
 }
 function reports(){return panel('Central de relatórios','Apuração por cenário, pareceres e publicação.','<a class="btn red" href="./pages/relatorio.html?role='+ (s.role==='prescon'?'prescon':'counselor') +'">Abrir central de relatórios →</a>');}
 function deliberations(){
- const cards=D.delibs.filter(d=>s.role!=='ej_direx'||d.visibility!=='Conselho');
- const id=s.delib,selected=delib(id);
- const rows=cards.map(d=>'<div class="list-item"><div><strong>'+esc(d.name)+'</strong><p>'+esc(d.visibility)+' • '+(s.role==='prescon'?summary(d.id).votes+' votos fictícios':'votos ocultos durante a deliberação')+'</p></div><div class="right">'+tag(d.status,d.status==='Aberta'?'green':'yellow')+(d.id==='idealize'?'<a class="btn red" href="./pages/idealize.html">Abrir PF</a>':'<button class="btn" type="button" data-open-delib="'+d.id+'">Ver</button>')+'</div></div>').join('');
- const extra=(s.role==='prescon')?panel('Respostas da deliberação selecionada',selected.name,recordList(id)) :
- s.role==='counselor'?panel('Simulação de voto • '+esc(D.ejs.find(x=>x.slug===s.ej)?.name||'EJ'),'Nenhum voto será gravado no Supabase.','<p class="note">Os votos individuais não são mostrados durante a deliberação. Alterações reais exigem autorização da PRESCON.</p>'+'<div class="toolrow"><select class="select" id="vote-select">'+Object.entries(D.positions).map(([k,x])=>'<option value="'+k+'" '+(s.vote===k?'selected':'')+'>'+esc(x.label)+'</option>').join('')+'</select><button class="btn red" type="button" data-simulate>Simular envio</button></div>') :panel('Permissões nesta visão','A DIREX acompanha apenas conteúdos liberados para consulta.','<div class="notice">Apenas o perfil Conselho pode registrar votos institucionais na versão real.</div>');
- return '<div class="view-grid">'+panel('Deliberações da Rede','Exemplos de diferentes tipos de votação e visibilidade.',rows)+panel('Consultar posicionamentos','Escolha uma deliberação na lista ou abaixo.',titleOptions())+extra+'</div>';
+ const filters=[['all','Todas'],['open','Abertas'],['analysis','Em análise'],['published','Finalizadas']];
+ const controls='<div class="toolrow">'+filters.map(([k,t])=>'<button class="filter '+(s.delibFilter===k?'active':'')+'" data-delib-filter="'+k+'">'+t+'</button>').join('')+'</div>';
+ const rows=D.delibs.filter(d=>s.delibFilter==='all'||stage(d)===s.delibFilter).map(d=>{
+ const st=stage(d),open=isOpen(d),pub=!!reportState(d.id).published,admin=s.role==='prescon',voted=!!done(s.ej,d.id),id=encodeURIComponent(d.id),form=(d.id==='idealize'?'./pages/idealize.html?':'./pages/formulario-deliberacao.html?id='+id+'&')+'role='+s.role+'&ej='+encodeURIComponent(s.ej)+'&mode='+(admin||!open?'view':'vote');
+ const report='./pages/relatorio.html?id='+id+'&role='+s.role;
+ return '<section class="panel"><div class="section-row"><div>'+tag(st==='open'?'Votação aberta':st==='published'?'Finalizada':'Em apuração',st==='open'||pub?'green':'yellow')+'<h3>'+esc(d.name)+'</h3><p class="sub">'+(admin?summary(d.id).votes+' de '+D.ejs.length+' EJs responderam':voted?'Voto registrado':open?'Voto pendente':'Não respondeu')+'</p></div></div><div class="toolrow" style="align-items:stretch"><div style="flex:1;min-width:150px"><a class="btn red" href="'+form+'">Ver formulário</a><p class="sub">'+(open&&!admin?'Disponível para votação':'Disponível para consulta')+'</p></div><div style="flex:1;min-width:150px">'+(admin||pub?'<a class="btn" href="'+report+'">Ver relatório</a>':'<button class="btn" disabled>Ver relatório</button>')+'<p class="sub">'+(pub?'Publicado — última versão disponível':admin?'Disponível para apuração':open?'Aguardando encerramento':'Em elaboração pela PRESCON')+'</p></div></div></section>';
+ }).join('');
+ return '<div class="view-grid">'+(s.role==='prescon'?'<div class="toolrow"><a class="btn red" href="./pages/prescon-criar-deliberacao.html">＋ Nova deliberação</a></div>':'')+controls+(rows||'<p class="note">Nenhuma deliberação neste filtro.</p>')+'</div>';
+}
+function participation(){
+ const individual=e=>stats([metric('Taxa de participação',e.pct+'%','Respostas registradas'),metric('Respondidas',e.done,'Deliberações'),metric('Sem resposta',e.missing,'Deliberações')])+panel('Histórico de participação',esc(e.name),D.delibs.map(d=>'<div class="list-item"><strong>'+esc(d.name)+'</strong>'+tag(done(e.slug,d.id)?'Respondida':isOpen(d)?'Pendente':'Não respondeu',done(e.slug,d.id)?'green':'yellow')+'</div>').join(''));
+ if(s.role!=='prescon')return '<div class="view-grid">'+individual(perEj(D.ejs.find(e=>e.slug===s.ej)))+'</div>';
+ const tabs='<div class="toolrow">'+[['macro','Macro'],['delib','Por deliberação'],['micro','Micro']].map(([k,t])=>'<button class="filter '+(s.level===k?'active':'')+'" data-level="'+k+'">'+t+'</button>').join('')+'</div>';
+ if(s.level==='macro')return '<div class="view-grid">'+tabs+stats([metric('EJs da Rede',D.ejs.length,'Elegíveis'),metric('Deliberações',D.delibs.length,'Total'),metric('Participação média',(D.delibs.reduce((a,d)=>a+summary(d.id).pct,0)/D.delibs.length).toFixed(2)+'%','Rede')])+trend()+heatmap()+'</div>';
+ if(s.level==='micro'){const all=ejData(),e=all.find(e=>e.slug===s.selected)||all[0];return '<div class="view-grid">'+tabs+panel('Selecionar EJ','','<select class="select" id="profile-ej-select">'+all.map(x=>'<option value="'+esc(x.slug)+'" '+(x.slug===e.slug?'selected':'')+'>'+esc(x.name)+'</option>').join('')+'</select>')+individual(e)+'</div>'}
+ const d=delib(s.delib),sum=summary(d.id),all=ejData(),missing=all.filter(e=>!done(e.slug,d.id));
+ return '<div class="view-grid">'+tabs+panel('Selecionar deliberação','Consulte a situação de cada EJ.',titleOptions())+stats([metric('Elegíveis',D.ejs.length,'EJs'),metric('Responderam',sum.votes,'EJs'),metric('Sem resposta',sum.pending,'EJs'),metric('Representatividade',sum.pct+'%','Participação')])+panel('Situação das EJs','', '<div class="toolrow">'+[['all','Todas'],['done','Responderam'],['missing','Não responderam']].map(([k,t])=>'<button class="filter '+(s.responseFilter===k?'active':'')+'" data-response-filter="'+k+'">'+t+'</button>').join('')+'</div>'+all.filter(e=>s.responseFilter==='all'||(s.responseFilter==='done'?!!done(e.slug,d.id):!done(e.slug,d.id))).map(e=>'<div class="list-item"><strong>'+ejLogo(e.slug)+esc(e.name)+'</strong>'+tag(done(e.slug,d.id)?'Respondida':isOpen(d)?'Pendente':'Não respondeu',done(e.slug,d.id)?'green':'yellow')+'</div>').join('')+'<button class="btn" data-copy-missing>Copiar lista de EJs sem resposta ('+missing.length+')</button>')+'</div>';
 }
 function overview(){
  const p=summary('financeiro');
@@ -164,15 +182,20 @@ function render(){
  const secondaryNav=allowed.filter(n=>!primary.includes(n[0]));
  const menu=mainNav.map(navButton).join('')+(secondaryNav.length?'<details class="nav-more" '+(secondaryNav.some(n=>n[0]===s.section)?'open':'')+'><summary>Outras áreas <span aria-hidden="true">⌄</span></summary>'+secondaryNav.map(navButton).join('')+'</details>':'');
  const createDelib=s.role==='prescon'?'<a class="nav-button new-deliberation" href="./pages/prescon-criar-deliberacao.html" style="background:#e00000;color:#fff;font-weight:800;border:2px solid #e00000;border-radius:8px;margin:8px 0 12px;padding:12px;display:flex;align-items:center;gap:8px"><span aria-hidden="true">＋</span> Nova deliberação</a>':'';
- $('desktop-nav').innerHTML=createDelib+menu;
+ $('desktop-nav').innerHTML=menu;
  // Em telas pequenas, navegação linear: evita opções ocultas em <details> dentro do carrossel.
- $('mobile-nav').innerHTML=createDelib+allowed.map(navButton).join('');
+ $('mobile-nav').innerHTML=allowed.map(navButton).join('');
  heading();
+ if(s.section==='engajamento'){ $('view').innerHTML=participation();return; }
  if(s.role==='prescon')$('view').innerHTML=s.section==='painel'?overview():s.section==='engajamento'?'<div class="view-grid">'+heatmap()+trend()+'</div>':s.section==='deliberacoes'?deliberations():s.section==='pendencias'?pending():s.section==='relatorios'?reports():extras();
  else $('view').innerHTML=s.section==='relatorios'?reports():s.section==='painel'?roleLanding():s.section==='deliberacoes'&&s.role==='counselor'?deliberations():s.section==='deliberacoes'&&s.role==='nucleus_direx'?panel('Deliberações e formulários','A DIREX do Núcleo acompanha pelo painel autenticado de fiscalização, sem editar nem ver votos individuais.','<a class="btn red" href="./pages/fiscalizacao.html">Abrir fiscalização →</a>'):extras();
 }
 document.addEventListener('click',e=>{
  const target=e.target.closest('button');if(!target)return;
+ if(target.dataset.level){s.level=target.dataset.level;render();return;}
+ if(target.dataset.delibFilter){s.delibFilter=target.dataset.delibFilter;render();return;}
+ if(target.dataset.responseFilter){s.responseFilter=target.dataset.responseFilter;render();return;}
+ if(target.hasAttribute('data-copy-missing')){const list=ejData().filter(e=>!done(e.slug,s.delib)).map(e=>e.name).join('\n');navigator.clipboard.writeText(list).then(()=>{target.textContent='Lista copiada!'}).catch(()=>prompt('Copie a lista:',list));return;}
  if(target.dataset.exportReport){exportReport(target.dataset.exportReport);return;}
  if(target.dataset.role){s.role=target.dataset.role;s.section='deliberacoes';render();return;}
  if(target.dataset.nav){s.section=target.dataset.nav;render();return;}
