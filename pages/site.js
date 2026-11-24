@@ -11,7 +11,7 @@ if(D&&window.NEJLON_IDEALIZE_VOTES&&!D.delibs.some(x=>x.id==='idealize')){
 
 if(!D){document.getElementById('view').textContent='Dados demonstrativos indisponíveis.';return;}
 const nav=[['deliberacoes','☷','Deliberações'],['engajamento','▦','Participação']];
-const roleMap={prescon:{name:'PRESCON',nav:nav.map(x=>x[0])},counselor:{name:'Conselho',nav:nav.map(x=>x[0])},ej_direx:{name:'DIREX de EJ',nav:['engajamento']},nucleus_direx:{name:'DIREX do Núcleo',nav:['deliberacoes']}};
+const roleMap={prescon:{name:'PRESCON',nav:nav.map(x=>x[0])},counselor:{name:'Conselho',nav:nav.map(x=>x[0])},ej_direx:{name:'DIREX de EJ',nav:['engajamento']},nucleus_direx:{name:'DIREX do Núcleo',nav:['deliberacoes','engajamento']}};
 const s={role:'prescon',section:'deliberacoes',ej:'unect',selected:'unect',filter:'all',search:'',delib:'financeiro',vote:'favorable',positionFilter:'all'};
 s.level='macro';s.responseFilter='missing';s.delibFilter='all';
 const read=(k,f)=>{try{return JSON.parse(localStorage.getItem(k))??f}catch{return f}};
@@ -143,6 +143,7 @@ function deliberations(){
  return '<div class="view-grid">'+(s.role==='prescon'?'<div class="toolrow"><a class="btn red" href="./pages/prescon-criar-deliberacao.html">＋ Nova deliberação</a></div>':'')+controls+(rows||'<p class="note">Nenhuma deliberação neste filtro.</p>')+'</div>';
 }
 function participation(){
+ if(s.role==='nucleus_direx')return '<div class="view-grid">'+stats([metric('EJs da Rede',D.ejs.length,'Elegíveis'),metric('Deliberações',D.delibs.length,'Total'),metric('Participação média',(D.delibs.reduce((a,d)=>a+summary(d.id).pct,0)/D.delibs.length).toFixed(2)+'%','Rede')])+trend()+'</div>';
  const individual=e=>stats([metric('Taxa de participação',e.pct+'%','Respostas registradas'),metric('Respondidas',e.done,'Deliberações'),metric('Sem resposta',e.missing,'Deliberações')])+panel('Histórico de participação',esc(e.name),D.delibs.map(d=>'<div class="list-item"><strong>'+esc(d.name)+'</strong>'+tag(done(e.slug,d.id)?'Respondida':isOpen(d)?'Pendente':'Não respondeu',done(e.slug,d.id)?'green':'yellow')+'</div>').join(''));
  if(!['prescon','counselor'].includes(s.role))return '<div class="view-grid">'+individual(perEj(D.ejs.find(e=>e.slug===s.ej)))+'</div>';
  const tabs='<div class="toolrow">'+[['macro','Macro'],['delib','Por deliberação'],['micro','Micro']].map(([k,t])=>'<button class="filter '+(s.level===k?'active':'')+'" data-level="'+k+'">'+t+'</button>').join('')+'</div>';
@@ -189,7 +190,7 @@ function render(){
  heading();
  if(s.section==='engajamento'){ $('view').innerHTML=participation();return; }
  if(s.role==='prescon')$('view').innerHTML=s.section==='painel'?overview():s.section==='engajamento'?'<div class="view-grid">'+heatmap()+trend()+'</div>':s.section==='deliberacoes'?deliberations():s.section==='pendencias'?pending():s.section==='relatorios'?reports():extras();
- else $('view').innerHTML=s.section==='relatorios'?reports():s.section==='painel'?roleLanding():s.section==='deliberacoes'&&s.role==='counselor'?deliberations():s.section==='deliberacoes'&&s.role==='nucleus_direx'?panel('Deliberações e formulários','A DIREX do Núcleo acompanha pelo painel autenticado de fiscalização, sem editar nem ver votos individuais.','<a class="btn red" href="./pages/fiscalizacao.html">Abrir fiscalização →</a>'):extras();
+ else $('view').innerHTML=s.section==='relatorios'?reports():s.section==='painel'?roleLanding():s.section==='deliberacoes'&&s.role==='counselor'?deliberations():s.section==='deliberacoes'&&s.role==='nucleus_direx'?panel('Relatórios de deliberação','Consulta exclusiva aos relatórios publicados pela PRESCON.',D.delibs.map(d=>'<div class="list-item"><div><strong>'+esc(d.name)+'</strong><p>'+ (reportState(d.id).published?'Publicado':'Aguardando publicação')+'</p></div>'+(reportState(d.id).published?'<a class="btn red" href="./pages/relatorio.html?role=counselor&id='+encodeURIComponent(d.id)+'">Ver relatório</a>':'<button class="btn" disabled>Ver relatório</button>')+'</div>').join('')):extras();
 }
 document.addEventListener('click',e=>{
  const target=e.target.closest('button');if(!target)return;
