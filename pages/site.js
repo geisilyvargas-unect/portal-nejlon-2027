@@ -11,7 +11,7 @@ if(D&&window.NEJLON_IDEALIZE_VOTES&&!D.delibs.some(x=>x.id==='idealize')){
 
 if(!D){document.getElementById('view').textContent='Dados demonstrativos indisponíveis.';return;}
 const nav=[['deliberacoes','☷','Deliberações'],['engajamento','▦','Participação nas deliberações'],['pendencias','◷','Votos pendentes'],['relatorios','▤','Relatórios de deliberação']];
-const roleMap={prescon:{name:'PRESCON',nav:nav.map(x=>x[0])},counselor:{name:'Conselho',nav:['deliberacoes']},nucleus_direx:{name:'DIREX do Núcleo',nav:['deliberacoes']}};
+const roleMap={prescon:{name:'PRESCON',nav:nav.map(x=>x[0])},counselor:{name:'Conselho',nav:['deliberacoes','relatorios']},nucleus_direx:{name:'DIREX do Núcleo',nav:['deliberacoes']}};
 const s={role:'prescon',section:'deliberacoes',ej:'unect',selected:'unect',filter:'all',search:'',delib:'financeiro',vote:'favorable',positionFilter:'all'};
 const $=id=>document.getElementById(id);
 const esc=x=>String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -123,17 +123,7 @@ function exportReport(format){
   document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);
  }
 }
-function reports(){
- const id=s.delib,sum=summary(id),v=votes(id),approval=v.filter(x=>['favorable','suggestions'].includes(x.position)).length,caveats=v.filter(x=>x.position==='qualified').length,suggestions=v.filter(x=>x.position==='suggestions').length;
- const count=v.length;
- const warning=id==='idealize'?'<div class="notice">IDEALIZE: os indicadores deste painel resumem apenas C1 (UEL) dos exemplos fictícios. Para comparar C1/C2, rateios e seus dados financeiros, abra o <a href="./pages/idealize.html">painel do Idealize</a>. Não existem votos simulados de rateio.</div>':'';
- const decisions='<div class="prescon-focus"><div class="prescon-focus-card"><span>EJs sem resposta</span><strong>'+sum.pending+'</strong><button class="btn" type="button" data-nav="pendencias">Ver pendentes →</button></div><div class="prescon-focus-card"><span>Ressalvas para análise humana</span><strong>'+caveats+'</strong><p>Não são aceitas nem rejeitadas automaticamente.</p></div><div class="prescon-focus-card"><span>Sugestões registradas</span><strong>'+suggestions+'</strong><p>Comentários demonstrativos disponíveis abaixo.</p></div></div>';
- return '<div class="view-grid">'+warning+panel('Deliberação analisada','Escolha o conjunto de exemplos para consultar.',titleOptions()+'<div class="toolrow" style="margin-top:18px;display:flex;flex-wrap:wrap;gap:10px"><button class="btn red" type="button" data-export-report="pdf">📄 Exportar relatório em PDF</button><button class="btn" type="button" data-export-report="doc">📝 Exportar para Google Docs (.doc)</button></div><p class="note">O PDF abre para impressão; escolha Salvar como PDF. O .doc pode ser aberto no Google Docs.</p>')+
- panel('Exportar relatório','PDF pelo navegador ou arquivo compatível com Word e importação no Google Docs. Dados exclusivamente fictícios.','<div class="toolrow"><button class="btn red" type="button" data-export-report="pdf">Exportar PDF</button><button class="btn" type="button" data-export-report="doc">Exportar para Docs (.doc)</button></div><p class="note">Para PDF, selecione Salvar como PDF na janela de impressão. O arquivo .doc pode ser aberto no Word ou enviado ao Google Drive e aberto no Google Docs.</p>')+panel('Prioridades da PRESCON','Pendências e opiniões fictícias, sem providências institucionais reais.',decisions)+
- stats([metric('EJs votantes',sum.votes,'De 29 EJs','◉'),metric('Aprovação direta',count?Math.round(approval*100/count)+'%':'—','Aprova + aprova com sugestões','✓'),metric('Ressalvas',caveats,'Aguardam decisão humana','◷'),metric('Sugestões',suggestions,'Para avaliação humana','✧')])+
- panel('Distribuição dos posicionamentos','Clique em uma barra para filtrar os comentários. Contagem e percentuais fictícios.',responseCharts(id))+
- panel('Pareceres para avaliação','Filtrados pela barra selecionada; não há decisão automática da PRESCON.',recordList(id,false))+'</div>';
-}
+function reports(){return panel('Central de relatórios','Apuração por cenário, pareceres e publicação.','<a class="btn red" href="./pages/relatorio.html?role='+ (s.role==='prescon'?'prescon':'counselor') +'">Abrir central de relatórios →</a>');}
 function deliberations(){
  const cards=D.delibs.filter(d=>s.role!=='ej_direx'||d.visibility!=='Conselho');
  const id=s.delib,selected=delib(id);
@@ -179,7 +169,7 @@ function render(){
  $('mobile-nav').innerHTML=createDelib+allowed.map(navButton).join('');
  heading();
  if(s.role==='prescon')$('view').innerHTML=s.section==='painel'?overview():s.section==='engajamento'?'<div class="view-grid">'+heatmap()+trend()+'</div>':s.section==='deliberacoes'?deliberations():s.section==='pendencias'?pending():s.section==='relatorios'?reports():extras();
- else $('view').innerHTML=s.section==='painel'?roleLanding():s.section==='deliberacoes'&&s.role==='counselor'?deliberations():s.section==='deliberacoes'&&s.role==='nucleus_direx'?panel('Deliberações e formulários','A DIREX do Núcleo acompanha pelo painel autenticado de fiscalização, sem editar nem ver votos individuais.','<a class="btn red" href="./pages/fiscalizacao.html">Abrir fiscalização →</a>'):extras();
+ else $('view').innerHTML=s.section==='relatorios'?reports():s.section==='painel'?roleLanding():s.section==='deliberacoes'&&s.role==='counselor'?deliberations():s.section==='deliberacoes'&&s.role==='nucleus_direx'?panel('Deliberações e formulários','A DIREX do Núcleo acompanha pelo painel autenticado de fiscalização, sem editar nem ver votos individuais.','<a class="btn red" href="./pages/fiscalizacao.html">Abrir fiscalização →</a>'):extras();
 }
 document.addEventListener('click',e=>{
  const target=e.target.closest('button');if(!target)return;
