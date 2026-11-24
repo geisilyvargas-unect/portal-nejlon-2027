@@ -9,5 +9,11 @@
   ],
   "buildCommand": "mkdir -p public && cp index.html public/index.html && cp -R pages public/pages && cp -R versao-supabase public/versao-supabase",
   "outputDirectory": "public",
-  "installCommand": ""
+  "installCommand": "",
+  "rewrites": [
+    {
+      "source": "/api/google-callback",
+      "destination": "/api/drive?action=callback"
+    }
+  ]
 }
