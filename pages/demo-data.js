@@ -491,7 +491,30 @@ window.NEJLON_DEMO = {
       "visibility": "DIREX e Conselho",
       "due": "15/09/2026 — “data fictícia, sem registro”",
       "period": "10/09/2026 a 15/09/2026 — “data fictícia, sem registro”",
-      "result": "Sem registro"
+      "result": "Sem registro",
+      "year": 2026,
+      "financial": {
+        "scenarios": [
+          {
+            "name": "Pessimista",
+            "income": 2500,
+            "expenses": 3390,
+            "balance": -890
+          },
+          {
+            "name": "Realista",
+            "income": 3350,
+            "expenses": 3460,
+            "balance": -110
+          },
+          {
+            "name": "Otimista",
+            "income": 3925,
+            "expenses": 3305,
+            "balance": 620
+          }
+        ]
+      }
     }
   ],
   "positions": {
