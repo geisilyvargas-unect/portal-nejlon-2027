@@ -25,7 +25,7 @@ const demoRoster=D.ejs.slice();
 const years=()=>[...new Set([currentYear,...allDelibs.map(d=>d.year)])].sort((a,b)=>b-a);
 s.year=currentYear;
 const archived=()=>s.year<currentYear;
-function selectYear(year){s.year=year;D.delibs=allDelibs.filter(d=>d.year===year&&(year!==2026||['edex-26-2','idealize'].includes(d.id)));s.delib=D.delibs[0]?.id||'';s.delibFilter='all';s.level='macro'}
+function selectYear(year){s.year=year;D.delibs=allDelibs.filter(d=>d.year===year&&(year===2026?['edex-26-2','idealize'].includes(d.id):year<=currentYear||d.id.startsWith('local-')));s.delib=D.delibs[0]?.id||'';s.delibFilter='all';s.level='macro'}
 selectYear(currentYear);
 const reportState=id=>read('nejlon-report-v1-'+id,{});
 const isOpen=d=>s.year===currentYear&&d.status==='Aberta'&&!reportState(d.id).closed&&!reportState(d.id).published;
