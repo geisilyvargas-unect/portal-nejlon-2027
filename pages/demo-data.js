@@ -1,4 +1,4 @@
-/* Dados públicos EXCLUSIVAMENTE fictícios. Não conectam ao Supabase. */
+/* Dados públicos de demonstração. Não conectam ao Supabase. */
 window.NEJLON_DEMO = {
   "ejs": [
     {
@@ -459,7 +459,8 @@ window.NEJLON_DEMO = {
         "position": "favorable",
         "note": "A VET JR apoiou o encerramento do período."
       }
-    ]
+    ],
+    "edex-26-2": []
   },
   "delibs": [
     {
@@ -482,6 +483,15 @@ window.NEJLON_DEMO = {
       "status": "Encerrada",
       "visibility": "DIREX e Conselho",
       "due": "15/03/2027"
+    },
+    {
+      "id": "edex-26-2",
+      "name": "[EDEX 26.2] PLANEJAMENTO FINANCEIRO",
+      "status": "Encerrada",
+      "visibility": "DIREX e Conselho",
+      "due": "15/09/2026 — “data fictícia, sem registro”",
+      "period": "10/09/2026 a 15/09/2026 — “data fictícia, sem registro”",
+      "result": "Sem registro"
     }
   ],
   "positions": {
