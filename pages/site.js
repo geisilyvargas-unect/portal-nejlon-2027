@@ -179,7 +179,7 @@ function extras(){
  return '';
 }
 function roleLanding(){
- if(s.role==='ej_direx')return '<div class="view-grid">'+panel('Demandas da sua EJ','A DIREX da EJ consulta apenas título, classificação, prazo e situação das próprias demandas. Não acessa documentos ou formulários.','<a class="btn red" href="./pages/demandas.html">Consultar minhas demandas →</a>')+'</div>';
+ if(s.role==='ej_direx')return '<div class="view-grid">'+panel('Demandas da sua EJ','A DIREX da EJ consulta apenas título, classificação, prazo e situação das próprias demandas. Não acessa documentos ou formulários.','<a class="btn red" href="#" data-demand-section="geral">Consultar minhas demandas →</a>')+'</div>';
  if(s.role==='nucleus_direx')return '<div class="view-grid">'+panel('Fiscalização da Rede','Acompanhe demandas, deliberações e formulários, sem editar registros ou consultar votos individuais.','<p class="note">Consulta demonstrativa de deliberações, sem acesso a votos individuais.</p>')+'</div>';
  return '<div class="view-grid">'+panel('Painel do Conselho','As dez áreas históricas num só lugar. Consulte demandas de todas as EJs apenas em visão geral.','<div class="toolrow"><a class="btn red" href="./pages/painel-conselho.html">Painel do Conselho →</a><a class="btn" href="./pages/demandas.html">Panorama de demandas →</a></div>')+'</div>';
 }
@@ -216,7 +216,7 @@ document.addEventListener('click',e=>{
  if(target.dataset.responseFilter){s.responseFilter=target.dataset.responseFilter;render();return;}
  if(target.hasAttribute('data-copy-missing')){const list=ejData().filter(e=>!done(e.slug,s.delib)).map(e=>e.name).join('\n');navigator.clipboard.writeText(list).then(()=>{target.textContent='Lista copiada!'}).catch(()=>prompt('Copie a lista:',list));return;}
  if(target.dataset.exportReport){exportReport(target.dataset.exportReport);return;}
- if(target.dataset.role){s.role=target.dataset.role;s.section='deliberacoes';render();return;}
+ if(target.dataset.role){s.role=target.dataset.role;s.section=['ej_direx','nucleus_direx'].includes(s.role)?'demandas':'deliberacoes';s.demandSection='geral';render();return;}
  if(target.dataset.nav){s.section=target.dataset.nav;render();return;}
  if(target.dataset.ej){s.selected=target.dataset.ej;render();return;}
  if(target.dataset.filter){s.filter=target.dataset.filter;render();return;}
